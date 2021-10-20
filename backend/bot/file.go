@@ -1,36 +1,19 @@
-package main
+package bot
 
 import (
 	"fmt"
 	"log"
 	"strings"
 
+	"github.com/billy4479/telegram-storage/backend/db"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
-
-func link(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
-	err := linkUser(&User{
-		ID:     message.From.ID,
-		ChatID: message.Chat.ID,
-	})
-
-	if sendErrToUser(bot, message.Chat.ID, err) {
-		return
-	}
-	msg := fmt.Sprintf("Linking group %d as storage for user %d",
-		message.Chat.ID, message.From.ID,
-	)
-
-	bot.Send(tgbotapi.NewMessage(message.Chat.ID, msg))
-
-	log.Println(msg)
-}
 
 func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	document := message.Document
 
 	// Get archive chat ID, fails if not linked
-	chatID, err := getUserChat(message.From.ID)
+	chatID, err := db.GetUserChat(message.From.ID)
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
 	}
@@ -59,7 +42,7 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 		return
 	}
 
-	record := &File{
+	record := &db.File{
 		Name:      name,
 		Path:      path,
 		Owner:     message.From.ID,
@@ -67,7 +50,7 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 		MessageID: sent.MessageID,
 		URL:       url,
 	}
-	err = putFile(record)
+	err = db.PutFile(record)
 
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
@@ -77,24 +60,4 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 		record.Name, record.Path)
 	bot.Send(tgbotapi.NewMessage(message.Chat.ID, msg))
 	log.Println(msg)
-}
-
-func handleEvent(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
-	if update.Message == nil { // ignore any non-Message Updates
-		return
-	}
-	message := update.Message
-
-	if message.Chat.IsGroup() {
-		if message.Text == "/link" {
-			link(bot, message)
-		}
-		return
-	}
-
-	if message.Chat.IsPrivate() {
-		if message.Document != nil {
-			addFile(bot, message)
-		}
-	}
 }

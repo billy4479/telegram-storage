@@ -3,27 +3,27 @@ package main
 import (
 	"log"
 	"os"
+	"os/signal"
+	"sync"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/billy4479/telegram-storage/backend/api"
+	"github.com/billy4479/telegram-storage/backend/bot"
 )
 
 func main() {
 	log.Default().SetOutput(os.Stdout)
 
-	bot, err := tgbotapi.NewBotAPI("2074299171:AAH7gfFnSqRAvgpovVxx-hZLCGdiDY3WWuE")
-	checkErrAndDie(err)
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	stopBot := bot.BotMain("2074299171:AAH7gfFnSqRAvgpovVxx-hZLCGdiDY3WWuE")
+	wg.Add(1)
+	stopApi := api.ApiMain(":4479")
 
-	log.Println("Starting", bot.Self.UserName)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
 
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates, err := bot.GetUpdatesChan(u)
-	checkErrAndDie(err)
-	updates.Clear()
-
-	for update := range updates {
-		handleEvent(bot, update)
-	}
+	stopApi(&wg)
+	stopBot(&wg)
 
 }
