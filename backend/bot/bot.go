@@ -35,7 +35,7 @@ func BotMain(token string) func(*sync.WaitGroup) {
 			}
 			message := update.Message
 
-			if message.Chat.IsGroup() {
+			if !message.Chat.IsPrivate() {
 				if message.Text == "/link" {
 					linkChat(bot, message)
 				}
@@ -54,6 +54,7 @@ func BotMain(token string) func(*sync.WaitGroup) {
 	return func(wg *sync.WaitGroup) {
 		stop = true
 		<-stopped
+		updates.Clear()
 		wg.Done()
 	}
 

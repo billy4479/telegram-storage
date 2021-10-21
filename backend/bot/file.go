@@ -13,13 +13,13 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	document := message.Document
 
 	// Get archive chat ID, fails if not linked
-	chatID, err := db.GetUserChat(message.From.ID)
+	user, err := db.GetUserByID(message.From.ID)
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
 	}
 
 	// Upload to storage chat
-	file := tgbotapi.NewDocumentShare(chatID, document.FileID)
+	file := tgbotapi.NewDocumentShare(user.ChatID, document.FileID)
 	file.Caption = message.Caption
 	sent, _ := bot.Send(file)
 
@@ -46,7 +46,7 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 		Name:      name,
 		Path:      path,
 		Owner:     message.From.ID,
-		ChatID:    chatID,
+		ChatID:    user.ChatID,
 		MessageID: sent.MessageID,
 		URL:       url,
 	}
