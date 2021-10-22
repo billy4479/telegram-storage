@@ -31,7 +31,7 @@ func (f *File) ValidatePath() bool {
 
 func (f *File) IsUnique() (bool, error) {
 	var c int64
-	err := GetDB().Where("path = ? AND owner = ?", f.Path, f.Owner).Count(&c).Error
+	err := GetDB().Model(&File{}).Where("path = ? AND owner = ?", f.Path, f.Owner).Count(&c).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return true, nil
@@ -39,7 +39,7 @@ func (f *File) IsUnique() (bool, error) {
 		return false, err
 	}
 
-	return c == 1, nil
+	return c == 1 || c == 0, nil
 }
 
 func GetFile(path string) (*File, error) {

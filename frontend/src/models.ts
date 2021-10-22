@@ -1,4 +1,8 @@
 export interface FileEntry {
-  url: string;
   name: string;
+  path: string;
+  owner: number;
+  chatID: number;
+  messageID: number;
+  url: string;
 }

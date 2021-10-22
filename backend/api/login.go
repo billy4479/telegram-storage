@@ -20,6 +20,10 @@ type userClaims struct {
 	jwt.StandardClaims
 }
 
+type userSecret struct {
+	UserSecret string `json:"userSecret" form:"userSecret" `
+}
+
 var nullSecret = []byte{
 	0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -32,8 +36,13 @@ var nullSecret = []byte{
 }
 
 func login(c echo.Context) error {
-	userSecret := c.FormValue("userSecret")
-	h, err := base64.StdEncoding.DecodeString(userSecret)
+	var s userSecret
+	err := c.Bind(&s)
+	if err != nil {
+		return err
+	}
+
+	h, err := base64.StdEncoding.DecodeString(s.UserSecret)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusInternalServerError, err)
 	}

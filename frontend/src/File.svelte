@@ -3,17 +3,19 @@
 
   export let filename: string;
   export let url: string;
+
+  const name = filename.slice(0, filename.lastIndexOf('.'));
 </script>
 
 <button
   class="border border-gray-300 
          inline-block rounded shadow-md
          bg-gray-50 hover:bg-gray-100
-         focus:bg-gray-100 relative w-full"
+         focus:bg-gray-100 relative w-full flex"
   title={filename}
 >
-  <a href={url} target="_blank">
-    <div class="grid place-items-center gap-4">
+  <a href={url} download={name} class="flex items-stretch">
+    <div class="grid place-items-center gap-4 p-3">
       <div class="text-center block">
         <FileIcon />
       </div>
@@ -29,6 +31,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    width: 15ch;
   }
   button {
     aspect-ratio: 1;

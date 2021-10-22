@@ -2,25 +2,31 @@
   import File from './File.svelte';
   import type { FileEntry } from './models';
 
-  const res = `
-    [
-        {"url": "https://www.google.com", "name": "Google"},
-        {"url": "https://www.google.com", "name": "Google"},
-        {"url": "https://www.google.com", "name": "Google"},
-        {"url": "https://www.google.com", "name": "Google"},
-        {"url": "https://www.google.com", "name": "Google"}
-    ]`;
+  async function fetchData(): Promise<FileEntry[]> {
+    const res = await fetch('/api/files', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+      },
+    });
+    return (await res.json()) as FileEntry[];
+  }
 
-  const files: FileEntry[] = JSON.parse(res);
+  let data = fetchData();
 </script>
 
 <main
   class="place-items-center grid gap-4
-grid-cols-4 md:grid-cols-6"
+grid-cols-4 md:grid-cols-6 justify-start"
 >
-  {#each files as file}
-    <File filename={file.name} url={file.url} />
-  {/each}
+  {#await data}
+    <div>Loading...</div>
+  {:then files}
+    {#each files as file}
+      <File filename={file.name} url={file.url} />
+    {/each}
+  {:catch error}
+    <div>An error has occurred: {error.message}</div>
+  {/await}
 </main>
 
 <style>

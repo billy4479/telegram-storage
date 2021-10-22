@@ -21,7 +21,6 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	// Upload to storage chat
 	file := tgbotapi.NewDocumentShare(user.ChatID, document.FileID)
 	file.Caption = message.Caption
-	sent, _ := bot.Send(file)
 
 	// Create record for database
 	name := strings.ReplaceAll(document.FileName, "/", "")
@@ -53,12 +52,11 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	}
 
 	record := &db.File{
-		Name:      name,
-		Path:      path,
-		Owner:     message.From.ID,
-		ChatID:    user.ChatID,
-		MessageID: sent.MessageID,
-		URL:       url,
+		Name:   name,
+		Path:   path,
+		Owner:  message.From.ID,
+		ChatID: user.ChatID,
+		URL:    url,
 	}
 
 	if !record.ValidatePath() {
@@ -77,6 +75,8 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 			return
 		}
 	}
+	sent, _ := bot.Send(file)
+	record.MessageID = sent.MessageID
 
 	err = db.PutFile(record)
 	if sendErrToUser(bot, message.Chat.ID, err) {
