@@ -26,7 +26,6 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	// Create record for database
 	name := strings.ReplaceAll(document.FileName, "/", "")
 	name = strings.ReplaceAll(name, "\\", "")
-	name = strings.ReplaceAll(name, "*", "")
 
 	path := message.Caption
 	if path == "" {
@@ -36,6 +35,17 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 		path = "/" + path
 	}
 	path = strings.ReplaceAll(path, "\\", "/")
+
+	{
+		new := ""
+		for {
+			new = strings.ReplaceAll(path, "//", "/")
+			if path == new {
+				break
+			}
+			path = new
+		}
+	}
 
 	url, err := bot.GetFileDirectURL(document.FileID)
 	if sendErrToUser(bot, message.Chat.ID, err) {
@@ -50,8 +60,25 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 		MessageID: sent.MessageID,
 		URL:       url,
 	}
-	err = db.PutFile(record)
 
+	if !record.ValidatePath() {
+		sendErrToUser(bot, message.Chat.ID, fmt.Errorf("The path %s is invalid", record.Path))
+		return
+	}
+
+	{
+		unique, err := record.IsUnique()
+		if sendErrToUser(bot, message.Chat.ID, err) {
+			return
+		}
+
+		if !unique {
+			sendErrToUser(bot, message.Chat.ID, fmt.Errorf("%s already exists", record.Path))
+			return
+		}
+	}
+
+	err = db.PutFile(record)
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
 	}
