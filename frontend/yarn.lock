@@ -1878,6 +1878,14 @@ svelte-preprocess@^4.7.2:
     sorcery "^0.10.0"
     strip-indent "^3.0.0"
 
+svelte-windicss-preprocess@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/svelte-windicss-preprocess/-/svelte-windicss-preprocess-4.1.0.tgz#d3f10062ad3e0356a9a3012878a034dd179a604f"
+  integrity sha512-tmdzInpOl3WPsmOd3alR/jvD0g98VwWlkACiLIiiG9ZqTSRa0gEyBxDS+eS1aIy4+wpRoGzLp7NyQXZAsWJtkg==
+  dependencies:
+    windicss "^3.1.9"
+    windicss-runtime-dom "^3.0.0"
+
 svelte@^3.37.0:
   version "3.44.0"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.44.0.tgz#e6176cb3ad93846ddb4140e93f43098136b23f3b"
@@ -2026,6 +2034,11 @@ which@^2.0.1:
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
   dependencies:
     isexe "^2.0.0"
+
+windicss-runtime-dom@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/windicss-runtime-dom/-/windicss-runtime-dom-3.0.0.tgz#1b7d4d7e07099a6f38b681adeb272992e57858d5"
+  integrity sha512-a12Uhu71yT1U8w0PzJ3amF9xmC8b1rWFLgXEfI/UyuwUi6D1vUACOO6vb0iY4T4OtP/bJAjQMM7lv3hMWSwLuQ==
 
 windicss@^3.1.9:
   version "3.1.9"

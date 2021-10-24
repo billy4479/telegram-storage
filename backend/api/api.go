@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"sync"
 	"time"
@@ -22,7 +23,13 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 		signingSecret = []byte(s)
 	}
 	e := echo.New()
-	e.Use(middleware.Logger())
+	{
+		config := middleware.DefaultLoggerConfig
+		config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}"
+		config.Output = os.Stdout
+		config.CustomTimeFormat = "2006/01/02 15:04:05"
+		e.Use(middleware.LoggerWithConfig(config))
+	}
 	// e.Use(middleware.Recover())
 	e.Use(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Secure())
@@ -34,6 +41,7 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 	api := e.Group("/api")
 
 	api.POST("/login", login)
+	api.GET("/login", func(c echo.Context) error { return c.NoContent(http.StatusOK) }, authorized)
 	api.GET("/files", getAllFiles, authorized)
 
 	go func() {

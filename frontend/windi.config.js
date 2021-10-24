@@ -1,4 +1,4 @@
-import { defineConfig } from 'windicss/helpers'
+import { defineConfig } from 'windicss/helpers';
 
 defineConfig({
   extract: {

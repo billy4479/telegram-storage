@@ -11,10 +11,11 @@
   class="border border-gray-300 
          inline-block rounded shadow-md
          bg-gray-50 hover:bg-gray-100
-         focus:bg-gray-100 relative w-full flex"
+         focus:bg-gray-100 w-full
+         overflow-hidden"
   title={filename}
 >
-  <a href={url} download={name} class="flex items-stretch">
+  <a href={url} download={name} class="flex justify-center items-stretch">
     <div class="grid place-items-center gap-4 p-3">
       <div class="text-center block">
         <FileIcon />
@@ -31,7 +32,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 15ch;
+    width: 95%;
   }
   button {
     aspect-ratio: 1;

@@ -12,11 +12,9 @@ backend-dev:
 
 frontend:
 	mkdir -p build
-	cd frontend && \
-	yarn build --emptyOutDir
+	yarn --cwd frontend build --emptyOutDir
 
 frontend-dev:
-	cd frontend && \
-	yarn dev --host
+	yarn  --cwd frontend dev --host
 
 .PHONY: all backend backend-dev frontend frontend-dev
