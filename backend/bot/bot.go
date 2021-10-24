@@ -1,11 +1,19 @@
 package bot
 
 import (
+	"io"
 	"log"
 	"sync"
 
+	"github.com/billy4479/telegram-storage/backend/db"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
+
+type BotAPI struct {
+	UploadFile func(user *db.User, path string, r io.Reader, size int64) (*db.File, error)
+}
+
+var Instance *BotAPI = nil
 
 func BotMain(token string) func(*sync.WaitGroup) {
 	bot, err := tgbotapi.NewBotAPI(token)
@@ -20,8 +28,11 @@ func BotMain(token string) func(*sync.WaitGroup) {
 	checkErrAndDie(err)
 	updates.Clear()
 
-	stop := false
+	Instance = &BotAPI{
+		UploadFile: uploadFile(bot),
+	}
 
+	stop := false
 	stopped := make(chan struct{})
 
 	go func() {

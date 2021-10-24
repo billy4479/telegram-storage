@@ -1,6 +1,8 @@
 package db
 
 import (
+	"fmt"
+	"path/filepath"
 	"strings"
 
 	"gorm.io/gorm"
@@ -13,20 +15,6 @@ type File struct {
 	ChatID    int64  `gorm:"non null" json:"chatID"`
 	MessageID int    `gorm:"non null" json:"messageID"`
 	URL       string `gorm:"primaryKey" json:"url"`
-}
-
-func (f *File) ValidatePath() bool {
-
-	if f.Path == "" {
-		return false
-	}
-
-	// Check if the name is all dots
-	if strings.Count(f.Path, ".") == len(f.Path) {
-		return false
-	}
-
-	return true
 }
 
 func (f *File) IsUnique() (bool, error) {
@@ -53,5 +41,42 @@ func GetAllFilesOwnedBy(userID int) ([]File, error) {
 }
 
 func PutFile(f *File) error {
+	invalidPath := fmt.Errorf("Invalid path")
+	alreadyExists := fmt.Errorf("The file already exists")
+	if f.Path == "" {
+		return invalidPath
+	}
+
+	f.Path = strings.ReplaceAll(f.Path, "\\", "/")
+	if !strings.HasPrefix(f.Path, "/") {
+		f.Path = "/" + f.Path
+	}
+
+	{
+		new := ""
+		for {
+			new = strings.ReplaceAll(f.Path, "//", "/")
+			if f.Path == new {
+				break
+			}
+			f.Path = new
+		}
+	}
+
+	if strings.Contains(f.Path, "/..") || strings.Contains(f.Path, "/.") {
+		return invalidPath
+	}
+
+	f.Name = filepath.Base(f.Path)
+
+	unique, err := f.IsUnique()
+	if err != nil {
+		return err
+	}
+
+	if !unique {
+		return alreadyExists
+	}
+
 	return GetDB().Create(f).Error
 }

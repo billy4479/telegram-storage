@@ -3,7 +3,6 @@ package bot
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/billy4479/telegram-storage/backend/db"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -22,62 +21,27 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	file := tgbotapi.NewDocumentShare(user.ChatID, document.FileID)
 	file.Caption = message.Caption
 
-	// Create record for database
-	name := strings.ReplaceAll(document.FileName, "/", "")
-	name = strings.ReplaceAll(name, "\\", "")
-
-	path := message.Caption
-	if path == "" {
-		path = "/" + document.FileName
-	}
-	if !strings.HasPrefix(path, "/") {
-		path = "/" + path
-	}
-	path = strings.ReplaceAll(path, "\\", "/")
-
-	{
-		new := ""
-		for {
-			new = strings.ReplaceAll(path, "//", "/")
-			if path == new {
-				break
-			}
-			path = new
-		}
-	}
-
 	url, err := bot.GetFileDirectURL(document.FileID)
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
 	}
 
+	// Create record for database
 	record := &db.File{
-		Name:   name,
-		Path:   path,
+		Path:   message.Caption,
 		Owner:  message.From.ID,
 		ChatID: user.ChatID,
 		URL:    url,
 	}
 
-	if !record.ValidatePath() {
-		sendErrToUser(bot, message.Chat.ID, fmt.Errorf("The path %s is invalid", record.Path))
+	// Send the file
+	sent, err := bot.Send(file)
+	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
 	}
 
-	{
-		unique, err := record.IsUnique()
-		if sendErrToUser(bot, message.Chat.ID, err) {
-			return
-		}
-
-		if !unique {
-			sendErrToUser(bot, message.Chat.ID, fmt.Errorf("%s already exists", record.Path))
-			return
-		}
-	}
-	sent, _ := bot.Send(file)
+	// Store the file record in the database
 	record.MessageID = sent.MessageID
-
 	err = db.PutFile(record)
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return

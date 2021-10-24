@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/billy4479/telegram-storage/backend/db"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -12,7 +13,7 @@ import (
 )
 
 func linkChat(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
-	secret := make([]byte, 64)
+	secret := make([]byte, 63)
 	_, err := rand.Read(secret)
 	if err != nil {
 		sendErrToUser(bot, message.Chat.ID, err)
@@ -28,11 +29,20 @@ func linkChat(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
 	}
-	msg := fmt.Sprintf("Linking group %d as storage for user %d. You're secret is %s",
-		message.Chat.ID, message.From.ID, base64.StdEncoding.EncodeToString(secret),
+
+	text := fmt.Sprintf("Linking group \"%s\" as storage for user @%s. You're secret is `%s`",
+		message.Chat.Title, message.From.UserName, base64.StdEncoding.EncodeToString(secret),
 	)
+	text = strings.ReplaceAll(text, ".", "\\.")
+	text = strings.ReplaceAll(text, "+", "\\+")
+	text = strings.ReplaceAll(text, "_", "\\_")
+	text = strings.ReplaceAll(text, "-", "\\-")
 
-	bot.Send(tgbotapi.NewMessage(int64(message.From.ID), msg))
+	msg := tgbotapi.NewMessage(int64(message.From.ID), text)
+	msg.ParseMode = "MarkdownV2"
+	if _, err = bot.Send(msg); sendErrToUser(bot, message.Chat.ID, err) {
+		return
+	}
 
-	log.Println(msg)
+	log.Println(text)
 }

@@ -1,5 +1,7 @@
-const host = import.meta.url.startsWith('http://localhost:3000/')
-  ? 'http://localhost:4479'
+const host = import.meta.url
+  ? import.meta.url.startsWith('http://localhost:3000/')
+    ? 'http://localhost:4479'
+    : ''
   : '';
 const apiRoot = host + '/api';
 

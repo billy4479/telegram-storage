@@ -39,12 +39,15 @@ func login(c echo.Context) error {
 	var s userSecret
 	err := c.Bind(&s)
 	if err != nil {
-		return err
+		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}
 
 	h, err := base64.StdEncoding.DecodeString(s.UserSecret)
 	if err != nil {
-		return returnErrorJSON(c, http.StatusInternalServerError, err)
+		return returnErrorJSON(c, http.StatusBadRequest, err)
+	}
+	if len(h) != 63 {
+		return returnErrorJSON(c, http.StatusBadRequest, fmt.Errorf("Invalid secret"))
 	}
 	secret := sha3.Sum512(h)
 

@@ -33,7 +33,7 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 	// e.Use(middleware.Recover())
 	e.Use(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Secure())
-	// TODO: CSRF
+	// TODO: CSRF, CORS
 
 	e.HideBanner = true
 
@@ -43,6 +43,7 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 	api.POST("/login", login)
 	api.GET("/login", func(c echo.Context) error { return c.NoContent(http.StatusOK) }, authorized)
 	api.GET("/files", getAllFiles, authorized)
+	api.POST("/files", upload, authorized)
 
 	go func() {
 		if err := e.Start(addr); err != nil {
