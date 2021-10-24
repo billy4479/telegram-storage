@@ -7,7 +7,8 @@ const apiRoot = host + '/api';
 
 const login = `${apiRoot}/login`;
 const files = `${apiRoot}/files`;
+const download = `${apiRoot}/download`;
 
-export { login, files };
+export { login, files, download };
 
 export default host;

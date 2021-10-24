@@ -9,15 +9,16 @@ import (
 )
 
 type File struct {
+	ID        uint64 `gorm:"primaryKey" json:"id"`
 	Name      string `gorm:"non null" json:"name"`
 	Path      string `gorm:"non null" json:"path"`
 	Owner     int    `gorm:"non null" json:"userID"`
 	ChatID    int64  `gorm:"non null" json:"chatID"`
 	MessageID int    `gorm:"non null" json:"messageID"`
-	URL       string `gorm:"primaryKey" json:"url"`
+	URL       string `gorm:"not null" json:"-"`
 }
 
-func (f *File) IsUnique() (bool, error) {
+func (f *File) isUnique() (bool, error) {
 	var c int64
 	err := GetDB().Model(&File{}).Where("path = ? AND owner = ?", f.Path, f.Owner).Count(&c).Error
 	if err != nil {
@@ -30,9 +31,9 @@ func (f *File) IsUnique() (bool, error) {
 	return c == 1 || c == 0, nil
 }
 
-func GetFile(path string) (*File, error) {
+func GetFileByID(id uint64) (*File, error) {
 	f := File{}
-	return &f, GetDB().Where("path = ?", path).Take(&f).Error
+	return &f, GetDB().Take(&f, id).Error
 }
 
 func GetAllFilesOwnedBy(userID int) ([]File, error) {
@@ -69,7 +70,7 @@ func PutFile(f *File) error {
 
 	f.Name = filepath.Base(f.Path)
 
-	unique, err := f.IsUnique()
+	unique, err := f.isUnique()
 	if err != nil {
 		return err
 	}

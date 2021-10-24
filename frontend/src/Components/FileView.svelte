@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getJWT } from '../Logic/authentication';
   import { files } from '../Logic/apiEndpoints';
   import type { FileEntry } from '../Logic/models';
   import File from './File.svelte';
@@ -6,7 +7,7 @@
   async function fetchData(): Promise<FileEntry[]> {
     const res = await fetch(files, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${getJWT()}`,
       },
     });
     if (!res.ok) {
@@ -32,7 +33,7 @@ grid-cols-4 md:grid-cols-6 justify-start"
     <div>Loading...</div>
   {:then files}
     {#each files as file}
-      <File filename={file.name} url={file.url} />
+      <File filename={file.name} id={file.id} />
     {/each}
   {:catch error}
     <div>An error has occurred: {error}</div>

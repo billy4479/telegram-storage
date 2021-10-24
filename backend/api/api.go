@@ -44,6 +44,7 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 	api.GET("/login", func(c echo.Context) error { return c.NoContent(http.StatusOK) }, authorized)
 	api.GET("/files", getAllFiles, authorized)
 	api.POST("/files", upload, authorized)
+	api.GET("/download/:id", download, authorized)
 
 	go func() {
 		if err := e.Start(addr); err != nil {
