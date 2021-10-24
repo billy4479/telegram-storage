@@ -12,12 +12,16 @@ import (
 
 func main() {
 	log.Default().SetOutput(os.Stdout)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "4479"
+	}
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
-	stopBot := bot.BotMain("2074299171:AAH7gfFnSqRAvgpovVxx-hZLCGdiDY3WWuE")
+	stopBot := bot.BotMain(os.Getenv("TELEGRAM_TOKEN"))
 	wg.Add(1)
-	stopApi := api.ApiMain(":4479")
+	stopApi := api.ApiMain(":" + port)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)

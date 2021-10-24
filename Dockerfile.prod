@@ -1,0 +1,24 @@
+FROM golang:alpine AS backend-builder
+
+WORKDIR /app
+
+COPY backend .
+
+RUN go build -o telegram-storage
+
+FROM node:alpine AS frontend-builder
+
+WORKDIR /app
+
+COPY frontend .
+RUN yarn
+
+RUN yarn build --outDir build/public
+
+FROM alpine AS production
+WORKDIR /app
+
+COPY --from=backend-builder /app/telegram-storage .
+COPY --from=frontend-builder /app/build .
+
+ENTRYPOINT [ "./telegram-storage" ]

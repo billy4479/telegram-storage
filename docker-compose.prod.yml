@@ -1,0 +1,27 @@
+version: "3"
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
+      POSTGRES_USER: "${DB_USER:?missing DB_USER}"
+      POSTGRES_DB: "${DB_DATABASE:?missing DB_DATABASE}"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DB_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
+      DB_USER: "${DB_USER:?missing DB_USER}"
+      DB_DATABASE: "${DB_DATABASE:?missing DB_DATABASE}"
+      DB_HOST: "db"
+      SECRET: "${SECRET:?missing SECRET}"
+      PORT: "${PORT:-4479}"
+      TELEGRAM_TOKEN: "${TELEGRAM_TOKEN:?missing TELEGRAM_TOKEN}"
+    ports:
+      - ${PORT:-4479}:${PORT:-4479}
