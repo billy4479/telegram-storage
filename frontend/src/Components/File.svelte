@@ -10,12 +10,15 @@
 
   async function downloadFile() {
     // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
-    const res = await fetch(`${download}/${id}`, {
+    const p = fetch(`${download}/${id}`, {
       headers: {
         Authorization: `Bearer ${getJWT()}`,
       },
     });
 
+    p.catch((err) => console.error(err));
+
+    const res = await p;
     const blob = await res.blob();
 
     const url = URL.createObjectURL(blob);

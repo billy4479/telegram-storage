@@ -67,7 +67,7 @@ func login(c echo.Context) error {
 		TelegramID: user.TelegramID,
 		ChatID:     user.ChatID,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24 * 3).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 10).Unix(),
 		},
 	}
 

@@ -2,7 +2,7 @@ import { login } from './apiEndpoints';
 import { writable } from 'svelte/store';
 
 function getJWT(): string | null {
-  return localStorage.getItem('jwt');
+  return sessionStorage.getItem('jwt');
 }
 const isAuthenticated = writable(false);
 
@@ -18,7 +18,7 @@ async function isAuthValid(): Promise<boolean> {
   });
 
   if (!res.ok) {
-    localStorage.removeItem('jwt');
+    sessionStorage.removeItem('jwt');
   }
 
   isAuthenticated.set(res.ok);
@@ -34,12 +34,12 @@ async function authenticate(userSecret: string) {
     },
   });
 
-  localStorage.setItem('jwt', (await res.json()).token);
+  sessionStorage.setItem('jwt', (await res.json()).token);
   isAuthenticated.set(true);
 }
 
 function logout() {
-  localStorage.removeItem('jwt');
+  sessionStorage.removeItem('jwt');
   isAuthenticated.set(false);
 }
 
