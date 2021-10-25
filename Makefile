@@ -8,7 +8,7 @@ backend:
 	$(GO) build -o ../build/telegram-storage
 
 backend-dev:
-	CompileDaemon -build='make backend' -command='./build/telegram-storage'
+	CompileDaemon -build='make -C .. backend' -command='./build/telegram-storage' -directory=./backend
 
 frontend:
 	mkdir -p build

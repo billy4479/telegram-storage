@@ -9,9 +9,50 @@ services:
       POSTGRES_DB: "${DB_DATABASE:?missing DB_DATABASE}"
     ports:
       - 5432:5432
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.dev
+      args:
+        port: "${FRONTEND_PORT:-3000}"
+    restart: always
+    ports:
+      - ${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend.dev
+    ports:
+      - ${PORT:-4479}:${PORT:-4479}
+    depends_on:
+      - db
+    restart: always
+    environment:
+      DB_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
+      DB_USER: "${DB_USER:?missing DB_USER}"
+      DB_DATABASE: "${DB_DATABASE:?missing DB_DATABASE}"
+      DB_HOST: "db"
+      SECRET: "${SECRET:?missing SECRET}"
+      PORT: "${PORT:-4479}"
+      TELEGRAM_TOKEN: "${TELEGRAM_TOKEN:?missing TELEGRAM_TOKEN}"
+    volumes:
+      - ./backend:/app/backend
+
+volumes:
+  backend:
+  frontend:
+  db-data:
