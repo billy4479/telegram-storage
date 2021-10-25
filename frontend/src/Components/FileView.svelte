@@ -24,9 +24,9 @@
   let data = fetchData();
 </script>
 
+<!-- min-w is (min column size)*4 + gap -->
 <div
-  class="mx-5 place-items-center grid gap-4
-grid-cols-4 md:grid-cols-6 justify-start"
+  class="mx-5 grid gap-4 place-items-start justify-items-start min-w-84"
   id="file-view"
 >
   {#await data}
@@ -42,6 +42,6 @@ grid-cols-4 md:grid-cols-6 justify-start"
 
 <style>
   #file-view {
-    grid-template-columns: repeat(auto-fit, clamp(7em, auto, 10em));
+    grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
   }
 </style>

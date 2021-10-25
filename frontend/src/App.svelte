@@ -8,8 +8,8 @@
 
 {#await isAuthValid()}
   Loading...
-{:then valid}
-  {#if !(valid && $isAuthenticated)}
+{:then}
+  {#if !$isAuthenticated}
     <Login />
   {:else}
     <Sidebar />

@@ -28,5 +28,8 @@
     "vite-plugin-html": "^2.0.7",
     "vite-plugin-windicss": "^1.4.12",
     "windicss": "^3.1.9"
+  },
+  "dependencies": {
+    "svelte-icons": "^2.1.0"
   }
 }

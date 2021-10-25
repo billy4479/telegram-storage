@@ -1,33 +1,13 @@
 <script lang="ts">
-  import { getJWT } from '../Logic/authentication';
-
   import { download } from '../Logic/apiEndpoints';
-
-  import FileIcon from './FileIcon.svelte';
+  import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
+  import authenticatedDownload from '../Logic/download';
 
   export let filename: string;
   export let id: number;
 
   async function downloadFile() {
-    // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
-    const p = fetch(`${download}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${getJWT()}`,
-      },
-    });
-
-    p.catch((err) => console.error(err));
-
-    const res = await p;
-    const blob = await res.blob();
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    await authenticatedDownload(`${download}/${id}`, filename);
   }
 </script>
 
@@ -36,18 +16,18 @@
          inline-block rounded shadow-md
          bg-gray-50 hover:bg-gray-100
          focus:bg-gray-100 w-full
-         overflow-hidden flex justify-center items-stretch"
+         overflow-hidden flex flex-col items-stretch"
   title={filename}
   on:click={downloadFile}
 >
-  <div class="grid place-items-center gap-4 p-3">
-    <div class="text-center block">
+  <div class="flex-grow flex justify-center items-center bg-gray-100">
+    <div class="w-1/3">
       <FileIcon />
     </div>
-    <span class="text-center">
-      {filename}
-    </span>
   </div>
+  <span class="text-center py-3">
+    {filename}
+  </span>
 </button>
 
 <style>
@@ -55,7 +35,6 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 95%;
   }
   button {
     aspect-ratio: 1;
