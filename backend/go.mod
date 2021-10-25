@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/joho/godotenv v1.4.0
 	github.com/labstack/echo/v4 v4.6.1
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	gorm.io/driver/postgres v1.1.2

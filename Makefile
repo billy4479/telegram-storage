@@ -8,7 +8,11 @@ backend:
 	$(GO) build -o ../build/telegram-storage
 
 backend-dev:
-	CompileDaemon -build='make -C .. backend' -command='./build/telegram-storage' -directory=./backend
+	cd build && \
+	CompileDaemon \
+		-build='make -C .. backend' \
+		-command='./telegram-storage -loadEnv ../.env' \
+		-directory=../backend
 
 frontend:
 	mkdir -p build
@@ -17,4 +21,10 @@ frontend:
 frontend-dev:
 	yarn  --cwd frontend dev --host
 
-.PHONY: all backend backend-dev frontend frontend-dev
+docker:
+	docker-compose -f docker-compose.prod.yml up --build
+
+docker-dev:
+	docker-compose up
+
+.PHONY: all backend backend-dev frontend frontend-dev docker docker-dev
