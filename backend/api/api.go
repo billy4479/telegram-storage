@@ -23,14 +23,14 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 		signingSecret = []byte(s)
 	}
 	e := echo.New()
-	// {
-	// 	config := middleware.DefaultLoggerConfig
-	// 	config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}"
-	// 	config.Output = os.Stdout
-	// 	config.CustomTimeFormat = "2006/01/02 15:04:05"
-	// 	e.Use(middleware.LoggerWithConfig(config))
-	// }
-	e.Use(middleware.Logger())
+	{
+		config := middleware.DefaultLoggerConfig
+		config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
+		config.Output = os.Stdout
+		config.CustomTimeFormat = "2006/01/02 15:04:05"
+		e.Use(middleware.LoggerWithConfig(config))
+	}
+	// e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Secure())
