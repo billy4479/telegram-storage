@@ -9,6 +9,10 @@ const login = `${apiRoot}/login`;
 const files = `${apiRoot}/files`;
 const download = `${apiRoot}/download`;
 
-export { login, files, download };
+export {
+  login as loginEndpoint,
+  files as filesEndpoint,
+  download as downloadEndpoint,
+};
 
 export default host;

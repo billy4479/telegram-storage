@@ -3,13 +3,13 @@
   import Login from './Components/Login.svelte';
   import Logout from './Components/Logout.svelte';
   import Sidebar from './Components/Sidebar.svelte';
-  import { isAuthenticated, isAuthValid } from './Logic/authentication';
+  import { checkAuth, isAuthenticatedStore } from './Logic/authentication';
 </script>
 
-{#await isAuthValid()}
+{#await checkAuth()}
   Loading...
 {:then}
-  {#if !$isAuthenticated}
+  {#if !$isAuthenticatedStore}
     <Login />
   {:else}
     <Sidebar />

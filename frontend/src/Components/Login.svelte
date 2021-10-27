@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { getFiles } from '../Logic/getFiles';
   import { authenticate } from '../Logic/authentication';
 
   let userSecret = '';
 
-  function onSubmit() {
-    authenticate(userSecret);
+  async function onSubmit() {
+    await authenticate(userSecret);
+    await getFiles();
   }
 </script>
 

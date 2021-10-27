@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { download } from '../Logic/apiEndpoints';
+  import { downloadEndpoint } from '../Logic/apiEndpoints';
   import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
   import authenticatedDownload from '../Logic/download';
 
@@ -7,7 +7,7 @@
   export let id: number;
 
   async function downloadFile() {
-    await authenticatedDownload(`${download}/${id}`, filename);
+    await authenticatedDownload(`${downloadEndpoint}/${id}`, filename);
   }
 </script>
 
@@ -25,7 +25,7 @@
       <FileIcon />
     </div>
   </div>
-  <span class="text-center py-3">
+  <span class="text-center py-3 px-2">
     {filename}
   </span>
 </button>

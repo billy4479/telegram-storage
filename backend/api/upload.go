@@ -10,39 +10,46 @@ import (
 
 func upload(c echo.Context) error {
 	// Get data from the request
-	path := c.FormValue("path")
-	file, err := c.FormFile("file")
-	if err != nil {
-		return returnErrorJSON(c, http.StatusBadRequest, err)
-	}
+	// path := c.FormValue("path")
 	id, err := getUserIDFromContext(c)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusUnauthorized, err)
 	}
-
 	// Get user info
 	user, err := db.GetUserByID(id)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusInternalServerError, err)
 	}
 
-	// Open the file
-	r, err := file.Open()
+	form, err := c.MultipartForm()
 	if err != nil {
 		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}
 
-	// Upload it to telegram
-	record, err := bot.Instance.UploadFile(user, path, r, file.Size)
-	if err != nil {
-		return returnErrorJSON(c, http.StatusInternalServerError, err)
+	result := []*db.File{}
+
+	files := form.File["files"]
+	for _, file := range files {
+		// Open the file
+		r, err := file.Open()
+		if err != nil {
+			return returnErrorJSON(c, http.StatusBadRequest, err)
+		}
+
+		// Upload it to telegram
+		record, err := bot.Instance.UploadFile(user, file.Filename, r, file.Size)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusInternalServerError, err)
+		}
+
+		// Store it into the database
+		err = db.PutFile(record)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusInternalServerError, err)
+		}
+
+		result = append(result, record)
 	}
 
-	// Store it into the database
-	err = db.PutFile(record)
-	if err != nil {
-		return returnErrorJSON(c, http.StatusInternalServerError, err)
-	}
-
-	return c.JSON(http.StatusOK, record)
+	return c.JSON(http.StatusOK, result)
 }

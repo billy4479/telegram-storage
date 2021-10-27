@@ -34,6 +34,7 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 	e.Use(middleware.Recover())
 	e.Use(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Secure())
+	e.Use(middleware.CORS())
 	// TODO: CSRF, CORS
 
 	e.HideBanner = true

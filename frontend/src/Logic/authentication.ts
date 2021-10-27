@@ -1,17 +1,23 @@
-import { login } from './apiEndpoints';
+import { loginEndpoint } from './apiEndpoints';
 import { writable } from 'svelte/store';
 
 function getJWT(): string | null {
   return sessionStorage.getItem('jwt');
 }
-const isAuthenticated = writable(false);
+const isAuthenticatedStore = writable(false);
 
-async function isAuthValid(): Promise<boolean> {
+let authenticated = false;
+isAuthenticatedStore.subscribe((value) => (authenticated = value));
+function isAuthenticated(): boolean {
+  return authenticated;
+}
+
+async function checkAuth(): Promise<boolean> {
   if (!getJWT()) {
     return false;
   }
 
-  const res = await fetch(login, {
+  const res = await fetch(loginEndpoint, {
     headers: {
       Authorization: `Bearer ${getJWT()}`,
     },
@@ -21,12 +27,12 @@ async function isAuthValid(): Promise<boolean> {
     sessionStorage.removeItem('jwt');
   }
 
-  isAuthenticated.set(res.ok);
+  isAuthenticatedStore.set(res.ok);
   return res.ok;
 }
 
 async function authenticate(userSecret: string) {
-  const res = await fetch(login, {
+  const res = await fetch(loginEndpoint, {
     method: 'POST',
     body: JSON.stringify({ userSecret }),
     headers: {
@@ -35,12 +41,19 @@ async function authenticate(userSecret: string) {
   });
 
   sessionStorage.setItem('jwt', (await res.json()).token);
-  isAuthenticated.set(true);
+  isAuthenticatedStore.set(true);
 }
 
 function logout() {
   sessionStorage.removeItem('jwt');
-  isAuthenticated.set(false);
+  isAuthenticatedStore.set(false);
 }
 
-export { isAuthValid, isAuthenticated, authenticate, getJWT, logout };
+export {
+  checkAuth,
+  isAuthenticatedStore,
+  authenticate,
+  getJWT,
+  logout,
+  isAuthenticated,
+};
