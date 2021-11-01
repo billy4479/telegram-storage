@@ -19,10 +19,15 @@ func getAllFiles(c echo.Context) error {
 		return returnErrorJSON(c, http.StatusUnauthorized, err)
 	}
 
-	files, err := db.GetAllFilesOwnedBy(id)
+	root, err := db.GetRootOf(id)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusOK, files)
+	content, err := db.GetChildrenInFolder(root)
+	if err != nil {
+		return returnErrorJSON(c, http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, content)
 }

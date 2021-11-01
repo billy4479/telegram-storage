@@ -21,9 +21,27 @@ func GetUserBySecret(userSecret []byte) (*User, error) {
 func LinkUser(user *User) error {
 	if _, err := GetUserByID(user.TelegramID); err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return GetDB().Create(user).Error
+			err = GetDB().Create(user).Error
+			if err != nil {
+				return err
+			}
 		}
 		return err
 	}
-	return GetDB().Save(user).Error
+	err := GetDB().Save(user).Error
+	if err != nil {
+		return err
+	}
+
+	if _, err := GetRootOf(user.TelegramID); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			if err = createRootOfUser(user); err != nil {
+				return err
+			}
+			err = nil
+		}
+		return err
+	}
+
+	return nil
 }

@@ -27,4 +27,8 @@ docker:
 docker-dev:
 	docker-compose up
 
-.PHONY: all backend backend-dev frontend frontend-dev docker docker-dev
+docker-clean:
+	docker-compose rm
+	sudo rm -r ./db-data
+
+.PHONY: all backend backend-dev frontend frontend-dev docker docker-dev docker-clean

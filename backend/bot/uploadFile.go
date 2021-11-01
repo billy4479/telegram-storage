@@ -26,11 +26,9 @@ func uploadFile(bot *tgbotapi.BotAPI) func(user *db.User, path string, r io.Read
 		}
 
 		return &db.File{
-			Path:      path,
-			Owner:     user.TelegramID,
-			ChatID:    user.ChatID,
-			MessageID: msg.MessageID,
-			URL:       url,
+			Path:  path,
+			Owner: user.TelegramID,
+			URL:   url,
 		}, nil
 	}
 }

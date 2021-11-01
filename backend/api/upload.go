@@ -43,7 +43,7 @@ func upload(c echo.Context) error {
 		}
 
 		// Store it into the database
-		err = db.PutFile(record)
+		err = db.CreateFile(record)
 		if err != nil {
 			return returnErrorJSON(c, http.StatusInternalServerError, err)
 		}

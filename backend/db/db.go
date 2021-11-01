@@ -26,7 +26,7 @@ func initConnection() (err error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable", host, user, password, database)
 	globDB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err == nil {
-		err = globDB.AutoMigrate(&User{}, &File{})
+		err = globDB.AutoMigrate(&User{}, &File{}, &Folder{})
 	}
 	return
 }

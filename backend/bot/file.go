@@ -28,21 +28,19 @@ func addFile(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 
 	// Create record for database
 	record := &db.File{
-		Path:   message.Caption,
-		Owner:  message.From.ID,
-		ChatID: user.ChatID,
-		URL:    url,
+		Path:  message.Caption,
+		Owner: message.From.ID,
+		URL:   url,
 	}
 
 	// Send the file
-	sent, err := bot.Send(file)
+	_, err = bot.Send(file)
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
 	}
 
 	// Store the file record in the database
-	record.MessageID = sent.MessageID
-	err = db.PutFile(record)
+	err = db.CreateFile(record)
 	if sendErrToUser(bot, message.Chat.ID, err) {
 		return
 	}
