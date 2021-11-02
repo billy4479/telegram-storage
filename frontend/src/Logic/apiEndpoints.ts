@@ -1,8 +1,6 @@
-const host = import.meta.url
-  ? import.meta.url.startsWith('http://localhost:3000/')
-    ? 'http://localhost:4479'
-    : ''
-  : '';
+// TODO: make the port change according to the actual backend port
+const host = import.meta.env.DEV ? `http://localhost:4479` : '';
+
 const apiRoot = host + '/api';
 
 const login = `${apiRoot}/login`;

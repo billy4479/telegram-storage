@@ -27,6 +27,8 @@ services:
     restart: always
     ports:
       - ${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}
+    environment:
+      BACKEND_PORT: "${PORT:-4479}"
     depends_on:
       - backend
     volumes:

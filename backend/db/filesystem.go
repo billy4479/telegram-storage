@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"strings"
 
@@ -89,10 +90,10 @@ func CreateFile(file *File) error {
 }
 
 // Act like `mkdir -p`
-// TODO: Something weird is going on with the name
 func CreateFolder(f *Folder) error {
 	// If we have a name and a (complete) parent
 	if f.Name != "" {
+		fmt.Println(f.Name)
 		parent, err := f.GetParent()
 		if err != nil {
 			return err
@@ -113,12 +114,20 @@ func CreateFolder(f *Folder) error {
 		}
 
 		// If not we construct a path and register f in the database
-		f.Path = f.Name + "/" + parent.Path
+		f.Path = parent.Path + "/" + f.Name
+		err = sanitizePath(&f.Path)
+		if err != nil {
+			return err
+		}
 		return getDB().Create(f).Error
 	}
 
 	// If we just have a path, instead
 	if f.Path != "" {
+		err := sanitizePath(&f.Path)
+		if err != nil {
+			return err
+		}
 		// We split the dirs names
 		dirs := strings.Split(f.Path, "/")
 		// Set the path to the root and get the first parent
@@ -130,6 +139,9 @@ func CreateFolder(f *Folder) error {
 
 		// Loop over the folders
 		for _, dir := range dirs {
+			if dir == "" {
+				continue
+			}
 			// Get all the folders inside parent
 			folders, err := GetFoldersInFolder(current)
 			if err != nil {
@@ -348,6 +360,11 @@ func sanitizePath(path *string) error {
 	// If doesn't start with a / assume it does
 	if !strings.HasPrefix(*path, "/") {
 		*path = "/" + *path
+	}
+
+	// Remove last /
+	if strings.HasSuffix(*path, "/") {
+		*path = (*path)[:len(*path)-2]
 	}
 
 	// Ensure no double / are there
