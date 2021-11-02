@@ -1,20 +1,21 @@
 import { writable } from 'svelte/store';
 import { filesEndpoint } from './apiEndpoints';
-import { getJWT } from './authentication';
-import type { FileEntry } from './models';
+import { authorizationHeader } from './authentication';
+import type { FolderContent } from './models';
 
-const userFilesStore = writable<FileEntry[]>([]);
+export const userFilesStore = writable<FolderContent>({
+  files: [],
+  folders: [],
+});
 
-async function getFiles(): Promise<FileEntry[]> {
+export async function getContentOf(path: string): Promise<FolderContent> {
   const res = await fetch(filesEndpoint, {
-    headers: {
-      Authorization: `Bearer ${getJWT()}`,
-    },
+    headers: authorizationHeader(),
   });
   if (!res.ok) {
     return Promise.reject('Invalid response');
   }
-  const result = (await res.json()) as FileEntry[];
+  const result = (await res.json()) as FolderContent;
 
   if (!result) {
     return Promise.reject('Invalid response');
@@ -22,5 +23,3 @@ async function getFiles(): Promise<FileEntry[]> {
   userFilesStore.set(result);
   return result;
 }
-
-export { userFilesStore, getFiles };

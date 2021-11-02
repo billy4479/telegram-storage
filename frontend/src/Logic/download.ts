@@ -1,11 +1,9 @@
-import { getJWT } from './authentication';
+import { authorizationHeader } from './authentication';
 
 export default async function authenticatedDownload(url: string, name: string) {
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
   const p = fetch(url, {
-    headers: {
-      Authorization: `Bearer ${getJWT()}`,
-    },
+    headers: authorizationHeader(),
   });
 
   p.catch((err) => console.error(err));

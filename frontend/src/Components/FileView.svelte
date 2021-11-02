@@ -1,8 +1,9 @@
 <script lang="ts">
-  import File from './File.svelte';
-  import { getFiles, userFilesStore } from '../Logic/getFiles';
+  import FileEntry from './FileEntry.svelte';
+  import { userFilesStore, getContentOf } from '../Logic/getFiles';
+  import FolderEntry from './FolderEntry.svelte';
 
-  getFiles();
+  getContentOf('/');
 </script>
 
 <!-- min-w is (min column size)*4 + gap -->
@@ -10,8 +11,12 @@
   class="mx-5 grid gap-4 place-items-start justify-items-start min-w-84"
   id="file-view"
 >
-  {#each $userFilesStore as file}
-    <File filename={file.name} id={file.id} />
+  {#each $userFilesStore.folders as folder}
+    <FolderEntry name={folder.name} id={folder.id} />
+  {/each}
+
+  {#each $userFilesStore.files as file}
+    <FileEntry filename={file.name} id={file.id} />
   {/each}
 </div>
 

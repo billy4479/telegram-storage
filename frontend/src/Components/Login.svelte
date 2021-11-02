@@ -1,12 +1,10 @@
 <script lang="ts">
-  import { getFiles } from '../Logic/getFiles';
   import { authenticate } from '../Logic/authentication';
 
   let userSecret = '';
 
   async function onSubmit() {
     await authenticate(userSecret);
-    await getFiles();
   }
 </script>
 
@@ -19,7 +17,7 @@
     <h3 class="text-3xl mb-7">Login</h3>
     <label for="userSecret" class="mr-3">User Secret:</label>
     <input
-      type="text"
+      type="password"
       name="userSecret"
       id="userSecret"
       class="p-1 rounded shadow-md border border-gray-300"

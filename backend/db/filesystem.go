@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"log"
 	"strings"
 
 	"gorm.io/gorm"
@@ -358,6 +359,7 @@ func sanitizePath(path *string) error {
 }
 
 func createRootOfUser(user *User) error {
+	log.Printf("Creating root of user %d", user.TelegramID)
 	root := &Folder{
 		Name:  "",
 		Path:  "/",

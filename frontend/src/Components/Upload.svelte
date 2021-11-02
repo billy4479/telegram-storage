@@ -1,6 +1,6 @@
 <script lang="ts">
   import { filesEndpoint } from '../Logic/apiEndpoints';
-  import { getJWT } from '../Logic/authentication';
+  import { authorizationHeader } from '../Logic/authentication';
 
   import Overlay from './Overlay.svelte';
 
@@ -21,9 +21,7 @@
     await fetch(filesEndpoint, {
       method: 'POST',
       body: data,
-      headers: {
-        Authorization: `Bearer ${getJWT()}`,
-      },
+      headers: authorizationHeader(),
     })
       .then(async (res) => {
         if (!res.ok) {
