@@ -35,7 +35,7 @@ var nullSecret = []byte{
 	0, 0, 0, 0, 0, 0, 0, 0,
 }
 
-func login(c echo.Context) error {
+func Login(c echo.Context) error {
 	var s userSecret
 	err := c.Bind(&s)
 	if err != nil {
@@ -81,3 +81,5 @@ func login(c echo.Context) error {
 		"token": t,
 	})
 }
+
+func CheckLogin(c echo.Context) error { return c.NoContent(http.StatusOK) }

@@ -31,7 +31,7 @@ func initConnection() (err error) {
 	return
 }
 
-func GetDB() *gorm.DB {
+func getDB() *gorm.DB {
 	if globDB == nil {
 		if err := initConnection(); err != nil {
 			log.Fatal(err)

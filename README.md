@@ -35,3 +35,6 @@ When files are deleted from the internal database they are not actually removed 
 - [ ] Peer-to-peer encryption
 - [ ] Self host Telegram Bot API to allow the bot to upload bigger files (with [this](https://hub.docker.com/r/aiogram/telegram-bot-api) maybe)
 - [ ] Make easily deployable on Heroku
+- [ ] Download folders
+- [ ] File preview
+- [ ] Maybe SvelteKit might be a good idea...

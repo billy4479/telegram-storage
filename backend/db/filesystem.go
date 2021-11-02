@@ -30,8 +30,8 @@ type FolderContent struct {
 	Folder []*Folder `gorm:"foreignKey:ID" json:"folders"`
 }
 
-func (f *Folder) GetParent() (*Folder, error) { return GetFolderByID(f.ParentID) }
-func (f *File) GetParent() (*Folder, error)   { return GetFolderByID(f.ParentID) }
+func (f *Folder) GetParent() (*Folder, error) { return GetFolderByID(f.ParentID, f.Owner) }
+func (f *File) GetParent() (*Folder, error)   { return GetFolderByID(f.ParentID, f.Owner) }
 func (f *FolderContent) Length() int          { return len(f.Files) + len(f.Folder) }
 
 var (
@@ -85,10 +85,11 @@ func CreateFile(file *File) error {
 	}
 
 	// Create the file in the database
-	return GetDB().Create(file).Error
+	return getDB().Create(file).Error
 }
 
 // Act like `mkdir -p`
+// TODO: Something weird is going on with the name
 func CreateFolder(f *Folder) error {
 	// If we have a name and a (complete) parent
 	if f.Name != "" {
@@ -113,7 +114,7 @@ func CreateFolder(f *Folder) error {
 
 		// If not we construct a path and register f in the database
 		f.Path = f.Name + "/" + parent.Path
-		return GetDB().Create(f).Error
+		return getDB().Create(f).Error
 	}
 
 	// If we just have a path, instead
@@ -122,7 +123,7 @@ func CreateFolder(f *Folder) error {
 		dirs := strings.Split(f.Path, "/")
 		// Set the path to the root and get the first parent
 		path := "/"
-		current, err := GetFolderByPath(path)
+		current, err := GetFolderByPath(path, f.Owner)
 		if err != nil {
 			return err
 		}
@@ -185,12 +186,12 @@ func EditFolder(id uint64, folder *Folder) error {
 
 /*** Delete ***/
 
-func DeleteFile(id uint64) error {
-	return GetDB().Delete(&File{ID: id}).Error
+func DeleteFile(id uint64, userid int) error {
+	return getDB().Where("owner = ?", userid).Delete(&File{ID: id}).Error
 }
 
-func DeleteFolder(id uint64) error {
-	folder, err := GetFolderByID(id)
+func DeleteFolder(id uint64, userid int) error {
+	folder, err := GetFolderByID(id, userid)
 	if err != nil {
 		return err
 	}
@@ -204,11 +205,11 @@ func DeleteFolder(id uint64) error {
 		return ErrNonEmptyFolder
 	}
 
-	return GetDB().Delete(&Folder{ID: id}).Error
+	return getDB().Where("owner = ?", userid).Delete(&Folder{ID: id}).Error
 }
 
-func DeleteFolderRecursive(id uint64) error {
-	folder, err := GetFolderByID(id)
+func DeleteFolderRecursive(id uint64, userid int) error {
+	folder, err := GetFolderByID(id, userid)
 	if err != nil {
 		return err
 	}
@@ -218,15 +219,19 @@ func DeleteFolderRecursive(id uint64) error {
 		return err
 	}
 
+	if children.Length() == 0 {
+		return DeleteFolder(id, userid)
+	}
+
 	for _, file := range children.Files {
-		err = DeleteFile(file.ID)
+		err = DeleteFile(file.ID, userid)
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, folder := range children.Folder {
-		err = DeleteFolderRecursive(folder.ID)
+		err = DeleteFolderRecursive(folder.ID, userid)
 		if err != nil {
 			return err
 		}
@@ -240,7 +245,7 @@ func DeleteFolderRecursive(id uint64) error {
 func GetRootOf(userID int) (*Folder, error) {
 	folder := Folder{}
 	return &folder,
-		GetDB().
+		getDB().
 			Where("owner = ? AND name = ? AND path = ?", userID, "", "/").
 			Take(&folder).
 			Error
@@ -249,8 +254,8 @@ func GetRootOf(userID int) (*Folder, error) {
 func GetFoldersInFolder(parent *Folder) ([]*Folder, error) {
 	folders := []*Folder{}
 	return folders,
-		GetDB().
-			Where("parent_id = ?", parent.ID).
+		getDB().
+			Where("parent_id = ? AND owner = ?", parent.ID, parent.Owner).
 			Find(&folders).
 			Error
 }
@@ -258,8 +263,8 @@ func GetFoldersInFolder(parent *Folder) ([]*Folder, error) {
 func GetFilesInFolder(parent *Folder) ([]*File, error) {
 	files := []*File{}
 	return files,
-		GetDB().
-			Where("parent_id = ?", parent.ID).
+		getDB().
+			Where("parent_id = ? AND owner = ?", parent.ID, parent.Owner).
 			Find(&files).
 			Error
 
@@ -281,21 +286,28 @@ func GetChildrenInFolder(parent *Folder) (*FolderContent, error) {
 	}, nil
 }
 
-func GetFileByID(id uint64) (*File, error) {
+func GetFileByID(id uint64, userid int) (*File, error) {
 	file := File{}
-	return &file, GetDB().Take(&file, id).Error
+	return &file,
+		getDB().Where("owner = ?", userid).
+			Take(&file, id).
+			Error
 }
 
-func GetFolderByID(id uint64) (*Folder, error) {
-	folder := Folder{}
-	return &folder, GetDB().Take(&folder, id).Error
-}
-
-func GetFolderByPath(path string) (*Folder, error) {
+func GetFolderByID(id uint64, userid int) (*Folder, error) {
 	folder := Folder{}
 	return &folder,
-		GetDB().
-			Where("path = ?", path).
+		getDB().
+			Where("owner = ?", userid).
+			Take(&folder, id).
+			Error
+}
+
+func GetFolderByPath(path string, userid int) (*Folder, error) {
+	folder := Folder{}
+	return &folder,
+		getDB().
+			Where("owner = ? AND path = ?", userid, path).
 			Take(&folder).
 			Error
 }
@@ -305,7 +317,7 @@ func GetFolderByPath(path string) (*Folder, error) {
 // Returns nil if it's unique and ErrAlreadyExists if not
 func isFileUnique(file *File) error {
 	var c int64
-	err := GetDB().
+	err := getDB().
 		Model(&File{}).
 		Where("parent_id = ?", file.ParentID).
 		Count(&c).
@@ -365,5 +377,5 @@ func createRootOfUser(user *User) error {
 		Path:  "/",
 		Owner: user.TelegramID,
 	}
-	return GetDB().Create(root).Error
+	return getDB().Create(root).Error
 }

@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"log"
-	"net/http"
 	"os"
 	"sync"
 	"time"
@@ -22,31 +21,51 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 		}
 		signingSecret = []byte(s)
 	}
-	e := echo.New()
-	{
-		config := middleware.DefaultLoggerConfig
-		config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
-		config.Output = os.Stdout
-		config.CustomTimeFormat = "2006/01/02 15:04:05"
-		e.Use(middleware.LoggerWithConfig(config))
-	}
-	// e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Use(middleware.RemoveTrailingSlash())
-	e.Use(middleware.Secure())
-	e.Use(middleware.CORS())
-	// TODO: CSRF, CORS
 
+	e := echo.New()
 	e.HideBanner = true
+	e.Debug = true
+
+	// Middlewares
+	{
+		{
+			config := middleware.DefaultLoggerConfig
+			config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
+			config.Output = os.Stdout
+			config.CustomTimeFormat = "2006/01/02 15:04:05"
+			e.Use(middleware.LoggerWithConfig(config))
+		}
+		// e.Use(middleware.Logger())
+		if !e.Debug {
+			e.Use(middleware.Recover())
+		}
+		e.Use(middleware.RemoveTrailingSlash())
+		e.Use(middleware.Secure())
+		e.Use(middleware.CORS())
+	}
 
 	e.Static("/", "./public")
-	api := e.Group("/api")
 
-	api.POST("/login", login)
-	api.GET("/login", func(c echo.Context) error { return c.NoContent(http.StatusOK) }, authorized)
-	api.GET("/files", getAllFiles, authorized)
-	api.POST("/files", upload, authorized)
-	api.GET("/download/:id", download, authorized)
+	{
+		api := e.Group("/api")
+
+		// Login
+		api.POST("/login", Login)
+		api.GET("/login", CheckLogin, authorized)
+
+		// File
+		api.GET("/file", GetFile, authorized)
+		api.POST("/file", UploadFile, authorized)
+		api.DELETE("/file", DeleteFile, authorized)
+		api.GET("/file/download", DownloadFile, authorized)
+
+		// Folder
+		api.GET("/folder", GetFolder, authorized)
+		api.POST("/folder", CreateFolder, authorized)
+		api.DELETE("/folder", DeleteFolder, authorized)
+		api.GET("/folder/list", ListContent, authorized)
+		api.GET("/folder/root", GetRoot, authorized)
+	}
 
 	go func() {
 		if err := e.Start(addr); err != nil {

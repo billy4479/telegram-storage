@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func upload(c echo.Context) error {
+func UploadFile(c echo.Context) error {
 	// Get data from the request
 	// path := c.FormValue("path")
 	id, err := getUserIDFromContext(c)
