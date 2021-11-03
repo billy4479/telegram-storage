@@ -10,6 +10,10 @@ export const currentViewStore = writable<FolderContent>({
 });
 
 export const currentPathStore = writable<string>('/');
+let currentPath = '/';
+currentPathStore.subscribe((v) => {
+  currentPath = v;
+});
 
 const q = genQuery(listEndpoint);
 
@@ -36,4 +40,10 @@ export async function navigate(to: string) {
 
   currentViewStore.set(await getContentOf(to));
   currentPathStore.set(to);
+}
+
+export async function refreshCurrentView() {
+  console.log('Refreshing view');
+
+  currentViewStore.set(await getContentOf(currentPath));
 }

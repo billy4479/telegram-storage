@@ -3,7 +3,6 @@ package db
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"gorm.io/gorm"
@@ -59,7 +58,8 @@ func CreateFile(file *File) error {
 
 	// Create the parent folder path with the other ones
 	parent := &Folder{
-		Path: strings.Join(dirs[:len(dirs)-2], "/"),
+		Path:  strings.Join(dirs[:len(dirs)-1], "/"),
+		Owner: file.Owner,
 	}
 
 	// Create the parent if it doesn't exist
@@ -331,7 +331,10 @@ func isFileUnique(file *File) error {
 	var c int64
 	err := getDB().
 		Model(&File{}).
-		Where("parent_id = ?", file.ParentID).
+		Where("owner = ? AND parent_id = ? AND name = ?",
+			file.Owner,
+			file.ParentID,
+			file.Name).
 		Count(&c).
 		Error
 
@@ -364,7 +367,7 @@ func sanitizePath(path *string) error {
 
 	// Remove last /
 	if strings.HasSuffix(*path, "/") {
-		*path = (*path)[:len(*path)-2]
+		*path = (*path)[:len(*path)-1]
 	}
 
 	// Ensure no double / are there
@@ -388,7 +391,6 @@ func sanitizePath(path *string) error {
 }
 
 func createRootOfUser(user *User) error {
-	log.Printf("Creating root of user %d", user.TelegramID)
 	root := &Folder{
 		Name:  "",
 		Path:  "/",

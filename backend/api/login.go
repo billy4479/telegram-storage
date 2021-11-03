@@ -42,7 +42,7 @@ func Login(c echo.Context) error {
 		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}
 
-	h, err := base64.StdEncoding.DecodeString(s.UserSecret)
+	h, err := base64.URLEncoding.DecodeString(s.UserSecret)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}

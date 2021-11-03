@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/base64"
 	"net/http"
 
 	"github.com/billy4479/telegram-storage/backend/bot"
@@ -35,9 +36,13 @@ func UploadFile(c echo.Context) error {
 		if err != nil {
 			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}
+		path, err := base64.URLEncoding.DecodeString(file.Filename)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusBadRequest, err)
+		}
 
 		// Upload it to telegram
-		record, err := bot.Instance.UploadFile(user, file.Filename, r, file.Size)
+		record, err := bot.Instance.UploadFile(user, string(path), r, file.Size)
 		if err != nil {
 			return returnErrorJSON(c, http.StatusInternalServerError, err)
 		}

@@ -1,22 +1,31 @@
 <script lang="ts">
+  import { currentPathStore, refreshCurrentView } from '../Logic/navigate';
   import { fileEndpoint } from '../Logic/apiEndpoints';
   import { authorizationHeader } from '../Logic/authentication';
-
   import Overlay from './Overlay.svelte';
 
   export let close: () => void;
 
   let inputFiles: HTMLInputElement;
+  let currentPath = '/';
+  currentPathStore.subscribe((v) => {
+    currentPath = v;
+  });
 
   function resetAndClose() {
+    refreshCurrentView();
     (inputFiles.parentElement as HTMLFormElement).reset();
     close();
   }
 
   async function onSubmit() {
     const data = new FormData();
-    for (let i = 0; i < inputFiles.files.length; i++)
-      data.append('files', inputFiles.files[i], inputFiles.files[i].name);
+    for (let i = 0; i < inputFiles.files.length; i++) {
+      const name = currentPath + '/' + inputFiles.files[i].name;
+      const b64 = btoa(name).replaceAll('+', '-').replaceAll('/', '_');
+
+      data.append('files', inputFiles.files[i], b64);
+    }
 
     await fetch(fileEndpoint, {
       method: 'POST',

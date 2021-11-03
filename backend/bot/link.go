@@ -31,7 +31,7 @@ func linkChat(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	}
 
 	text := fmt.Sprintf("Linking group \"%s\" as storage for user @%s. You're secret is `%s`",
-		message.Chat.Title, message.From.UserName, base64.StdEncoding.EncodeToString(secret),
+		message.Chat.Title, message.From.UserName, base64.URLEncoding.EncodeToString(secret),
 	)
 	text = strings.ReplaceAll(text, ".", "\\.")
 	text = strings.ReplaceAll(text, "+", "\\+")
