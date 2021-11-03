@@ -1,24 +1,28 @@
 <script lang="ts">
   import FileEntry from './FileEntry.svelte';
-  import { userFilesStore, getContentOf } from '../Logic/getFiles';
   import FolderEntry from './FolderEntry.svelte';
+  import { navigate, currentViewStore } from '../Logic/navigate';
 
-  getContentOf('/');
+  const n = navigate('/');
 </script>
 
-<!-- min-w is (min column size)*4 + gap -->
-<div
-  class="mx-5 mt-5 grid gap-4 place-items-start justify-items-start min-w-84"
-  id="file-view"
->
-  {#each $userFilesStore.folders as folder}
-    <FolderEntry name={folder.name} id={folder.id} />
-  {/each}
+{#await n}
+  <div>Loading...</div>
+{:then}
+  <!-- min-w is (min column size)*4 + gap -->
+  <div
+    class="grid gap-4 place-items-start justify-items-start min-w-84"
+    id="file-view"
+  >
+    {#each $currentViewStore.folders as folder}
+      <FolderEntry data={folder} />
+    {/each}
 
-  {#each $userFilesStore.files as file}
-    <FileEntry filename={file.name} id={file.id} />
-  {/each}
-</div>
+    {#each $currentViewStore.files as file}
+      <FileEntry data={file} />
+    {/each}
+  </div>
+{/await}
 
 <style>
   #file-view {

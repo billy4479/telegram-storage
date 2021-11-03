@@ -3,15 +3,15 @@
   import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
   import authenticatedDownload from '../Logic/download';
   import Icon from './Entry.svelte';
+  import type { File } from '../Logic/models';
 
-  export let filename: string;
-  export let id: number;
+  export let data: File;
 
   async function downloadFile() {
-    await authenticatedDownload(`${downloadEndpoint}/${id}`, filename);
+    await authenticatedDownload(`${downloadEndpoint}/${data.id}`, data.name);
   }
 </script>
 
-<Icon name={filename} callback={downloadFile}>
+<Icon name={data.name} callback={downloadFile}>
   <FileIcon />
 </Icon>

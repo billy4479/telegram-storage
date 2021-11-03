@@ -1,16 +1,16 @@
 <script lang="ts">
   import Icon from './Entry.svelte';
   import FolderIcon from 'svelte-icons/md/MdFolder.svelte';
+  import type { Folder } from '../Logic/models';
+  import { navigate } from '../Logic/navigate';
 
-  export let name: string;
-  export let id: number;
+  export let data: Folder;
 </script>
 
 <Icon
-  {name}
+  name={data.name}
   callback={() => {
-    // TODO
-    console.log(id);
+    navigate(data.path);
   }}
 >
   <FolderIcon />

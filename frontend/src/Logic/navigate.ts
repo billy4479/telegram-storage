@@ -4,10 +4,12 @@ import { authorizationHeader } from './authentication';
 import { getFolder } from './getFolder';
 import type { FolderContent } from './models';
 
-export const userFilesStore = writable<FolderContent>({
+export const currentViewStore = writable<FolderContent>({
   files: [],
   folders: [],
 });
+
+export const currentPathStore = writable<string>('/');
 
 const q = genQuery(listEndpoint);
 
@@ -26,6 +28,12 @@ export async function getContentOf(path: string): Promise<FolderContent> {
   if (!result) {
     return Promise.reject('Invalid response');
   }
-  userFilesStore.set(result);
   return result;
+}
+
+export async function navigate(to: string) {
+  console.log('Navigating to ' + to + '...');
+
+  currentViewStore.set(await getContentOf(to));
+  currentPathStore.set(to);
 }
