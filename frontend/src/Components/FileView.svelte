@@ -8,7 +8,7 @@
 
 <!-- min-w is (min column size)*4 + gap -->
 <div
-  class="mx-5 grid gap-4 place-items-start justify-items-start min-w-84"
+  class="mx-5 mt-5 grid gap-4 place-items-start justify-items-start min-w-84"
   id="file-view"
 >
   {#each $userFilesStore.folders as folder}

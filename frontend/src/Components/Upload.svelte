@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { filesEndpoint } from '../Logic/apiEndpoints';
+  import { fileEndpoint } from '../Logic/apiEndpoints';
   import { authorizationHeader } from '../Logic/authentication';
 
   import Overlay from './Overlay.svelte';
@@ -18,7 +18,7 @@
     for (let i = 0; i < inputFiles.files.length; i++)
       data.append('files', inputFiles.files[i], inputFiles.files[i].name);
 
-    await fetch(filesEndpoint, {
+    await fetch(fileEndpoint, {
       method: 'POST',
       body: data,
       headers: authorizationHeader(),
