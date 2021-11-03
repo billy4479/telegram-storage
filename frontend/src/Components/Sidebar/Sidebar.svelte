@@ -4,8 +4,8 @@
   import LogoutIcon from 'svelte-icons/io/IoIosLogOut.svelte';
   import TrashIcon from 'svelte-icons/io/IoMdTrash.svelte';
   import NavButton from './NavButton.svelte';
-  import { logout } from '../Logic/authentication';
-  import Upload from './Upload.svelte';
+  import { logout } from '../../Logic/authentication';
+  import Upload from '../Overlays/Upload.svelte';
 
   let showOverlay = false;
 </script>

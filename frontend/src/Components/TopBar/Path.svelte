@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentPathStore, navigate } from '../Logic/navigate';
+  import { currentPathStore, navigate } from '../../Logic/navigate';
 
   let path = '/';
   let dirs = ['/', ...path.split('/').filter((v) => v != '')];

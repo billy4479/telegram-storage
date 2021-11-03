@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { currentPathStore, refreshCurrentView } from '../Logic/navigate';
-  import { fileEndpoint } from '../Logic/apiEndpoints';
-  import { authorizationHeader } from '../Logic/authentication';
+  import { currentPathStore, refreshCurrentView } from '../../Logic/navigate';
+  import { fileEndpoint } from '../../Logic/apiEndpoints';
+  import { authorizationHeader } from '../../Logic/authentication';
   import Overlay from './Overlay.svelte';
 
   export let close: () => void;

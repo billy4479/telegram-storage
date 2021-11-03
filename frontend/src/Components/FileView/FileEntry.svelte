@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { downloadEndpoint } from '../Logic/apiEndpoints';
-  import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
-  import authenticatedDownload from '../Logic/download';
+  import { downloadEndpoint } from '../../Logic/apiEndpoints';
+  import authenticatedDownload from '../../Logic/download';
+  import type { File } from '../../Logic/models';
   import Icon from './Entry.svelte';
-  import type { File } from '../Logic/models';
+  import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
 
   export let data: File;
 

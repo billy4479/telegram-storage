@@ -1,7 +1,7 @@
 <script lang="ts">
   import FileEntry from './FileEntry.svelte';
   import FolderEntry from './FolderEntry.svelte';
-  import { navigate, currentViewStore } from '../Logic/navigate';
+  import { navigate, currentViewStore } from '../../Logic/navigate';
 
   const n = navigate('/');
 </script>
