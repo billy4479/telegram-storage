@@ -4,10 +4,14 @@
   import type { File } from '../../Logic/models';
   import Entry from './Entry.svelte';
   import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
-  import { isSelected, toggle } from '../../Logic/selection';
+  import { isSelected, selectedStore, toggle } from '../../Logic/selection';
 
   export let data: File;
   let selected = isSelected(data);
+
+  selectedStore.subscribe(() => {
+    selected = isSelected(data);
+  });
 
   async function downloadFile() {
     await authenticatedDownload(

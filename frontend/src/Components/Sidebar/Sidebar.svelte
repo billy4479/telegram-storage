@@ -7,10 +7,14 @@
   import NavButton from './NavButton.svelte';
   import { logout } from '../../Logic/authentication';
   import Upload from '../Overlays/Upload.svelte';
-  import { deleteSelected } from '../../Logic/selection';
+  import Delete from '../Overlays/Delete.svelte';
+  import { getSelected } from '../../Logic/selection';
 
   let showUploadOverlay: () => void;
   let closeUploadOverlay: () => void;
+
+  let showDeleteOverlay: () => void;
+  let closeDeleteOverlay: () => void;
 </script>
 
 <nav class="flex flex-col bg-blue-400 fixed top-0 left-0 h-screen w-20">
@@ -23,7 +27,7 @@
   <NavButton
     overlayHint="Delete"
     callback={() => {
-      deleteSelected(false);
+      if (getSelected().length !== 0) showDeleteOverlay();
     }}
   >
     <TrashIcon />
@@ -35,6 +39,10 @@
 
 <Overlay bind:close={closeUploadOverlay} bind:open={showUploadOverlay}>
   <Upload close={closeUploadOverlay} />
+</Overlay>
+
+<Overlay bind:close={closeDeleteOverlay} bind:open={showDeleteOverlay}>
+  <Delete close={closeDeleteOverlay} />
 </Overlay>
 
 <style>

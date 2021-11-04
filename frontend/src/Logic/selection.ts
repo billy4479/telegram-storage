@@ -10,6 +10,10 @@ selectedStore.subscribe((v) => {
   console.log(selected);
 });
 
+export function getSelected(): (File | Folder)[] {
+  return selected;
+}
+
 export function isSelected(entry: File | Folder): boolean {
   return selected.includes(entry);
 }
