@@ -2,16 +2,25 @@
   import { downloadEndpoint } from '../../Logic/apiEndpoints';
   import authenticatedDownload from '../../Logic/download';
   import type { File } from '../../Logic/models';
-  import Icon from './Entry.svelte';
+  import Entry from './Entry.svelte';
   import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
+  import { isSelected, toggle } from '../../Logic/selection';
 
   export let data: File;
+  let selected = isSelected(data);
 
   async function downloadFile() {
-    await authenticatedDownload(`${downloadEndpoint}/${data.id}`, data.name);
+    await authenticatedDownload(
+      `${downloadEndpoint}/${data.fileID}`,
+      data.name
+    );
+  }
+
+  function onClick() {
+    selected = toggle(data);
   }
 </script>
 
-<Icon name={data.name} callback={downloadFile}>
+<Entry name={data.name} bind:selected {onClick} onDoubleClick={downloadFile}>
   <FileIcon />
-</Icon>
+</Entry>

@@ -1,8 +1,9 @@
-import { writable } from 'svelte/store';
 import { genQuery, listEndpoint } from './apiEndpoints';
-import { authorizationHeader } from './authentication';
-import { getFolder } from './getFolder';
 import type { FolderContent } from './models';
+import { authorizationHeader } from './authentication';
+import { clearSelection } from './selection';
+import { getFolder } from './getFolder';
+import { writable } from 'svelte/store';
 
 export const currentViewStore = writable<FolderContent>({
   files: [],
@@ -20,7 +21,7 @@ const q = genQuery(listEndpoint);
 export async function getContentOf(path: string): Promise<FolderContent> {
   const folder = await getFolder(path);
 
-  const res = await fetch(q({ id: folder.id.toString() }), {
+  const res = await fetch(q({ id: folder.folderID.toString() }), {
     headers: authorizationHeader(),
   });
 
@@ -38,6 +39,7 @@ export async function getContentOf(path: string): Promise<FolderContent> {
 export async function navigate(to: string) {
   console.log('Navigating to ' + to + '...');
 
+  clearSelection();
   currentViewStore.set(await getContentOf(to));
   currentPathStore.set(to);
 }
@@ -45,5 +47,6 @@ export async function navigate(to: string) {
 export async function refreshCurrentView() {
   console.log('Refreshing view');
 
+  clearSelection();
   currentViewStore.set(await getContentOf(currentPath));
 }

@@ -14,7 +14,7 @@
       .slice(0, i + 1)
       .join('/')
       .slice(1, undefined);
-    if (path == '') path = '/';
+    if (path === '') path = '/';
     navigate(path);
   }
 </script>

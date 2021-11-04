@@ -1,13 +1,13 @@
 export interface File {
-  id: number;
+  fileID: number;
   name: string;
   path: string;
+  owner: number;
   parentID: number;
-  userID: number;
 }
 
 export interface Folder {
-  id: number;
+  folderID: number;
   name: string;
   path: string;
   owner: number;

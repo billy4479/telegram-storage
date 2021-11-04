@@ -9,19 +9,19 @@ import (
 )
 
 type Folder struct {
-	ID       uint64 `gorm:"primaryKey" json:"id"`
+	ID       uint64 `gorm:"primaryKey" json:"folderID"`
 	Name     string `gorm:"non null" json:"name"`
 	Path     string `gorm:"non null" json:"path"`
-	Owner    int    `gorm:"non null" json:"userID"`
+	Owner    int    `gorm:"non null" json:"owner"`
 	ParentID uint64 `json:"parentID"`
 }
 
 type File struct {
-	ID       uint64 `gorm:"primaryKey" json:"id"`
+	ID       uint64 `gorm:"primaryKey" json:"fileID"`
 	Name     string `gorm:"non null" json:"name"`
 	Path     string `gorm:"non null" json:"path"`
 	ParentID uint64 `gorm:"non null" json:"parentID"`
-	Owner    int    `gorm:"non null" json:"userID"`
+	Owner    int    `gorm:"non null" json:"owner"`
 	URL      string `gorm:"not null" json:"-"`
 }
 

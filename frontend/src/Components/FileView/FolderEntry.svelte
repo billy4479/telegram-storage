@@ -1,17 +1,24 @@
 <script lang="ts">
-  import Icon from './Entry.svelte';
+  import Entry from './Entry.svelte';
   import FolderIcon from 'svelte-icons/md/MdFolder.svelte';
   import type { Folder } from '../../Logic/models';
   import { navigate } from '../../Logic/navigate';
+  import { isSelected, toggle } from '../../Logic/selection';
 
   export let data: Folder;
+  let selected = isSelected(data);
+  function onClick() {
+    selected = toggle(data);
+  }
 </script>
 
-<Icon
+<Entry
   name={data.name}
-  callback={() => {
+  bind:selected
+  onDoubleClick={() => {
     navigate(data.path);
   }}
+  {onClick}
 >
   <FolderIcon />
-</Icon>
+</Entry>
