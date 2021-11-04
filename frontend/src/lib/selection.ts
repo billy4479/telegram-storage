@@ -1,6 +1,6 @@
 import type { File, Folder } from './models';
-import { deleteFile, deleteFolder, deleteFolderRecursive } from './delete';
-import { refreshCurrentView } from './navigate';
+import { deleteFile, deleteFolder, deleteFolderRecursive } from './api/delete';
+import { refreshCurrentView } from './navigation';
 import { writable } from 'svelte/store';
 
 export const selectedStore = writable<(File | Folder)[]>([]);

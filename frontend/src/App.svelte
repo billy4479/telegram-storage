@@ -1,6 +1,6 @@
 <script lang="ts">
   import Login from './Components/Login.svelte';
-  import { checkAuth, isAuthenticatedStore } from './Logic/authentication';
+  import { checkAuth, isAuthenticatedStore } from './lib/api/authentication';
   import Main from './Components/Main.svelte';
 </script>
 

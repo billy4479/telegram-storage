@@ -1,4 +1,4 @@
-import { loginEndpoint } from './apiEndpoints';
+import { checkFetchError, loginEndpoint } from './endpoints';
 import { writable } from 'svelte/store';
 
 function getJWT(): string | null {
@@ -23,26 +23,35 @@ export async function checkAuth(): Promise<boolean> {
     return false;
   }
 
-  const res = await fetch(loginEndpoint, {
+  const p = fetch(loginEndpoint, {
     headers: authorizationHeader(),
   });
 
-  if (!res.ok) {
+  const { ok, message } = await checkFetchError(p);
+  if (!ok) {
+    console.error(message);
     sessionStorage.removeItem('jwt');
+    return Promise.reject(message);
   }
 
-  isAuthenticatedStore.set(res.ok);
-  return res.ok;
+  isAuthenticatedStore.set(ok);
+  return ok;
 }
 
 export async function authenticate(userSecret: string) {
-  const res = await fetch(loginEndpoint, {
+  const p = fetch(loginEndpoint, {
     method: 'POST',
     body: JSON.stringify({ userSecret }),
     headers: {
       'Content-Type': 'application/json',
     },
   });
+
+  const { ok, message, res } = await checkFetchError(p);
+  if (!ok) {
+    console.error(message);
+    return Promise.reject(message);
+  }
 
   sessionStorage.setItem('jwt', (await res.json()).token);
   isAuthenticatedStore.set(true);

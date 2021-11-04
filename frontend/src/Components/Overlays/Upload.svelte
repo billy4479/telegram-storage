@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { currentPathStore, refreshCurrentView } from '../../Logic/navigate';
-  import { fileEndpoint } from '../../Logic/apiEndpoints';
-  import { authorizationHeader } from '../../Logic/authentication';
+  import { currentPathStore, refreshCurrentView } from '../../lib/navigation';
+  import { fileEndpoint } from '../../lib/api/endpoints';
+  import { authorizationHeader } from '../../lib/api/authentication';
 
   export let close: () => void;
 
@@ -54,8 +54,8 @@
       class="py-2 px-3 rounded shadow bg-green-500 text-light-50 cursor-pointer"
     />
     <button
-      class="py-2 px-3 rounded shadow bg-red-500 text-light-50"
-      on:click={close}>Cancel</button
+      class="py-2 px-3 rounded shadow border border-red-500 text-light-50"
+      on:click|preventDefault={close}>Cancel</button
     >
   </div>
 </form>

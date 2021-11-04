@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { downloadEndpoint } from '../../Logic/apiEndpoints';
-  import authenticatedDownload from '../../Logic/download';
-  import type { File } from '../../Logic/models';
+  import { downloadEndpoint } from '../../lib/api/endpoints';
+  import authenticatedDownload from '../../lib/api/download';
+  import type { File } from '../../lib/models';
   import Entry from './Entry.svelte';
   import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
-  import { isSelected, selectedStore, toggle } from '../../Logic/selection';
+  import { isSelected, selectedStore, toggle } from '../../lib/selection';
 
   export let data: File;
   let selected = isSelected(data);

@@ -1,8 +1,8 @@
-import { genQuery, listEndpoint } from './apiEndpoints';
+import { genQuery, listEndpoint } from './api/endpoints';
 import type { FolderContent } from './models';
-import { authorizationHeader } from './authentication';
+import { authorizationHeader } from './api/authentication';
 import { clearSelection } from './selection';
-import { getFolder } from './getFolder';
+import { getFolder } from './api/get';
 import { writable } from 'svelte/store';
 
 export const currentViewStore = writable<FolderContent>({
@@ -15,6 +15,10 @@ let currentPath = '/';
 currentPathStore.subscribe((v) => {
   currentPath = v;
 });
+
+export function getCurrentPath(): string {
+  return currentPath;
+}
 
 const q = genQuery(listEndpoint);
 

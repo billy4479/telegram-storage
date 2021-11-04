@@ -22,7 +22,6 @@ module.exports = {
   plugins: ['@typescript-eslint', 'svelte3', 'prettier', 'import'],
   rules: {
     'prettier/prettier': 'error',
-    'sort-imports': 'error',
     'no-plusplus': 0,
     'import/extensions': ['error', { ts: 'never' }],
     'no-shadow': 'off',

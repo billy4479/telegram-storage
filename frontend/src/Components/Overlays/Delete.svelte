@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { deleteSelected, selectedStore } from '../../Logic/selection';
+  import { deleteSelected, selectedStore } from '../../lib/selection';
 
   export let close: () => void;
   let recursive = false;
@@ -26,12 +26,11 @@
 
 <div class="flex place-items-center justify-evenly mt-5">
   <button
-    class="bg-red-600 shadow rounded py-1 px-2 text-light-50"
+    class="bg-red-600 shadow rounded py-2 px-3 text-light-50"
     on:click={executeDelete}>Yes, delete</button
   >
   <button
-    autofocus
-    class="bg-blue-400 shadow rounded py-1 px-2 text-light-50"
+    class="bg-blue-400 shadow rounded py-2 px-3 text-light-50"
     on:click={close}>No, cancel</button
   >
 </div>

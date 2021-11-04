@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentPathStore, navigate } from '../../Logic/navigate';
+  import { currentPathStore, navigate } from '../../lib/navigation';
 
   let path = '/';
   let dirs = ['/', ...path.split('/').filter((v) => v != '')];
@@ -32,7 +32,16 @@
       </button>
     </li>
     {#if i != 0 && i != dirs.length - 1}
-      <li class="bg-gray-50 rounded shadow m-1 px-2 py-1 cursor-default">/</li>
+      <li class="bg-gray-50 rounded shadow m-1 px-2 py-1 cursor-default">
+        <button
+          class="w-full h-full"
+          on:click={() => {
+            navigateToIndex(i);
+          }}
+        >
+          /
+        </button>
+      </li>
     {/if}
   {/each}
 </ol>

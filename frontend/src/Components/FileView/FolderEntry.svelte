@@ -1,9 +1,9 @@
 <script lang="ts">
   import Entry from './Entry.svelte';
   import FolderIcon from 'svelte-icons/md/MdFolder.svelte';
-  import type { Folder } from '../../Logic/models';
-  import { navigate } from '../../Logic/navigate';
-  import { isSelected, selectedStore, toggle } from '../../Logic/selection';
+  import type { Folder } from '../../lib/models';
+  import { navigate } from '../../lib/navigation';
+  import { isSelected, selectedStore, toggle } from '../../lib/selection';
 
   export let data: Folder;
   let selected = isSelected(data);

@@ -17,6 +17,33 @@ const folder = `${apiRoot}/folder`;
 const list = `${folder}/list`;
 const root = `${folder}/root`;
 
+export async function checkFetchError(p: Promise<Response>): Promise<{
+  ok: boolean;
+  res: Response;
+  message?: string;
+}> {
+  let message = '';
+  let ok = true;
+  p.catch((err) => {
+    message = err;
+    ok = false;
+  });
+  const res = await p;
+  if (!ok) {
+    return {
+      ok,
+      message,
+      res,
+    };
+  }
+
+  if (!res.ok) {
+    return { ok: false, message: await res.text(), res };
+  }
+
+  return { ok, message: undefined, res };
+}
+
 export {
   login as loginEndpoint,
   file as fileEndpoint,

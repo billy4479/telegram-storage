@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { authenticate } from '../Logic/authentication';
+  import { authenticate } from '../lib/api/authentication';
 
   let userSecret = '';
 
