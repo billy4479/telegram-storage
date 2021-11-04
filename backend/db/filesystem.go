@@ -249,6 +249,12 @@ func DeleteFolderRecursive(id uint64, userid int) error {
 		}
 	}
 
+	// Delete parent
+	err = DeleteFolderRecursive(folder.ID, userid)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
