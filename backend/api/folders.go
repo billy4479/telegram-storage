@@ -111,6 +111,25 @@ func ListContent(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
+func GetTree(c echo.Context) error {
+	id, userid, err := getIDAndUserIDFromContext(c)
+	if err != nil {
+		return err
+	}
+
+	folder, err := db.GetFolderByID(id, userid)
+	if err = handleDBErr(c, err); err != nil {
+		return err
+	}
+
+	result, err := db.GetChildrenRecursive(folder)
+	if err = handleDBErr(c, err); err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
 func GetRoot(c echo.Context) error {
 	id, err := getUserIDFromContext(c)
 	if err != nil {
@@ -138,8 +157,8 @@ func UpdateFolder(c echo.Context) error {
 	}
 
 	err = db.EditFolder(&folder, userid)
-	if err != nil {
-		return returnErrorJSON(c, http.StatusInternalServerError, err)
+	if err = handleDBErr(c, err); err != nil {
+		return err
 	}
 
 	return c.JSON(http.StatusOK, folder)

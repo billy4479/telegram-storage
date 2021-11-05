@@ -67,6 +67,7 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 		api.PUT("/folder", UpdateFolder, authorized)
 		api.GET("/folder/list", ListContent, authorized)
 		api.GET("/folder/root", GetRoot, authorized)
+		api.GET("/folder/tree", GetTree, authorized)
 	}
 
 	go func() {

@@ -79,8 +79,8 @@ func UpdateFile(c echo.Context) error {
 	}
 
 	err = db.EditFile(&file, userid)
-	if err != nil {
-		return returnErrorJSON(c, http.StatusInternalServerError, err)
+	if err = handleDBErr(c, err); err != nil {
+		return err
 	}
 
 	return c.JSON(http.StatusOK, file)
