@@ -40,9 +40,11 @@
   >
     <TrashIcon />
   </NavButton>
-  <NavButton overlayHint="Logout" callback={logout}>
-    <LogoutIcon />
-  </NavButton>
+  <div class="mt-auto">
+    <NavButton overlayHint="Logout" callback={logout}>
+      <LogoutIcon />
+    </NavButton>
+  </div>
 </nav>
 
 <Overlay bind:close={closeUploadOverlay} bind:open={showUploadOverlay}>

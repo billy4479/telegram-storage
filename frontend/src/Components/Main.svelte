@@ -1,11 +1,11 @@
 <script lang="ts">
   import FileView from './FileView/FileView.svelte';
-  import Path from './TopBar/Path.svelte';
   import Sidebar from './Sidebar/Sidebar.svelte';
+  import TopBar from './TopBar/TopBar.svelte';
 </script>
 
 <Sidebar />
 <main class="ml-25 mr-5 mt-5">
-  <Path />
+  <TopBar />
   <FileView />
 </main>

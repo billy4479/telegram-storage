@@ -7,7 +7,6 @@ export const selectedStore = writable<(File | Folder)[]>([]);
 let selected: (File | Folder)[] = [];
 selectedStore.subscribe((v) => {
   selected = v;
-  console.log(selected);
 });
 
 export function getSelected(): (File | Folder)[] {

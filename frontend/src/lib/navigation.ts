@@ -4,6 +4,7 @@ import { authorizationHeader } from './api/authentication';
 import { clearSelection } from './selection';
 import { getFolder } from './api/get';
 import { writable } from 'svelte/store';
+import { pushDirHist } from './directoryStack';
 
 export const currentViewStore = writable<FolderContent>({
   files: [],
@@ -40,12 +41,17 @@ export async function getContentOf(path: string): Promise<FolderContent> {
   return result;
 }
 
-export async function navigate(to: string) {
+export async function navigateInternal(to: string) {
   console.log('Navigating to ' + to + '...');
 
   clearSelection();
   currentViewStore.set(await getContentOf(to));
   currentPathStore.set(to);
+}
+
+export async function navigate(to: string) {
+  await navigateInternal(to);
+  pushDirHist(to);
 }
 
 export async function refreshCurrentView() {

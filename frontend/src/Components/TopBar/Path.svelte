@@ -19,30 +19,22 @@
   }
 </script>
 
-<ol class="flex flex-row mb-5 text-xl bg-gray-100 rounded shadow py-1 px-2">
+<ol class="flex bg-light-50 px-2 rounded border text-2xl place-items-center">
   {#each dirs as dir, i}
-    <li class="bg-gray-50 rounded shadow m-1">
+    <li>
       <button
-        class="px-2 py-1 w-full h-full"
+        class="hover:underline"
         on:click={() => {
           navigateToIndex(i);
         }}
       >
-        {dir}
+        {#if i != 0 && i != dirs.length - 1}
+          {dir}/
+        {:else}
+          {dir}
+        {/if}
       </button>
     </li>
-    {#if i != 0 && i != dirs.length - 1}
-      <li class="bg-gray-50 rounded shadow m-1 px-2 py-1 cursor-default">
-        <button
-          class="w-full h-full"
-          on:click={() => {
-            navigateToIndex(i);
-          }}
-        >
-          /
-        </button>
-      </li>
-    {/if}
   {/each}
 </ol>
 
