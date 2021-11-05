@@ -57,12 +57,14 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 		api.GET("/file", GetFile, authorized)
 		api.POST("/file", UploadFile, authorized)
 		api.DELETE("/file", DeleteFile, authorized)
+		api.PUT("/file", UpdateFile, authorized)
 		api.GET("/file/download", DownloadFile, authorized)
 
 		// Folder
 		api.GET("/folder", GetFolder, authorized)
 		api.POST("/folder", CreateFolder, authorized)
 		api.DELETE("/folder", DeleteFolder, authorized)
+		api.PUT("/folder", UpdateFolder, authorized)
 		api.GET("/folder/list", ListContent, authorized)
 		api.GET("/folder/root", GetRoot, authorized)
 	}

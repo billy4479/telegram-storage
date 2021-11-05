@@ -124,3 +124,23 @@ func GetRoot(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, folder)
 }
+
+func UpdateFolder(c echo.Context) error {
+	userid, err := getUserIDFromContext(c)
+	if err != nil {
+		return returnErrorJSON(c, http.StatusUnauthorized, err)
+	}
+
+	var folder db.Folder
+	err = c.Bind(&folder)
+	if err != nil {
+		return returnErrorJSON(c, http.StatusBadRequest, err)
+	}
+
+	err = db.EditFolder(&folder, userid)
+	if err != nil {
+		return returnErrorJSON(c, http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, folder)
+}

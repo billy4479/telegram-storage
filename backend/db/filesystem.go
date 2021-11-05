@@ -2,7 +2,6 @@ package db
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"gorm.io/gorm"
@@ -91,9 +90,8 @@ func CreateFile(file *File) error {
 
 // Act like `mkdir -p`
 func CreateFolder(f *Folder) error {
-	// If we have a name and a (complete) parent
+	// If we have a name and a parent
 	if f.Name != "" {
-		fmt.Println(f.Name)
 		parent, err := f.GetParent()
 		if err != nil {
 			return err
@@ -114,6 +112,7 @@ func CreateFolder(f *Folder) error {
 		}
 
 		// If not we construct a path and register f in the database
+		// We could use calculatePath() here but we already made all the queries
 		f.Path = parent.Path + "/" + f.Name
 		err = sanitizePath(&f.Path)
 		if err != nil {
@@ -189,11 +188,29 @@ func CreateFolder(f *Folder) error {
 
 /*** Edit ***/
 
-func EditFile(id uint64, file *File) error {
-	return errors.New("Non Implemented")
+func EditFile(file *File, userid int) error {
+	// We cannot change ownership of a file
+	file.Owner = userid
+
+	var err error
+	file.Path, err = calculatePath(file.ParentID, file.Name, file.Owner)
+	if err != nil {
+		return err
+	}
+
+	return getDB().Where("owner = ?", userid).Save(file).Error
 }
-func EditFolder(id uint64, folder *Folder) error {
-	return errors.New("Non Implemented")
+
+func EditFolder(folder *Folder, userid int) error {
+	// We cannot change ownership of a folder
+	folder.Owner = userid
+	var err error
+	folder.Path, err = calculatePath(folder.ParentID, folder.Name, folder.Owner)
+	if err != nil {
+		return err
+	}
+
+	return getDB().Where("owner = ?", userid).Save(folder).Error
 }
 
 /*** Delete ***/
@@ -403,4 +420,15 @@ func createRootOfUser(user *User) error {
 		Owner: user.TelegramID,
 	}
 	return getDB().Create(root).Error
+}
+
+func calculatePath(parentID uint64, name string, userID int) (string, error) {
+	parent, err := GetFolderByID(parentID, userID)
+	if err != nil {
+		return "", err
+	}
+
+	path := parent.Path + "/" + name
+	err = sanitizePath(&path)
+	return path, err
 }

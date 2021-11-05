@@ -28,6 +28,7 @@ func initConnection() (err error) {
 	if err == nil {
 		err = globDB.AutoMigrate(&User{}, &File{}, &Folder{})
 	}
+	globDB.Debug()
 	return
 }
 

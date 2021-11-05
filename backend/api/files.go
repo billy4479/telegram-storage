@@ -65,3 +65,23 @@ func DeleteFile(c echo.Context) error {
 
 	return c.NoContent(http.StatusOK)
 }
+
+func UpdateFile(c echo.Context) error {
+	userid, err := getUserIDFromContext(c)
+	if err != nil {
+		return returnErrorJSON(c, http.StatusUnauthorized, err)
+	}
+
+	var file db.File
+	err = c.Bind(&file)
+	if err != nil {
+		return returnErrorJSON(c, http.StatusBadRequest, err)
+	}
+
+	err = db.EditFile(&file, userid)
+	if err != nil {
+		return returnErrorJSON(c, http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, file)
+}
