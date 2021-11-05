@@ -6,6 +6,7 @@ import {
   genQuery,
 } from './endpoints';
 import { authorizationHeader } from './authentication';
+import { displayError } from '../displayError';
 
 const qFile = genQuery(fileEndpoint);
 const qFolder = genQuery(folderEndpoint);
@@ -18,7 +19,7 @@ export async function deleteFile(file: File) {
 
   const { ok, message } = await checkFetchError(p);
   if (!ok) {
-    console.error(message);
+    displayError(message);
     return Promise.reject(message);
   }
 }
@@ -31,7 +32,7 @@ export async function deleteFolder(folder: Folder) {
 
   const { ok, message } = await checkFetchError(p);
   if (!ok) {
-    console.error(message);
+    displayError(message);
     return Promise.reject(message);
   }
 }
@@ -47,7 +48,7 @@ export async function deleteFolderRecursive(folder: Folder) {
 
   const { ok, message } = await checkFetchError(p);
   if (!ok) {
-    console.error(message);
+    displayError(message);
     return Promise.reject(message);
   }
 }

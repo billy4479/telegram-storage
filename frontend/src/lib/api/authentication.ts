@@ -1,5 +1,6 @@
 import { checkFetchError, loginEndpoint } from './endpoints';
 import { writable } from 'svelte/store';
+import { displayError } from '../displayError';
 
 function getJWT(): string | null {
   return sessionStorage.getItem('jwt');
@@ -29,7 +30,7 @@ export async function checkAuth(): Promise<boolean> {
 
   const { ok, message } = await checkFetchError(p);
   if (!ok) {
-    console.error(message);
+    displayError(message);
     sessionStorage.removeItem('jwt');
     return Promise.reject(message);
   }
@@ -49,7 +50,7 @@ export async function authenticate(userSecret: string) {
 
   const { ok, message, res } = await checkFetchError(p);
   if (!ok) {
-    console.error(message);
+    displayError(message);
     return Promise.reject(message);
   }
 

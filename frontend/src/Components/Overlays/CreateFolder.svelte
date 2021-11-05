@@ -25,14 +25,8 @@
   </div>
 
   <div class="flex place-items-center justify-evenly mt-5">
-    <input
-      type="submit"
-      value="Create"
-      class="bg-green-500 shadow rounded py-2 px-3 text-light-50 cursor-pointer"
-    />
-    <button
-      class="border border-blue-400 text-blue-400 shadow rounded py-2 px-3"
-      on:click|preventDefault={close}>Cancel</button
+    <input type="submit" value="Create" class="btn-good" />
+    <button class="btn-bad-light" on:click|preventDefault={close}>Cancel</button
     >
   </div>
 </form>

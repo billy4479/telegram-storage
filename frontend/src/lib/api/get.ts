@@ -1,6 +1,7 @@
 import { checkFetchError, folderEndpoint, genQuery } from './endpoints';
 import { authorizationHeader } from './authentication';
 import type { Folder } from '../models';
+import { displayError } from '../displayError';
 
 const q = genQuery(folderEndpoint);
 
@@ -11,7 +12,7 @@ export async function getFolder(path: string): Promise<Folder> {
 
   const { ok, message, res } = await checkFetchError(p);
   if (!ok) {
-    console.error(message);
+    displayError(message);
     return Promise.reject(message);
   }
 
@@ -27,7 +28,7 @@ export async function getFolderByID(id: number): Promise<Folder> {
 
   const { ok, message, res } = await checkFetchError(p);
   if (!ok) {
-    console.error(message);
+    displayError(message);
     return Promise.reject(message);
   }
 

@@ -24,10 +24,6 @@
       bind:value={userSecret}
     />
     <br />
-    <input
-      type="submit"
-      value="Login"
-      class="border border-gray-300 rounded shadow-md bg-gray-50 py-2 px-3 mt-5"
-    />
+    <input type="submit" value="Login" class="btn-good-light cursor-pointer" />
   </form>
 </div>

@@ -48,14 +48,8 @@
   <input type="file" name="file" id="file" multiple bind:this={inputFiles} />
   <br />
   <div class="flex justify-evenly mt-10">
-    <input
-      type="submit"
-      value="Upload"
-      class="py-2 px-3 rounded shadow bg-green-500 text-light-50 cursor-pointer"
-    />
-    <button
-      class="py-2 px-3 rounded shadow border border-red-500 text-light-50"
-      on:click|preventDefault={close}>Cancel</button
+    <input type="submit" value="Upload" class="btn-good cursor-pointer" />
+    <button class="btn-bad-light" on:click|preventDefault={close}>Cancel</button
     >
   </div>
 </form>

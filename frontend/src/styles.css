@@ -1,5 +1,23 @@
-body {
-  /* width: 85%; */
-  /* margin: 5% auto; */
-  /* text-align: center; */
+.btn-bad {
+  @apply bg-red-600 shadow rounded py-2 px-3 text-light-50;
+}
+
+.btn-good {
+  @apply py-2 px-3 rounded shadow bg-green-500 text-light-50;
+}
+
+.btn-neutral {
+  @apply bg-blue-400 shadow rounded py-2 px-3 text-light-50;
+}
+
+.btn-bad-light {
+  @apply border border-red-600 shadow rounded py-2 px-3 text-red-600 bg-light-50;
+}
+
+.btn-good-light {
+  @apply border border-green-500 shadow rounded py-2 px-3 text-green-500 bg-light-50;
+}
+
+.btn-neutral-light {
+  @apply border border-blue-400 shadow rounded py-2 px-3 text-blue-400 bg-light-50;
 }

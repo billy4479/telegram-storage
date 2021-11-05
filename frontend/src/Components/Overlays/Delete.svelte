@@ -25,12 +25,6 @@
 <input name="recursive" type="checkbox" bind:checked={recursive} />
 
 <div class="flex place-items-center justify-evenly mt-5">
-  <button
-    class="bg-red-600 shadow rounded py-2 px-3 text-light-50"
-    on:click={executeDelete}>Yes, delete</button
-  >
-  <button
-    class="bg-blue-400 shadow rounded py-2 px-3 text-light-50"
-    on:click={close}>No, cancel</button
-  >
+  <button class="btn-bad" on:click={executeDelete}>Yes, delete</button>
+  <button class="btn-neutral-light" on:click={close}>No, cancel</button>
 </div>
