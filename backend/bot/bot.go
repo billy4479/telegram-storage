@@ -53,11 +53,6 @@ func BotMain(token string) func(*sync.WaitGroup) {
 				continue
 			}
 
-			if message.Chat.IsPrivate() {
-				if message.Document != nil {
-					addFile(bot, message)
-				}
-			}
 		}
 		stopped <- struct{}{}
 	}()
