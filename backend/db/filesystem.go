@@ -67,7 +67,7 @@ func createRootOfUser(user *User) error {
 	return getDB().Create(root).Error
 }
 
-func calculatePath(parentID uint64, name string, userID int) (string, error) {
+func calculatePath(parentID uint64, name string, userID int64) (string, error) {
 	parent, err := GetFolderByID(parentID, userID)
 	if err != nil {
 		return "", err

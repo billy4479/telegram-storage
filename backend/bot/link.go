@@ -8,15 +8,15 @@ import (
 	"strings"
 
 	"github.com/billy4479/telegram-storage/backend/db"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"golang.org/x/crypto/sha3"
 )
 
-func linkChat(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
+func (i *BotInterface) linkChat(message *tgbotapi.Message) {
 	secret := make([]byte, 63)
 	_, err := rand.Read(secret)
 	if err != nil {
-		sendErrToUser(bot, message.Chat.ID, err)
+		i.sendErrToUser(message.Chat.ID, err)
 	}
 	h := sha3.Sum512(secret)
 
@@ -26,7 +26,7 @@ func linkChat(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 		Secret:     h[:],
 	})
 
-	if sendErrToUser(bot, message.Chat.ID, err) {
+	if i.sendErrToUser(message.Chat.ID, err) {
 		return
 	}
 
@@ -40,7 +40,7 @@ func linkChat(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(int64(message.From.ID), text)
 	msg.ParseMode = "MarkdownV2"
-	if _, err = bot.Send(msg); sendErrToUser(bot, message.Chat.ID, err) {
+	if _, err = i.bot.Send(msg); i.sendErrToUser(message.Chat.ID, err) {
 		return
 	}
 

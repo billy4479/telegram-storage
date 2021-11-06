@@ -11,7 +11,7 @@ type File struct {
 	Name     string `gorm:"non null" json:"name"`
 	Path     string `gorm:"non null" json:"path"`
 	ParentID uint64 `gorm:"non null" json:"parentID"`
-	Owner    int    `gorm:"non null" json:"owner"`
+	Owner    int64  `gorm:"non null" json:"owner"`
 	URL      string `gorm:"not null" json:"-"`
 }
 
@@ -63,7 +63,7 @@ func CreateFile(file *File) error {
 	return getDB().Create(file).Error
 }
 
-func EditFile(file *File, userid int) error {
+func EditFile(file *File, userid int64) error {
 	// We cannot change ownership of a file
 	file.Owner = userid
 
@@ -76,11 +76,11 @@ func EditFile(file *File, userid int) error {
 	return getDB().Where("owner = ?", userid).Save(file).Error
 }
 
-func DeleteFile(id uint64, userid int) error {
+func DeleteFile(id uint64, userid int64) error {
 	return getDB().Where("owner = ?", userid).Delete(&File{ID: id}).Error
 }
 
-func GetFileByID(id uint64, userid int) (*File, error) {
+func GetFileByID(id uint64, userid int64) (*File, error) {
 	file := File{}
 	return &file,
 		getDB().Where("owner = ?", userid).

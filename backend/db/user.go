@@ -7,12 +7,12 @@ import (
 )
 
 type User struct {
-	TelegramID int    `gorm:"primaryKey" json:"userID"`
+	TelegramID int64  `gorm:"primaryKey" json:"userID"`
 	ChatID     int64  `gorm:"non null" json:"chatID"`
 	Secret     []byte `gorm:"non null" json:"-"`
 }
 
-func GetUserByID(userID int) (*User, error) {
+func GetUserByID(userID int64) (*User, error) {
 	var user User
 	return &user, getDB().Where("telegram_id = ?", userID).Take(&user).Error
 }

@@ -33,12 +33,12 @@ var (
 	authorized = middleware.JWTWithConfig(configJWT)
 )
 
-func getUserIDFromContext(c echo.Context) (int, error) {
+func getUserIDFromContext(c echo.Context) (int64, error) {
 	user := c.Get("user")
 	if user == nil {
 		return -1, fmt.Errorf("Token not found")
 	}
 	claims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	id := int(claims["TelegramID"].(float64))
+	id := int64(claims["TelegramID"].(float64))
 	return id, nil
 }

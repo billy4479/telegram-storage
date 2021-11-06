@@ -6,7 +6,7 @@ type Folder struct {
 	ID       uint64 `gorm:"primaryKey" json:"folderID"`
 	Name     string `gorm:"non null" json:"name"`
 	Path     string `gorm:"non null" json:"path"`
-	Owner    int    `gorm:"non null" json:"owner"`
+	Owner    int64  `gorm:"non null" json:"owner"`
 	ParentID uint64 `json:"parentID"`
 }
 
@@ -116,7 +116,7 @@ func CreateFolder(f *Folder) error {
 	return ErrCannotCreateFolder
 }
 
-func EditFolder(folder *Folder, userid int) error {
+func EditFolder(folder *Folder, userid int64) error {
 	// We cannot change ownership of a folder
 	folder.Owner = userid
 	var err error
@@ -128,7 +128,7 @@ func EditFolder(folder *Folder, userid int) error {
 	return getDB().Where("owner = ?", userid).Save(folder).Error
 }
 
-func DeleteFolder(id uint64, userid int) error {
+func DeleteFolder(id uint64, userid int64) error {
 	folder, err := GetFolderByID(id, userid)
 	if err != nil {
 		return err
@@ -146,7 +146,7 @@ func DeleteFolder(id uint64, userid int) error {
 	return getDB().Where("owner = ?", userid).Delete(&Folder{ID: id}).Error
 }
 
-func DeleteFolderRecursive(id uint64, userid int) error {
+func DeleteFolderRecursive(id uint64, userid int64) error {
 	folder, err := GetFolderByID(id, userid)
 	if err != nil {
 		return err
@@ -184,7 +184,7 @@ func DeleteFolderRecursive(id uint64, userid int) error {
 	return nil
 }
 
-func GetFolderByID(id uint64, userid int) (*Folder, error) {
+func GetFolderByID(id uint64, userid int64) (*Folder, error) {
 	folder := Folder{}
 	return &folder,
 		getDB().
@@ -193,7 +193,7 @@ func GetFolderByID(id uint64, userid int) (*Folder, error) {
 			Error
 }
 
-func GetFolderByPath(path string, userid int) (*Folder, error) {
+func GetFolderByPath(path string, userid int64) (*Folder, error) {
 	folder := Folder{}
 	return &folder,
 		getDB().
@@ -202,7 +202,7 @@ func GetFolderByPath(path string, userid int) (*Folder, error) {
 			Error
 }
 
-func GetRootOf(userID int) (*Folder, error) {
+func GetRootOf(userID int64) (*Folder, error) {
 	folder := Folder{}
 	return &folder,
 		getDB().

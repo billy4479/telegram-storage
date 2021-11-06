@@ -15,7 +15,7 @@ import (
 )
 
 type userClaims struct {
-	TelegramID int
+	TelegramID int64
 	ChatID     int64
 	jwt.StandardClaims
 }

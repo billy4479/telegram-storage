@@ -7,13 +7,14 @@ import (
 	"sync"
 	"time"
 
+	"github.com/billy4479/telegram-storage/backend/bot"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 var signingSecret []byte
 
-func ApiMain(addr string) func(*sync.WaitGroup) {
+func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) {
 	{
 		s := os.Getenv("SECRET")
 		if s == "" {
@@ -55,7 +56,7 @@ func ApiMain(addr string) func(*sync.WaitGroup) {
 
 		// File
 		api.GET("/file", GetFile, authorized)
-		api.POST("/file", UploadFile, authorized)
+		api.POST("/file", UploadFile(botInterface), authorized)
 		api.DELETE("/file", DeleteFile, authorized)
 		api.PUT("/file", UpdateFile, authorized)
 		api.GET("/file/download", DownloadFile, authorized)

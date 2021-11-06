@@ -16,9 +16,9 @@ func returnErrorJSON(c echo.Context, code int, err error) error {
 	return nil
 }
 
-func getIDAndUserIDFromContext(c echo.Context) (uint64, int, error) {
-	idstr := c.QueryParam("id")
-	id, err := strconv.ParseUint(idstr, 10, 64)
+func getIDAndUserIDFromContext(c echo.Context) (uint64, int64, error) {
+	idStr := c.QueryParam("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
 		return 0, 0, returnErrorJSON(c, http.StatusBadRequest, err)
 	}

@@ -1,36 +1,29 @@
 package bot
 
 import (
-	"io"
 	"log"
 	"sync"
 
-	"github.com/billy4479/telegram-storage/backend/db"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type BotAPI struct {
-	UploadFile func(user *db.User, path string, r io.Reader, size int64) (*db.File, error)
+type BotInterface struct {
+	bot *tgbotapi.BotAPI
 }
 
-var Instance *BotAPI = nil
-
-func BotMain(token string) func(*sync.WaitGroup) {
+func (i *BotInterface) Start(token string) func(*sync.WaitGroup) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	checkErrAndDie(err)
+
+	i.bot = bot
 
 	log.Println("Starting", bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates, err := bot.GetUpdatesChan(u)
-	checkErrAndDie(err)
+	updates := bot.GetUpdatesChan(u)
 	updates.Clear()
-
-	Instance = &BotAPI{
-		UploadFile: uploadFile(bot),
-	}
 
 	stop := false
 	stopped := make(chan struct{})
@@ -48,7 +41,7 @@ func BotMain(token string) func(*sync.WaitGroup) {
 
 			if !message.Chat.IsPrivate() {
 				if message.Text == "/link" {
-					linkChat(bot, message)
+					i.linkChat(message)
 				}
 				continue
 			}

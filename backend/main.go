@@ -27,16 +27,22 @@ func main() {
 	}
 
 	wg := sync.WaitGroup{}
-	wg.Add(1)
-	stopBot := bot.BotMain(os.Getenv("TELEGRAM_TOKEN"))
-	wg.Add(1)
-	stopApi := api.ApiMain(":" + port)
 
+	// Start bot
+	wg.Add(1)
+	botInterface := &bot.BotInterface{}
+	stopBot := botInterface.Start(os.Getenv("TELEGRAM_TOKEN"))
+
+	// Start API
+	wg.Add(1)
+	stopApi := api.ApiMain(":"+port, botInterface)
+
+	// Wait for SIGINT
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 
+	// Gracefully stop api and bot
 	stopApi(&wg)
 	stopBot(&wg)
-
 }
