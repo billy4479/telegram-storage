@@ -12,7 +12,7 @@ type File struct {
 	Path     string `gorm:"non null" json:"path"`
 	ParentID uint64 `gorm:"non null" json:"parentID"`
 	Owner    int64  `gorm:"non null" json:"owner"`
-	URL      string `gorm:"not null" json:"-"`
+	FileID   string `gorm:"not null" json:"-"`
 }
 
 func (f *File) GetParent() (*Folder, error) { return GetFolderByID(f.ParentID, f.Owner) }

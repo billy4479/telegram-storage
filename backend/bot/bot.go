@@ -34,18 +34,15 @@ func (i *BotInterface) Start(token string) func(*sync.WaitGroup) {
 				break
 			}
 
-			if update.Message == nil { // ignore any non-Message Updates
-				continue
-			}
-			message := update.Message
-
-			if !message.Chat.IsPrivate() {
-				if message.Text == "/link" {
-					i.linkChat(message)
-				}
+			if update.Message == nil ||
+				!update.Message.IsCommand() ||
+				update.Message.Chat.IsPrivate() {
 				continue
 			}
 
+			if update.Message.Command() == "link" {
+				i.linkChat(update.Message)
+			}
 		}
 		stopped <- struct{}{}
 	}()

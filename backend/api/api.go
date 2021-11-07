@@ -59,7 +59,7 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 		api.POST("/file", UploadFile(botInterface), authorized)
 		api.DELETE("/file", DeleteFile, authorized)
 		api.PUT("/file", UpdateFile, authorized)
-		api.GET("/file/download", DownloadFile, authorized)
+		api.GET("/file/download", DownloadFile(botInterface), authorized)
 
 		// Folder
 		api.GET("/folder", GetFolder, authorized)

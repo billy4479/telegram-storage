@@ -1,4 +1,6 @@
+import { displayError } from '../displayError';
 import { authorizationHeader } from './authentication';
+import { checkFetchError } from './endpoints';
 
 export default async function authenticatedDownload(url: string, name: string) {
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
@@ -6,9 +8,11 @@ export default async function authenticatedDownload(url: string, name: string) {
     headers: authorizationHeader(),
   });
 
-  p.catch((err) => console.error(err));
-
-  const res = await p;
+  const { ok, message, res } = await checkFetchError(p);
+  if (!ok) {
+    displayError(message);
+    return Promise.reject(message);
+  }
   const blob = await res.blob();
 
   const blobURL = URL.createObjectURL(blob);
