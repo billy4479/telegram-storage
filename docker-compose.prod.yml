@@ -8,6 +8,15 @@ services:
       POSTGRES_USER: "${DB_USER:?missing DB_USER}"
       POSTGRES_DB: "${DB_DATABASE:?missing DB_DATABASE}"
 
+ bot-api:
+    image: aiogram/telegram-bot-api:latest
+    environment:
+      TELEGRAM_API_ID: "${TELEGRAM_API_ID:?missing TELEGRAM_API_ID}"
+      TELEGRAM_API_HASH: "${TELEGRAM_API_HASH:?missing TELEGRAM_API_HASH}"
+      TELEGRAM_LOCAL: "yes"
+    ports:
+      - 8081:8081
+
   web:
     build:
       context: .
@@ -15,6 +24,7 @@ services:
     restart: always
     depends_on:
       - db
+      - bot-api
     environment:
       DB_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
       DB_USER: "${DB_USER:?missing DB_USER}"

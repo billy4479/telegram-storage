@@ -12,7 +12,7 @@ type BotInterface struct {
 }
 
 func (i *BotInterface) Start(token string) func(*sync.WaitGroup) {
-	bot, err := tgbotapi.NewBotAPI(token)
+	bot, err := tgbotapi.NewBotAPIWithAPIEndpoint(token, "http://bot-api:8081/bot%s/%s")
 	checkErrAndDie(err)
 
 	i.bot = bot

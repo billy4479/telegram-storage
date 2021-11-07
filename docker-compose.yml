@@ -18,6 +18,16 @@ services:
     ports:
       - 8080:8080
 
+  bot-api:
+    image: aiogram/telegram-bot-api:latest
+    environment:
+      TELEGRAM_API_ID: "${TELEGRAM_API_ID:?missing TELEGRAM_API_ID}"
+      TELEGRAM_API_HASH: "${TELEGRAM_API_HASH:?missing TELEGRAM_API_HASH}"
+      TELEGRAM_LOCAL: "yes"
+      TELEGRAM_VERBOSITY: "1"
+    ports:
+      - 8081:8081
+
   frontend:
     build:
       context: .
@@ -42,6 +52,7 @@ services:
       - ${PORT:-4479}:${PORT:-4479}
     depends_on:
       - db
+      - bot-api
     restart: always
     environment:
       DB_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
