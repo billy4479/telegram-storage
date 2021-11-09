@@ -11,27 +11,31 @@ import (
 
 var (
 	configJWT = middleware.JWTConfig{
-		ParseTokenFunc: func(auth string, c echo.Context) (interface{}, error) {
-			keyFunc := func(t *jwt.Token) (interface{}, error) {
-				if t.Method.Alg() != "HS256" {
-					return nil, fmt.Errorf("Unexpected jwt signing method=%v", t.Header["alg"])
-				}
-				return signingSecret, nil
-			}
-
-			// claims are of type `jwt.MapClaims` when token is created with `jwt.Parse`
-			token, err := jwt.Parse(auth, keyFunc)
-			if err != nil {
-				return nil, err
-			}
-			if !token.Valid {
-				return nil, errors.New("Invalid token")
-			}
-			return token, nil
+		ParseTokenFunc: func(raw string, c echo.Context) (interface{}, error) {
+			return parseJWT(raw)
 		},
 	}
 	authorized = middleware.JWTWithConfig(configJWT)
 )
+
+// Claims are of type `jwt.MapClaims`
+func parseJWT(raw string) (*jwt.Token, error) {
+	keyFunc := func(t *jwt.Token) (interface{}, error) {
+		if t.Method.Alg() != "HS256" {
+			return nil, fmt.Errorf("Unexpected jwt signing method=%v", t.Header["alg"])
+		}
+		return signingSecret, nil
+	}
+
+	token, err := jwt.Parse(raw, keyFunc)
+	if err != nil {
+		return nil, err
+	}
+	if !token.Valid {
+		return nil, errors.New("Invalid token")
+	}
+	return token, nil
+}
 
 func getUserIDFromContext(c echo.Context) (int64, error) {
 	user := c.Get("user")

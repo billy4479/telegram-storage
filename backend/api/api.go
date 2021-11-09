@@ -23,6 +23,8 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 		signingSecret = []byte(s)
 	}
 
+	botInterface.GetTempJWT = GetTempJWTFactory()
+
 	e := echo.New()
 	e.HideBanner = true
 	e.Debug = true

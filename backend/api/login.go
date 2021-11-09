@@ -1,9 +1,7 @@
 package api
 
 import (
-	"bytes"
 	"encoding/base64"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -11,61 +9,39 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/sha3"
-	"gorm.io/gorm"
 )
 
 type userClaims struct {
-	TelegramID int64
-	ChatID     int64
 	jwt.StandardClaims
+	ID int64
 }
 
-type userSecret struct {
-	UserSecret string `json:"userSecret" form:"userSecret" `
-}
-
-var nullSecret = []byte{
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
+type loginRequest struct {
+	Username          string `json:"username"`
+	AuthenticationKey string `json:"authKey"`
 }
 
 func Login(c echo.Context) error {
-	var s userSecret
+	var s loginRequest
 	err := c.Bind(&s)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}
 
-	h, err := base64.URLEncoding.DecodeString(s.UserSecret)
+	authKey, err := base64.URLEncoding.DecodeString(s.AuthenticationKey)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}
-	if len(h) != 63 {
-		return returnErrorJSON(c, http.StatusBadRequest, fmt.Errorf("Invalid secret"))
-	}
-	secret := sha3.Sum512(h)
 
-	if bytes.Equal(secret[:], nullSecret) {
-		return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("User not found"))
-	}
+	authKeyHash := sha3.Sum512(authKey)
 
-	user, err := db.GetUserBySecret(secret[:])
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("User not found"))
-		}
-		return returnErrorJSON(c, http.StatusInternalServerError, err)
+	user, err := db.GetUserByAuth(authKeyHash[:])
+	if err = handleDBErr(c, err); err != nil {
+		return err
 	}
 
 	claims := &userClaims{
-		TelegramID: user.TelegramID,
-		ChatID:     user.ChatID,
+		ID: user.TelegramID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 10).Unix(),
 		},
@@ -78,7 +54,8 @@ func Login(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"token": t,
+		"token":  t,
+		"encKey": base64.URLEncoding.EncodeToString(user.EncryptionKey),
 	})
 }
 

@@ -9,6 +9,9 @@ import (
 
 type BotInterface struct {
 	bot *tgbotapi.BotAPI
+
+	// This function will be provided by the API
+	GetTempJWT func(userID int64, chatID int64) (string, error)
 }
 
 func (i *BotInterface) Start(token string) func(*sync.WaitGroup) {
