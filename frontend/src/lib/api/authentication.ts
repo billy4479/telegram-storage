@@ -1,6 +1,8 @@
-import { checkFetchError, loginEndpoint } from './endpoints';
+import { checkFetchError, loginEndpoint, registerEndpoint } from './endpoints';
 import { writable } from 'svelte/store';
 import { displayError } from '../displayError';
+import { keyStore } from '../crypto';
+import Base64 from 'crypto-js/enc-base64';
 
 function getJWT(): string | null {
   return sessionStorage.getItem('jwt');
@@ -39,22 +41,33 @@ export async function checkAuth(): Promise<boolean> {
   return ok;
 }
 
-export async function authenticate(userSecret: string) {
-  const p = fetch(loginEndpoint, {
+export async function authenticate(username: string, password: string) {
+  // Generate auth key
+  await keyStore.deriveMasterKey(password);
+  keyStore.deriveAuthKey();
+
+  const p = fetch(registerEndpoint, {
     method: 'POST',
-    body: JSON.stringify({ userSecret }),
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({
+      username,
+      authKey: keyStore.toBase64(keyStore.authKey),
+    }),
   });
 
-  const { ok, message, res } = await checkFetchError(p);
+  const { res, ok, message } = await checkFetchError(p);
   if (!ok) {
     displayError(message);
     return Promise.reject(message);
   }
 
-  sessionStorage.setItem('jwt', (await res.json()).token);
+  const j = await res.json();
+  keyStore.encryptedEncKey = Base64.parse(j.encKey as string);
+  keyStore.decryptEncryptionKey();
+
+  sessionStorage.setItem('jwt', j.token);
   isAuthenticatedStore.set(true);
 }
 

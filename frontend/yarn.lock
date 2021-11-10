@@ -79,6 +79,16 @@
     require-relative "^0.8.7"
     svelte-hmr "^0.14.7"
 
+"@types/argon2-browser@^1.18.1":
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/@types/argon2-browser/-/argon2-browser-1.18.1.tgz#39bc2bf2fbe86d4854005730ace3b8015758adfb"
+  integrity sha512-PZffP/CqH9m2kovDSRQMfMMxUC3V98I7i7/caa0RB0/nvsXzYbL9bKyqZpNMFmLFGZslROlG1R60ONt7abrwlA==
+
+"@types/crypto-js@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-4.0.2.tgz#4524325a175bf819fec6e42560c389ce1fb92c97"
+  integrity sha512-sCVniU+h3GcGqxOmng11BRvf9TfN9yIs8KKjB8C8d75W69cpTfZG80gau9yTx5SxF3gvHGbJhdESzzvnjtf3Og==
+
 "@types/json-schema@^7.0.9":
   version "7.0.9"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
@@ -246,6 +256,11 @@ ansi-styles@^4.1.0:
   integrity sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==
   dependencies:
     color-convert "^2.0.1"
+
+argon2-browser@^1.18.0:
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/argon2-browser/-/argon2-browser-1.18.0.tgz#f35820211e0a431aed7f82b9348477234be69bec"
+  integrity sha512-ImVAGIItnFnvET1exhsQB7apRztcoC5TnlSqernMJDUjbc/DLq3UEYeXFrLPrlaIl8cVfwnXb6wX2KpFf2zxHw==
 
 argparse@^1.0.7:
   version "1.0.10"
@@ -416,6 +431,11 @@ cross-spawn@^7.0.2:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+crypto-js@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.1.1.tgz#9e485bcf03521041bd85844786b83fb7619736cf"
+  integrity sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==
 
 debug@^2.6.9:
   version "2.6.9"

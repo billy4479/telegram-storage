@@ -5,6 +5,7 @@
   import Overlay from './Components/Overlays/Overlay.svelte';
   import Error from './Components/Overlays/Error.svelte';
   import { errorStore } from './lib/displayError';
+  import Register from './Components/Register.svelte';
 
   let showErrorOverlay: () => void;
   let closeErrorOverlay: () => void;
@@ -22,6 +23,7 @@
   Loading...
 {:then}
   {#if !$isAuthenticatedStore}
+    <Register />
     <Login />
   {:else}
     <Main />

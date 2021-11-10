@@ -55,7 +55,7 @@ func Login(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"token":  t,
-		"encKey": base64.URLEncoding.EncodeToString(user.EncryptionKey),
+		"encKey": user.EncryptionKey,
 	})
 }
 
