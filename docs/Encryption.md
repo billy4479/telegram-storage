@@ -1,5 +1,17 @@
 # Encryption
 
+## Libraries
+
+- [**LibSodium**](https://www.npmjs.com/package/libsodium-wrappers)
+- ~~AES, SHA and HMAC: [crypto-js](https://www.npmjs.com/package/crypto-js)~~
+- ~~Argon2: [argon2-browser](https://www.npmjs.com/package/argon2-browser), but it doesn't play nice with vite...~~
+- ~~Elliptic curves: [elliptic](https://www.npmjs.com/package/elliptic)~~
+  - ~~ECIES: I'm not sure if I want to use a library...~~
+  <sub>
+    - ~~It shouldn't be hard to implement once I have access to Elliptic curves, AES and HMAC _(right?)_~~
+    - ~~[This](https://github.com/indutny/elliptic) could be fine but forces secp256k1, [which apparently is not secure](https://safecurves.cr.yp.to/)~~
+    - ~~[This](https://www.npmjs.com/package/ecies-ed25519-wasm) could be fine but has really few downloads~~
+  </sub>
 ## Registration
 
  - `/link` -> Gives a temp JWT
@@ -12,8 +24,8 @@
  - Password -> `[p]`
 
 ### Client:
- - Argon2 `[p]` -> `[M]`
- - Generate keypair (with [this(?)](https://www.npmjs.com/package/curve25519-js)) `[pair]`
+ - Derive key `[p]` -> `[M]`
+ - Generate keypair `[pair]`
  - Encrypt `[pair.priv]` with `[M]` -> `[pair.priv.enc]`
  - Hash `[M]` -> `[auth]`
  - Send `[pair.pub]`, `[pair.priv.enc]` and `[auth]` to the server

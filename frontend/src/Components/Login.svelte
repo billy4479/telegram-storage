@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { authenticate } from '../lib/api/authentication';
+  import { login } from '../lib/api/login';
 
   let username = '';
   let password = '';
 
   async function onSubmit() {
-    await authenticate(username, password);
+    await login(username, password);
   }
 </script>
 
@@ -19,7 +19,6 @@
     <label for="username" class="mr-3">Username:</label>
     <input
       name="username"
-      id="username"
       class="p-1 rounded shadow-md border border-gray-300"
       bind:value={username}
     />
@@ -27,7 +26,6 @@
     <input
       type="password"
       name="password"
-      id="password"
       class="p-1 rounded shadow-md border border-gray-300"
       bind:value={password}
     />

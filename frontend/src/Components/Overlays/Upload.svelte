@@ -1,7 +1,7 @@
 <script lang="ts">
   import { currentPathStore, refreshCurrentView } from '../../lib/navigation';
   import { fileEndpoint } from '../../lib/api/endpoints';
-  import { authorizationHeader } from '../../lib/api/authentication';
+  import { authorizationHeader } from '../../lib/api/login';
 
   export let close: () => void;
 

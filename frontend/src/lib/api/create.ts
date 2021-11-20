@@ -1,6 +1,6 @@
 import { displayError } from '../displayError';
 import type { Folder } from '../models';
-import { authorizationHeader } from './authentication';
+import { authorizationHeader } from './login';
 import { checkFetchError, folderEndpoint } from './endpoints';
 
 export async function createFolder(path: string): Promise<Folder> {

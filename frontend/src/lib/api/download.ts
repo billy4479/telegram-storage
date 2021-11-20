@@ -1,5 +1,5 @@
 import { displayError } from '../displayError';
-import { authorizationHeader } from './authentication';
+import { authorizationHeader } from './login';
 import { checkFetchError } from './endpoints';
 
 export default async function authenticatedDownload(url: string, name: string) {

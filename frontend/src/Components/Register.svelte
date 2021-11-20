@@ -19,7 +19,6 @@
     <label for="token" class="mr-3">Token:</label>
     <input
       name="token"
-      id="token"
       class="p-1 rounded shadow-md border border-gray-300"
       bind:value={token}
     />
@@ -27,7 +26,6 @@
     <input
       type="password"
       name="password"
-      id="password"
       class="p-1 rounded shadow-md border border-gray-300"
       bind:value={password}
     />

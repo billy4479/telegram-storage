@@ -1,12 +1,10 @@
-import { keyStore } from '../crypto';
+import { CryptoManager } from '../crypto';
 import { displayError } from '../displayError';
 import { checkFetchError, registerEndpoint } from './endpoints';
 
 export async function register(token: string, password: string) {
-  await keyStore.deriveMasterKey(password);
-  keyStore.deriveAuthKey();
-  keyStore.generateEncryptionKey();
-  keyStore.encryptEncryptionKey();
+  const { keys } = await CryptoManager.createUser(password);
+  console.log(keys);
 
   const p = fetch(registerEndpoint, {
     method: 'POST',
@@ -15,8 +13,7 @@ export async function register(token: string, password: string) {
     },
     body: JSON.stringify({
       jwt: token,
-      authKey: keyStore.toBase64(keyStore.authKey),
-      encKey: keyStore.toBase64(keyStore.encryptedEncKey),
+      keys,
     }),
   });
 

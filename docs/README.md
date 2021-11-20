@@ -23,4 +23,4 @@ A [Makefile](Makefile) is provided for convenience and was the default method be
 
 ## Individual components documentation
 
-- [Login](login.md)
+- [Encryption](Encryption.md)
