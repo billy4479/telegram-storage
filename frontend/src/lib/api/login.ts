@@ -46,12 +46,15 @@ export async function isLoggedIn(): Promise<boolean> {
   });
 
   const { ok, message } = await checkFetchError(p);
+
   if (!ok) {
+    console.warn(message);
     logout();
-    displayError(message);
-    return Promise.reject(message);
+  } else {
+    CryptoManager.fromMasterKey(getMasterKey());
   }
 
+  isAuthenticatedStore.set(ok);
   return ok;
 }
 

@@ -1,17 +1,24 @@
 import { displayError } from '../displayError';
 import { authorizationHeader } from './login';
-import { checkFetchError } from './endpoints';
+import { checkFetchError, downloadEndpoint, genQuery } from './endpoints';
 import { getCryptoManager } from '../crypto';
 
+const q = genQuery(downloadEndpoint);
+
 export default async function authenticatedDownload(
-  url: string,
+  id: number,
   name: string,
   header: string,
   key: string,
   nonce: string
 ) {
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
+
+  const url = q({ id: id.toString() });
+  console.log(url);
+
   const p = fetch(url, {
+    method: 'GET',
     headers: authorizationHeader(),
   });
 

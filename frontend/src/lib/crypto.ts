@@ -5,8 +5,6 @@ export class KeyStore {
   masterKey: Uint8Array;
   masterKeySalt: Uint8Array;
 
-  authKey: Uint8Array;
-
   shareKeyPair: {
     priv: Uint8Array;
     pub: Uint8Array;
@@ -66,6 +64,12 @@ export class CryptoManager {
     });
   }
 
+  static async fromMasterKey(masterKey: string) {
+    cryptoManager = await new CryptoManager().initialized;
+    cryptoManager._keyStore.masterKey =
+      cryptoManager._libSodium.from_base64(masterKey);
+  }
+
   static async fromPasswordAndSalt(
     password: string,
     salt: string
@@ -75,7 +79,6 @@ export class CryptoManager {
       password,
       cryptoManager._libSodium.from_base64(salt)
     );
-    cryptoManager._deriveAuthKey();
     return cryptoManager;
   }
 
@@ -92,7 +95,6 @@ export class CryptoManager {
     );
 
     manager._deriveMasterKey(password, salt);
-    manager._deriveAuthKey();
 
     const keyPair = manager._libSodium.crypto_box_keypair();
     manager._keyStore.shareKeyPair = {
@@ -117,7 +119,7 @@ export class CryptoManager {
         masterKeySalt: manager._libSodium.to_base64(
           manager._keyStore.masterKeySalt
         ),
-        authKey: manager._libSodium.to_base64(manager._keyStore.authKey),
+        authKey: manager._libSodium.to_base64(manager._deriveAuthKey()),
         sharePublicKey: manager._libSodium.to_base64(
           manager._keyStore.shareKeyPair.pub
         ),
@@ -151,7 +153,7 @@ export class CryptoManager {
     console.log('MasterKey derived successfully');
   }
 
-  private _deriveAuthKey() {
+  private _deriveAuthKey(): Uint8Array {
     if (!this._libSodium) throw new Error('KeyStore is not initialized');
 
     // TODO: Is this the same or not?
@@ -161,9 +163,7 @@ export class CryptoManager {
     //   '',
     //   this._keyStore.masterKey
     // );
-    this._keyStore.authKey = this._libSodium.crypto_hash(
-      this._keyStore.masterKey
-    );
+    return this._libSodium.crypto_hash(this._keyStore.masterKey);
   }
 
   setShareKey(pub: string, privateEnc: string, nonce: string) {
@@ -290,7 +290,7 @@ export class CryptoManager {
   }
 
   getAuthKey(): string {
-    return this._libSodium.to_base64(this._keyStore.authKey);
+    return this._libSodium.to_base64(this._deriveAuthKey());
   }
 
   getMasterKey(): string {

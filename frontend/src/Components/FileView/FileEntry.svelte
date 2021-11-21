@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { downloadEndpoint } from '../../lib/api/endpoints';
   import authenticatedDownload from '../../lib/api/download';
   import type { File } from '../../lib/models';
   import Entry from './Entry.svelte';
@@ -15,7 +14,7 @@
 
   async function downloadFile() {
     await authenticatedDownload(
-      `${downloadEndpoint}/${data.fileID}`,
+      data.fileID,
       data.name,
       data.header,
       data.key,

@@ -1,8 +1,9 @@
 <script lang="ts">
   import { currentPathStore, refreshCurrentView } from '../../lib/navigation';
-  import { fileEndpoint } from '../../lib/api/endpoints';
+  import { checkFetchError, fileEndpoint } from '../../lib/api/endpoints';
   import { authorizationHeader } from '../../lib/api/login';
   import { getCryptoManager } from '../../lib/crypto';
+  import { displayError } from '../../lib/displayError';
 
   export let close: () => void;
 
@@ -19,34 +20,45 @@
   }
 
   async function onSubmit() {
-    const data = new FormData();
+    const promises: Promise<void>[] = [];
     for (let i = 0; i < inputFiles.files.length; i++) {
-      const name = currentPath + '/' + inputFiles.files[i].name;
-      const b64 = btoa(name).replaceAll('+', '-').replaceAll('/', '_');
+      promises.push(
+        (async () => {
+          const data = new FormData();
 
-      const streamWrong = inputFiles.files[i].stream();
-      console.log(streamWrong);
-      // Ehm, wrong type, I think...
-      const streamRight = streamWrong as unknown as ReadableStream<Uint8Array>;
-      console.log(streamRight);
+          const path = currentPath + '/' + inputFiles.files[i].name;
 
-      getCryptoManager().encryptFile(streamRight);
+          const streamWrong = inputFiles.files[i].stream();
+          console.log(streamWrong);
+          // Ehm, wrong type, I think...
+          const streamRight =
+            streamWrong as unknown as ReadableStream<Uint8Array>;
+          console.log(streamRight);
 
-      // TODO: Make file upload actually decent
-      data.append('files', inputFiles.files[i], b64);
+          const encrypted = await getCryptoManager().encryptFile(streamRight);
+
+          data.append('file', encrypted.data);
+          data.append('path', path);
+          data.append('header', encrypted.header);
+          data.append('keyEnc', encrypted.key.keyEnc);
+          data.append('nonce', encrypted.key.nonce);
+
+          const p = fetch(fileEndpoint, {
+            method: 'POST',
+            body: data,
+            headers: authorizationHeader(),
+          });
+
+          const { ok, message } = await checkFetchError(p);
+          if (!ok) {
+            displayError(message);
+            return Promise.reject(message);
+          }
+        })()
+      );
     }
 
-    await fetch(fileEndpoint, {
-      method: 'POST',
-      body: data,
-      headers: authorizationHeader(),
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          console.error(await res.text());
-        }
-      })
-      .catch((err) => console.log(err));
+    await Promise.all(promises);
 
     resetAndClose();
   }

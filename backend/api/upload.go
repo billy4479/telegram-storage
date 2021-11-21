@@ -1,7 +1,7 @@
 package api
 
 import (
-	"encoding/base64"
+	"fmt"
 	"net/http"
 
 	"github.com/billy4479/telegram-storage/backend/bot"
@@ -9,54 +9,74 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func getFormValueAndCheck(c echo.Context, name string) (string, error) {
+	value := c.FormValue(name)
+	if value == "" {
+		return "", returnErrorJSON(c, http.StatusBadRequest, fmt.Errorf("%s is required", value))
+	}
+	return value, nil
+}
+
 func UploadFile(botInterface *bot.BotInterface) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		// Get data from the request
 		// path := c.FormValue("path")
-		id, err := getUserIDFromContext(c)
+		userID, err := getUserIDFromContext(c)
 		if err != nil {
 			return returnErrorJSON(c, http.StatusUnauthorized, err)
 		}
 		// Get user info
-		user, err := db.GetUserByID(id)
+		user, err := db.GetUserByID(userID)
 		if err != nil {
 			return returnErrorJSON(c, http.StatusInternalServerError, err)
 		}
 
-		form, err := c.MultipartForm()
+		file, err := c.FormFile("file")
 		if err != nil {
 			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}
 
-		result := []*db.File{}
+		// TODO: decode base64 and be sure that the size is right
+		path, err := getFormValueAndCheck(c, "path")
+		if err != nil {
+			return err
+		}
+		header, err := getFormValueAndCheck(c, "header")
+		if err != nil {
+			return err
+		}
+		keyEnc, err := getFormValueAndCheck(c, "keyEnc")
+		if err != nil {
+			return err
+		}
+		nonce, err := getFormValueAndCheck(c, "nonce")
+		if err != nil {
+			return err
+		}
 
-		files := form.File["files"]
-		for _, file := range files {
-			// Open the file
-			r, err := file.Open()
-			if err != nil {
-				return returnErrorJSON(c, http.StatusBadRequest, err)
-			}
-			path, err := base64.URLEncoding.DecodeString(file.Filename)
-			if err != nil {
-				return returnErrorJSON(c, http.StatusBadRequest, err)
-			}
+		// Open the file
+		r, err := file.Open()
+		if err != nil {
+			return returnErrorJSON(c, http.StatusBadRequest, err)
+		}
 
-			// Upload it to telegram
-			record, err := botInterface.UploadFile(user, string(path), r)
-			if err != nil {
-				return returnErrorJSON(c, http.StatusInternalServerError, err)
-			}
+		// Upload it to telegram
+		result, err := botInterface.UploadFile(user, path, r)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusInternalServerError, err)
+		}
 
-			// Store it into the database
-			err = db.CreateFile(record)
-			if err != nil {
-				return returnErrorJSON(c, http.StatusInternalServerError, err)
-			}
+		result.Header = header
+		result.KeyEnc = keyEnc
+		result.Nonce = nonce
 
-			result = append(result, record)
+		// Store it into the database
+		err = db.CreateFile(result)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusInternalServerError, err)
 		}
 
 		return c.JSON(http.StatusOK, result)
 	}
+
 }
