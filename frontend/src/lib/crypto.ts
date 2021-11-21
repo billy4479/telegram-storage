@@ -1,5 +1,3 @@
-import type { FileCryptoData } from './models';
-
 type LibSodium =
   typeof import('/home/billy/code/telegram-storage/frontend/node_modules/@types/libsodium-wrappers/index');
 
@@ -234,19 +232,21 @@ export class CryptoManager {
 
   async decryptFile(
     inputStream: ReadableStream<Uint8Array>,
-    cryptoData: FileCryptoData
+    header: string,
+    keyEnc: string,
+    nonce: string
   ): Promise<Blob> {
     const s = this._libSodium;
 
     const key = s.crypto_secretbox_open_easy(
-      s.from_base64(cryptoData.keyEnc),
-      s.from_base64(cryptoData.nonce),
+      s.from_base64(keyEnc),
+      s.from_base64(nonce),
       this._keyStore.masterKey
     );
     const reader = inputStream.getReader();
 
     const state = s.crypto_secretstream_xchacha20poly1305_init_pull(
-      s.from_base64(cryptoData.header),
+      s.from_base64(header),
       key
     );
 

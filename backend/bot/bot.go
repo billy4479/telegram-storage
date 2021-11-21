@@ -14,6 +14,14 @@ type BotInterface struct {
 	GetTempJWT func(userID int64, chatID int64) (string, error)
 }
 
+func (i *BotInterface) GetUsernameFromID(id int64) (string, error) {
+	chat, err := i.bot.GetChat(tgbotapi.ChatInfoConfig{
+		ChatConfig: tgbotapi.ChatConfig{ChatID: id},
+	})
+
+	return chat.UserName, err
+}
+
 func (i *BotInterface) Start(token string) func(*sync.WaitGroup) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	checkErrAndDie(err)

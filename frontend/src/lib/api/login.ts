@@ -2,7 +2,6 @@ import {
   checkFetchError,
   genQuery,
   loginEndpoint,
-  registerEndpoint,
   userEndpoint,
 } from './endpoints';
 import { writable } from 'svelte/store';
@@ -59,10 +58,12 @@ export async function isLoggedIn(): Promise<boolean> {
 const q = genQuery(userEndpoint);
 interface LoginResponse {
   token: string;
-  shareKey: {
-    pub: string;
-    priv: string;
-    nonce: string;
+  user: {
+    userID: number;
+
+    shareKeyPublic: string;
+    shareKeyPrivate: string;
+    shareKeyNonce: string;
   };
 }
 
@@ -86,7 +87,7 @@ export async function login(username: string, password: string) {
 
   const manager = await CryptoManager.fromPasswordAndSalt(password, salt);
 
-  const p = fetch(registerEndpoint, {
+  const p = fetch(loginEndpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -103,10 +104,14 @@ export async function login(username: string, password: string) {
     return Promise.reject(message);
   }
 
-  const j = (await res.json()) as LoginResponse;
-  manager.setShareKey(j.shareKey.pub, j.shareKey.priv, j.shareKey.nonce);
+  const responseData = (await res.json()) as LoginResponse;
+  manager.setShareKey(
+    responseData.user.shareKeyPublic,
+    responseData.user.shareKeyPrivate,
+    responseData.user.shareKeyNonce
+  );
 
-  sessionStorage.setItem('jwt', j.token);
+  sessionStorage.setItem('jwt', responseData.token);
   sessionStorage.setItem('masterKey', manager.getMasterKey());
   isAuthenticatedStore.set(true);
 }

@@ -53,9 +53,10 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 		api := e.Group("/api")
 
 		// User
+		api.GET("/user", GetUser)
 		api.POST("/user/login", Login)
 		api.GET("/user/login", CheckLogin, authorized)
-		api.POST("/user/register", Register)
+		api.POST("/user/register", Register(botInterface))
 
 		// File
 		api.GET("/file", GetFile, authorized)

@@ -4,12 +4,9 @@ export interface File {
   path: string;
   owner: number;
   parentID: number;
-  key: FileCryptoData;
-}
 
-export interface FileCryptoData {
   header: string;
-  keyEnc: string;
+  key: string;
   nonce: string;
 }
 

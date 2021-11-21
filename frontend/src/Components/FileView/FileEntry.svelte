@@ -17,7 +17,9 @@
     await authenticatedDownload(
       `${downloadEndpoint}/${data.fileID}`,
       data.name,
-      data.key
+      data.header,
+      data.key,
+      data.nonce
     );
   }
 
