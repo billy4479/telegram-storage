@@ -56,20 +56,23 @@ export async function isLoggedIn(): Promise<boolean> {
 }
 
 const q = genQuery(userEndpoint);
+interface User {
+  userID: number;
+  username: string;
+  masterKeySalt: string;
+
+  shareKeyPublic: string;
+  shareKeyPrivate: string;
+  shareKeyNonce: string;
+}
+
 interface LoginResponse {
   token: string;
-  user: {
-    userID: number;
-
-    shareKeyPublic: string;
-    shareKeyPrivate: string;
-    shareKeyNonce: string;
-  };
+  user: User;
 }
 
 export async function login(username: string, password: string) {
-  let salt: string | undefined;
-  {
+  const user = await (async (): Promise<User> => {
     const pSalt = fetch(q({ username }));
     const { ok, message, res } = await checkFetchError(pSalt);
     if (!ok) {
@@ -77,15 +80,15 @@ export async function login(username: string, password: string) {
       return Promise.reject(message);
     }
 
-    salt = (await res.json()).salt;
-    if (!salt) {
-      const msg = 'Salt not found in the response';
-      displayError(msg);
-      return Promise.reject(msg);
-    }
-  }
+    return (await res.json()) as User;
+  })();
 
-  const manager = await CryptoManager.fromPasswordAndSalt(password, salt);
+  const manager = await CryptoManager.fromPasswordAndSalt(
+    password,
+    user.masterKeySalt
+  );
+
+  const authKey = manager.getAuthKey();
 
   const p = fetch(loginEndpoint, {
     method: 'POST',
@@ -94,7 +97,7 @@ export async function login(username: string, password: string) {
     },
     body: JSON.stringify({
       username,
-      authKey: manager.getAuthKey(),
+      authKey: authKey,
     }),
   });
 

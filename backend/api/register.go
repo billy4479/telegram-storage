@@ -43,10 +43,8 @@ type keys struct {
 }
 
 type registerRequest struct {
-	JWT               string `json:"jwt"`
-	AuthenticationKey string `json:"authKey"`
-
-	Keys keys `json:"keys"`
+	JWT  string `json:"jwt"`
+	Keys keys   `json:"keys"`
 }
 
 func Register(botInterface *bot.BotInterface) func(c echo.Context) error {
@@ -62,12 +60,11 @@ func Register(botInterface *bot.BotInterface) func(c echo.Context) error {
 			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}
 
-		authKey := make([]byte, 32)
-		_, err = base64.URLEncoding.Decode(authKey, []byte(data.AuthenticationKey))
+		authKey, err := base64.RawURLEncoding.DecodeString(data.Keys.AuthKey)
 		if err != nil {
 			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}
-		authKeyHash := sha3.Sum256(authKey)
+		authKeyHash := sha3.Sum512(authKey)
 
 		claimsMap := token.Claims.(jwt.MapClaims)
 		userid := int64(claimsMap["userID"].(float64))

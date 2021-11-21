@@ -13,6 +13,7 @@
   <form
     action="/api/login"
     on:submit|preventDefault={onSubmit}
+    autocomplete="off"
     class="border border-gray-300 inline-block rounded shadow-md bg-gray-50 px-20 py-10"
   >
     <h3 class="text-3xl mb-7">Register</h3>

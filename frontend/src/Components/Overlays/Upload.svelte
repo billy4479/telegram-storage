@@ -32,6 +32,7 @@
 
       getCryptoManager().encryptFile(streamRight);
 
+      // TODO: Make file upload actually decent
       data.append('files', inputFiles.files[i], b64);
     }
 

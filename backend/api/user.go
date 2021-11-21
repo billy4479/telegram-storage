@@ -10,7 +10,7 @@ import (
 
 func GetUser(c echo.Context) error {
 	username := c.QueryParam("username")
-	if username != "" {
+	if username == "" {
 		return returnErrorJSON(c, http.StatusBadRequest, fmt.Errorf("username parameter not found"))
 	}
 

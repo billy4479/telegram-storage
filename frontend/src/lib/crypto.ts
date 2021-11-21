@@ -1,7 +1,7 @@
 type LibSodium =
   typeof import('/home/billy/code/telegram-storage/frontend/node_modules/@types/libsodium-wrappers/index');
 
-export interface KeyStore {
+export class KeyStore {
   masterKey: Uint8Array;
   masterKeySalt: Uint8Array;
 
@@ -46,6 +46,7 @@ export class CryptoManager {
 
   private constructor() {
     this._libSodium = null;
+    this._keyStore = new KeyStore();
     this._initPromise = (async (): Promise<void> => {
       console.log('Initializing LibSodium');
 
@@ -84,10 +85,12 @@ export class CryptoManager {
   }> {
     // if (!this._libSodium) throw new Error('KeyStore is not initialized');
 
-    const salt = new Uint8Array(length);
-    window.crypto.getRandomValues(salt);
-
     const manager = await new CryptoManager().initialized;
+
+    const salt = manager._libSodium.randombytes_buf(
+      manager._libSodium.crypto_pwhash_SALTBYTES
+    );
+
     manager._deriveMasterKey(password, salt);
     manager._deriveAuthKey();
 
@@ -129,6 +132,8 @@ export class CryptoManager {
   private _deriveMasterKey(password: string, salt: Uint8Array) {
     if (!this._libSodium) throw new Error('KeyStore is not initialized');
 
+    console.log('Started MasterKey derivation');
+
     // const salt = this._genRandomBuffer(this._libSodium.crypto_pwhash_SALTBYTES);
 
     const result = this._libSodium.crypto_pwhash(
@@ -142,6 +147,8 @@ export class CryptoManager {
 
     this._keyStore.masterKey = result;
     this._keyStore.masterKeySalt = salt;
+
+    console.log('MasterKey derived successfully');
   }
 
   private _deriveAuthKey() {

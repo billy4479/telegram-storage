@@ -43,6 +43,6 @@ func getUserIDFromContext(c echo.Context) (int64, error) {
 		return -1, fmt.Errorf("Token not found")
 	}
 	claims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	id := int64(claims["TelegramID"].(float64))
+	id := int64(claims["ID"].(float64))
 	return id, nil
 }

@@ -31,6 +31,12 @@ func Login(c echo.Context) error {
 		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}
 
+	authKey, err := base64.RawURLEncoding.DecodeString(data.AuthenticationKey)
+	if err != nil {
+		return returnErrorJSON(c, http.StatusBadRequest, err)
+	}
+	authKeyHash := sha3.Sum512(authKey)
+
 	user, err := db.GetUserByName(data.Username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -41,13 +47,7 @@ func Login(c echo.Context) error {
 		}
 	}
 
-	authKey, err := base64.URLEncoding.DecodeString(data.AuthenticationKey)
-	if err != nil {
-		return returnErrorJSON(c, http.StatusBadRequest, err)
-	}
-
-	authKeyHash := sha3.Sum512(authKey)
-	if !bytes.Equal([]byte(data.AuthenticationKey), authKeyHash[:]) {
+	if !bytes.Equal(user.AuthenticationKey, authKeyHash[:]) {
 		return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("Unauthorized"))
 	}
 

@@ -4,7 +4,6 @@ import { checkFetchError, registerEndpoint } from './endpoints';
 
 export async function register(token: string, password: string) {
   const { keys } = await CryptoManager.createUser(password);
-  console.log(keys);
 
   const p = fetch(registerEndpoint, {
     method: 'POST',
