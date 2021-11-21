@@ -1,4 +1,7 @@
-import sodium from 'libsodium-wrappers';
+import sodium, {
+  crypto_secretstream_xchacha20poly1305_TAG_FINAL,
+} from 'libsodium-wrappers';
+import type { FileCryptoData } from './models';
 
 export interface KeyStore {
   masterKey: Uint8Array;
@@ -17,6 +20,15 @@ export interface CreateUserKeys {
   sharePublicKey: string;
   sharePrivateKeyEnc: string;
   sharePrivateKeyNonce: string;
+}
+
+export interface EncryptFileResult {
+  data: Blob;
+  header: string;
+  key: {
+    keyEnc: string;
+    nonce: string;
+  };
 }
 
 let cryptoManager: CryptoManager | null = null;
@@ -75,7 +87,7 @@ export class CryptoManager {
 
     manager._keyStore.shareKeyPair = manager._libSodium.crypto_box_keypair();
 
-    manager._keyStore.sharePrivateKeyNonce = manager._genRandomBuffer(
+    manager._keyStore.sharePrivateKeyNonce = manager._libSodium.randombytes_buf(
       manager._libSodium.crypto_secretbox_NONCEBYTES
     );
     const sharePrivateKeyEnc = manager._libSodium.crypto_secretbox_easy(
@@ -102,12 +114,6 @@ export class CryptoManager {
         ),
       },
     };
-  }
-
-  private _genRandomBuffer(length: number): Uint8Array {
-    const buffer = new Uint8Array(length);
-    window.crypto.getRandomValues(buffer);
-    return buffer;
   }
 
   private _deriveMasterKey(password: string, salt: Uint8Array) {
@@ -155,6 +161,114 @@ export class CryptoManager {
         this._keyStore.masterKey
       ),
     };
+  }
+
+  async encryptFile(
+    inputStream: ReadableStream<Uint8Array>
+  ): Promise<EncryptFileResult> {
+    const inputReader = inputStream.getReader();
+    const s = this._libSodium;
+    const key = s.crypto_secretstream_xchacha20poly1305_keygen();
+    const { state, header } =
+      s.crypto_secretstream_xchacha20poly1305_init_push(key);
+
+    const encryptor = new ReadableStream({
+      async start(controller: ReadableStreamController<Uint8Array>) {
+        while (true) {
+          const { done, value } = await inputReader.read();
+
+          if (done) break;
+
+          console.log(value);
+          controller.enqueue(
+            s.crypto_secretstream_xchacha20poly1305_push(
+              state,
+              value,
+              null,
+              s.crypto_secretstream_xchacha20poly1305_TAG_PUSH
+            )
+          );
+        }
+
+        controller.enqueue(
+          s.crypto_secretstream_xchacha20poly1305_push(
+            state,
+            new Uint8Array(0),
+            null,
+            crypto_secretstream_xchacha20poly1305_TAG_FINAL
+          )
+        );
+
+        controller.close();
+        inputReader.releaseLock();
+      },
+    });
+
+    const nonce = s.randombytes_buf(s.crypto_secretbox_NONCEBYTES);
+    const keyEnc = s.crypto_secretbox_easy(
+      key,
+      nonce,
+      this._keyStore.masterKey
+    );
+
+    return {
+      data: await new Response(encryptor).blob(),
+      header: s.to_base64(header),
+      key: {
+        keyEnc: s.to_base64(keyEnc),
+        nonce: s.to_base64(nonce),
+      },
+    };
+  }
+
+  async decryptFile(
+    inputStream: ReadableStream<Uint8Array>,
+    cryptoData: FileCryptoData
+  ): Promise<Blob> {
+    const s = this._libSodium;
+
+    const key = s.crypto_secretbox_open_easy(
+      s.from_base64(cryptoData.keyEnc),
+      s.from_base64(cryptoData.nonce),
+      this._keyStore.masterKey
+    );
+    const reader = inputStream.getReader();
+
+    const state = s.crypto_secretstream_xchacha20poly1305_init_pull(
+      s.from_base64(cryptoData.header),
+      key
+    );
+
+    const decryptor = new ReadableStream({
+      async start(controller: ReadableStreamController<Uint8Array>) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const { message, tag } = s.crypto_secretstream_xchacha20poly1305_pull(
+            state,
+            value
+          );
+
+          if (tag === crypto_secretstream_xchacha20poly1305_TAG_FINAL) break;
+          controller.enqueue(message);
+        }
+
+        controller.enqueue(
+          s.crypto_secretstream_xchacha20poly1305_push(
+            state,
+            new Uint8Array(0),
+            null,
+            crypto_secretstream_xchacha20poly1305_TAG_FINAL
+          )
+        );
+
+        controller.close();
+        reader.releaseLock();
+      },
+    });
+
+    return new Response(decryptor).blob();
   }
 
   getAuthKey(): string {

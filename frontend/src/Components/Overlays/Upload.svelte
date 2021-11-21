@@ -2,6 +2,7 @@
   import { currentPathStore, refreshCurrentView } from '../../lib/navigation';
   import { fileEndpoint } from '../../lib/api/endpoints';
   import { authorizationHeader } from '../../lib/api/login';
+  import { getCryptoManager } from '../../lib/crypto';
 
   export let close: () => void;
 
@@ -22,6 +23,14 @@
     for (let i = 0; i < inputFiles.files.length; i++) {
       const name = currentPath + '/' + inputFiles.files[i].name;
       const b64 = btoa(name).replaceAll('+', '-').replaceAll('/', '_');
+
+      const streamWrong = inputFiles.files[i].stream();
+      console.log(streamWrong);
+      // Ehm, wrong type, I think...
+      const streamRight = streamWrong as unknown as ReadableStream<Uint8Array>;
+      console.log(streamRight);
+
+      getCryptoManager().encryptFile(streamRight);
 
       data.append('files', inputFiles.files[i], b64);
     }

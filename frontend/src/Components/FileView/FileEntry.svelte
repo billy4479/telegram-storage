@@ -16,7 +16,8 @@
   async function downloadFile() {
     await authenticatedDownload(
       `${downloadEndpoint}/${data.fileID}`,
-      data.name
+      data.name,
+      data.key
     );
   }
 
