@@ -1,7 +1,7 @@
-import sodium, {
-  crypto_secretstream_xchacha20poly1305_TAG_FINAL,
-} from 'libsodium-wrappers';
 import type { FileCryptoData } from './models';
+
+type LibSodium =
+  typeof import('/home/billy/code/telegram-storage/frontend/node_modules/@types/libsodium-wrappers/index');
 
 export interface KeyStore {
   masterKey: Uint8Array;
@@ -9,7 +9,10 @@ export interface KeyStore {
 
   authKey: Uint8Array;
 
-  shareKeyPair: sodium.KeyPair;
+  shareKeyPair: {
+    priv: Uint8Array;
+    pub: Uint8Array;
+  };
   sharePrivateKeyNonce: Uint8Array;
 }
 
@@ -39,15 +42,20 @@ export function getCryptoManager() {
 
 export class CryptoManager {
   private _initPromise: Promise<void>;
-  private _libSodium: typeof sodium | null;
+  private _libSodium: LibSodium | null;
 
   private _keyStore: KeyStore;
 
   private constructor() {
     this._libSodium = null;
     this._initPromise = (async (): Promise<void> => {
+      console.log('Initializing LibSodium');
+
+      const sodium = (await import('libsodium-wrappers')).default;
       await sodium.ready;
       this._libSodium = sodium;
+
+      console.log('LibSodium is initialized');
     })();
   }
 
@@ -85,13 +93,17 @@ export class CryptoManager {
     manager._deriveMasterKey(password, salt);
     manager._deriveAuthKey();
 
-    manager._keyStore.shareKeyPair = manager._libSodium.crypto_box_keypair();
+    const keyPair = manager._libSodium.crypto_box_keypair();
+    manager._keyStore.shareKeyPair = {
+      priv: keyPair.privateKey,
+      pub: keyPair.publicKey,
+    };
 
     manager._keyStore.sharePrivateKeyNonce = manager._libSodium.randombytes_buf(
       manager._libSodium.crypto_secretbox_NONCEBYTES
     );
     const sharePrivateKeyEnc = manager._libSodium.crypto_secretbox_easy(
-      manager._keyStore.shareKeyPair.privateKey,
+      manager._keyStore.shareKeyPair.priv,
       manager._keyStore.sharePrivateKeyNonce,
       manager._keyStore.masterKey
     );
@@ -106,7 +118,7 @@ export class CryptoManager {
         ),
         authKey: manager._libSodium.to_base64(manager._keyStore.authKey),
         sharePublicKey: manager._libSodium.to_base64(
-          manager._keyStore.shareKeyPair.publicKey
+          manager._keyStore.shareKeyPair.pub
         ),
         sharePrivateKeyEnc: manager._libSodium.to_base64(sharePrivateKeyEnc),
         sharePrivateKeyNonce: manager._libSodium.to_base64(
@@ -153,9 +165,8 @@ export class CryptoManager {
     this._keyStore.sharePrivateKeyNonce = this._libSodium.from_base64(nonce);
 
     this._keyStore.shareKeyPair = {
-      keyType: 'curve25519',
-      publicKey: this._libSodium.from_base64(pub),
-      privateKey: this._libSodium.crypto_secretbox_open_easy(
+      pub: this._libSodium.from_base64(pub),
+      priv: this._libSodium.crypto_secretbox_open_easy(
         this._libSodium.from_base64(privateEnc),
         this._keyStore.sharePrivateKeyNonce,
         this._keyStore.masterKey
@@ -195,7 +206,7 @@ export class CryptoManager {
             state,
             new Uint8Array(0),
             null,
-            crypto_secretstream_xchacha20poly1305_TAG_FINAL
+            s.crypto_secretstream_xchacha20poly1305_TAG_FINAL
           )
         );
 
@@ -250,7 +261,7 @@ export class CryptoManager {
             value
           );
 
-          if (tag === crypto_secretstream_xchacha20poly1305_TAG_FINAL) break;
+          if (tag === s.crypto_secretstream_xchacha20poly1305_TAG_FINAL) break;
           controller.enqueue(message);
         }
 
@@ -259,7 +270,7 @@ export class CryptoManager {
             state,
             new Uint8Array(0),
             null,
-            crypto_secretstream_xchacha20poly1305_TAG_FINAL
+            s.crypto_secretstream_xchacha20poly1305_TAG_FINAL
           )
         );
 
