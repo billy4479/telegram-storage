@@ -2,7 +2,7 @@
   import { currentPathStore, refreshCurrentView } from '../../lib/navigation';
   import { checkFetchError, fileEndpoint } from '../../lib/api/endpoints';
   import { authorizationHeader } from '../../lib/api/login';
-  import { getCryptoManager } from '../../lib/crypto';
+  import { getCryptoManager } from '../../lib/crypto/manager';
   import { displayError } from '../../lib/displayError';
 
   export let close: () => void;
@@ -29,11 +29,11 @@
           const path = currentPath + '/' + inputFiles.files[i].name;
 
           const streamWrong = inputFiles.files[i].stream();
-          console.log(streamWrong);
+          // console.log(streamWrong);
           // Ehm, wrong type, I think...
           const streamRight =
             streamWrong as unknown as ReadableStream<Uint8Array>;
-          console.log(streamRight);
+          // console.log(streamRight);
 
           const encrypted = await getCryptoManager().encryptFile(streamRight);
 

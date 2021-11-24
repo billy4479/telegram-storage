@@ -1,4 +1,4 @@
-import { CryptoManager } from '../crypto';
+import { CryptoManager } from '../crypto/manager';
 import { displayError } from '../displayError';
 import { checkFetchError, registerEndpoint } from './endpoints';
 

@@ -42,9 +42,10 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 		if !e.Debug {
 			e.Use(middleware.Recover())
 		}
-		e.Use(middleware.RemoveTrailingSlash())
-		e.Use(middleware.Secure())
 		e.Use(middleware.CORS())
+		e.Use(middleware.Gzip())
+		e.Use(middleware.Secure())
+		e.Use(middleware.RemoveTrailingSlash())
 	}
 
 	e.Static("/", "./public")

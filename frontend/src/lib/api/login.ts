@@ -6,7 +6,7 @@ import {
 } from './endpoints';
 import { writable } from 'svelte/store';
 import { displayError } from '../displayError';
-import { CryptoManager } from '../crypto';
+import { CryptoManager } from '../crypto/manager';
 
 function getJWT(): string | null {
   return sessionStorage.getItem('jwt');

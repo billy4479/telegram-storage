@@ -1,3 +1,6 @@
+import { newDecryptionStream } from './decryptionStream';
+import { newEncryptionStream } from './encryptionStream';
+
 type LibSodium =
   typeof import('/home/billy/code/telegram-storage/frontend/node_modules/@types/libsodium-wrappers/index');
 
@@ -35,6 +38,8 @@ let cryptoManager: CryptoManager | null = null;
 export function getCryptoManager() {
   return cryptoManager;
 }
+
+const CHUNK_SIZE = 4 * 1024 * 1024;
 
 export class CryptoManager {
   private _initPromise: Promise<void>;
@@ -182,43 +187,17 @@ export class CryptoManager {
   async encryptFile(
     inputStream: ReadableStream<Uint8Array>
   ): Promise<EncryptFileResult> {
-    const inputReader = inputStream.getReader();
     const s = this._libSodium;
     const key = s.crypto_secretstream_xchacha20poly1305_keygen();
     const { state, header } =
       s.crypto_secretstream_xchacha20poly1305_init_push(key);
 
-    const encryptor = new ReadableStream({
-      async start(controller: ReadableStreamController<Uint8Array>) {
-        while (true) {
-          const { done, value } = await inputReader.read();
-
-          if (done) break;
-
-          console.log(value);
-          controller.enqueue(
-            s.crypto_secretstream_xchacha20poly1305_push(
-              state,
-              value,
-              null,
-              s.crypto_secretstream_xchacha20poly1305_TAG_PUSH
-            )
-          );
-        }
-
-        controller.enqueue(
-          s.crypto_secretstream_xchacha20poly1305_push(
-            state,
-            new Uint8Array(0),
-            null,
-            s.crypto_secretstream_xchacha20poly1305_TAG_FINAL
-          )
-        );
-
-        controller.close();
-        inputReader.releaseLock();
-      },
-    });
+    const encryptionStream = newEncryptionStream(
+      inputStream,
+      CHUNK_SIZE,
+      s,
+      state
+    );
 
     const nonce = s.randombytes_buf(s.crypto_secretbox_NONCEBYTES);
     const keyEnc = s.crypto_secretbox_easy(
@@ -228,7 +207,7 @@ export class CryptoManager {
     );
 
     return {
-      data: await new Response(encryptor).blob(),
+      data: await new Response(encryptionStream).blob(),
       header: s.to_base64(header),
       key: {
         keyEnc: s.to_base64(keyEnc),
@@ -250,43 +229,20 @@ export class CryptoManager {
       s.from_base64(nonce),
       this._keyStore.masterKey
     );
-    const reader = inputStream.getReader();
 
     const state = s.crypto_secretstream_xchacha20poly1305_init_pull(
       s.from_base64(header),
       key
     );
 
-    const decryptor = new ReadableStream({
-      async start(controller: ReadableStreamController<Uint8Array>) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+    const decryptionStream = newDecryptionStream(
+      inputStream,
+      CHUNK_SIZE,
+      s,
+      state
+    );
 
-          const { message, tag } = s.crypto_secretstream_xchacha20poly1305_pull(
-            state,
-            value
-          );
-
-          if (tag === s.crypto_secretstream_xchacha20poly1305_TAG_FINAL) break;
-          controller.enqueue(message);
-        }
-
-        controller.enqueue(
-          s.crypto_secretstream_xchacha20poly1305_push(
-            state,
-            new Uint8Array(0),
-            null,
-            s.crypto_secretstream_xchacha20poly1305_TAG_FINAL
-          )
-        );
-
-        controller.close();
-        reader.releaseLock();
-      },
-    });
-
-    return new Response(decryptor).blob();
+    return new Response(decryptionStream).blob();
   }
 
   getAuthKey(): string {
