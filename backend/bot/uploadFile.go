@@ -18,15 +18,10 @@ func (i *BotInterface) UploadFile(user *db.User, path string, r io.Reader) (*db.
 		return nil, err
 	}
 
-	url, err := i.bot.GetFileDirectURL(msg.Document.FileID)
-	if err != nil {
-		return nil, err
-	}
-
 	return &db.File{
-		Path:  path,
-		Owner: user.TelegramID,
-		URL:   url,
+		Path:   path,
+		Owner:  user.TelegramID,
+		FileID: msg.Document.FileID,
 	}, nil
 
 }

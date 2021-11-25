@@ -1,6 +1,6 @@
 import { genQuery, listEndpoint } from './api/endpoints';
 import type { FolderContent } from './models';
-import { authorizationHeader } from './api/authentication';
+import { authorizationHeader } from './api/login';
 import { clearSelection } from './selection';
 import { getFolder } from './api/get';
 import { writable } from 'svelte/store';

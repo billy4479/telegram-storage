@@ -15,57 +15,44 @@ import (
 )
 
 type userClaims struct {
-	TelegramID int64
-	ChatID     int64
 	jwt.StandardClaims
+	ID int64
 }
 
-type userSecret struct {
-	UserSecret string `json:"userSecret" form:"userSecret" `
-}
-
-var nullSecret = []byte{
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
+type loginRequest struct {
+	Username          string `json:"username"`
+	AuthenticationKey string `json:"authKey"`
 }
 
 func Login(c echo.Context) error {
-	var s userSecret
-	err := c.Bind(&s)
+	var data loginRequest
+	err := c.Bind(&data)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}
 
-	h, err := base64.URLEncoding.DecodeString(s.UserSecret)
+	authKey, err := base64.RawURLEncoding.DecodeString(data.AuthenticationKey)
 	if err != nil {
 		return returnErrorJSON(c, http.StatusBadRequest, err)
 	}
-	if len(h) != 63 {
-		return returnErrorJSON(c, http.StatusBadRequest, fmt.Errorf("Invalid secret"))
-	}
-	secret := sha3.Sum512(h)
+	authKeyHash := sha3.Sum512(authKey)
 
-	if bytes.Equal(secret[:], nullSecret) {
-		return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("User not found"))
-	}
-
-	user, err := db.GetUserBySecret(secret[:])
+	user, err := db.GetUserByName(data.Username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("User not found"))
+			return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("Unauthorized"))
 		}
-		return returnErrorJSON(c, http.StatusInternalServerError, err)
+		if err = handleDBErr(c, err); err != nil {
+			return err
+		}
+	}
+
+	if !bytes.Equal(user.AuthenticationKey, authKeyHash[:]) {
+		return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("Unauthorized"))
 	}
 
 	claims := &userClaims{
-		TelegramID: user.TelegramID,
-		ChatID:     user.ChatID,
+		ID: user.TelegramID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 10).Unix(),
 		},
@@ -79,6 +66,7 @@ func Login(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"token": t,
+		"user":  user,
 	})
 }
 

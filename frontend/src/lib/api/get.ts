@@ -1,5 +1,5 @@
 import { checkFetchError, folderEndpoint, genQuery } from './endpoints';
-import { authorizationHeader } from './authentication';
+import { authorizationHeader } from './login';
 import type { Folder } from '../models';
 import { displayError } from '../displayError';
 

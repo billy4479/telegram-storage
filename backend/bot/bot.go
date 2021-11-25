@@ -9,6 +9,17 @@ import (
 
 type BotInterface struct {
 	bot *tgbotapi.BotAPI
+
+	// This function will be provided by the API
+	GetTempJWT func(userID int64, chatID int64) (string, error)
+}
+
+func (i *BotInterface) GetUsernameFromID(id int64) (string, error) {
+	chat, err := i.bot.GetChat(tgbotapi.ChatInfoConfig{
+		ChatConfig: tgbotapi.ChatConfig{ChatID: id},
+	})
+
+	return chat.UserName, err
 }
 
 func (i *BotInterface) Start(token string) func(*sync.WaitGroup) {
@@ -34,18 +45,15 @@ func (i *BotInterface) Start(token string) func(*sync.WaitGroup) {
 				break
 			}
 
-			if update.Message == nil { // ignore any non-Message Updates
-				continue
-			}
-			message := update.Message
-
-			if !message.Chat.IsPrivate() {
-				if message.Text == "/link" {
-					i.linkChat(message)
-				}
+			if update.Message == nil ||
+				!update.Message.IsCommand() ||
+				update.Message.Chat.IsPrivate() {
 				continue
 			}
 
+			if update.Message.Command() == "link" {
+				i.linkChat(update.Message)
+			}
 		}
 		stopped <- struct{}{}
 	}()

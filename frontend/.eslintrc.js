@@ -21,11 +21,12 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'svelte3', 'prettier', 'import'],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': 'warn',
     'no-plusplus': 0,
     'import/extensions': ['error', { ts: 'never' }],
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
+    '@typescript-eslint/lines-between-class-members': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
   },
   ignorePatterns: ['build/*', 'node_modules/*'],
