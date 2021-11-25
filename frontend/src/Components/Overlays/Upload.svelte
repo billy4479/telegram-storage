@@ -35,7 +35,17 @@
             streamWrong as unknown as ReadableStream<Uint8Array>;
           // console.log(streamRight);
 
-          const encrypted = await getCryptoManager().encryptFile(streamRight);
+          const encrypted = await getCryptoManager()
+            .encryptFile(streamRight)
+            .catch((error) => {
+              console.error(error);
+            });
+
+          console.log(encrypted);
+
+          if (!encrypted) {
+            return;
+          }
 
           data.append('file', encrypted.data);
           data.append('path', path);

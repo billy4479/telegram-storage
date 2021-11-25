@@ -1,8 +1,12 @@
-import type { StateAddress } from 'libsodium-wrappers';
+import type { MessageTag, StateAddress } from 'libsodium-wrappers';
 import newEvenChunkReader from './evenChunkReader';
 
 type LibSodium =
   typeof import('/home/billy/code/telegram-storage/frontend/node_modules/@types/libsodium-wrappers/index');
+
+function checkDecryptionError(m: MessageTag): boolean {
+  return typeof m === 'boolean' && !(m as boolean);
+}
 
 export function newDecryptionStream(
   origin: ReadableStream<Uint8Array>,
@@ -17,34 +21,64 @@ export function newDecryptionStream(
   return new ReadableStream({
     async start(controller: ReadableStreamController<Uint8Array>) {
       while (true) {
-        const { done, value } = await inputReader.read();
-        if (done) break;
+        const r = await inputReader.read();
+        if (r.done) {
+          break;
+        }
 
-        console.log(value.length);
+        const data =
+          r.value.length === chunkSize
+            ? r.value
+            : r.value.subarray(
+                0,
+                -s.crypto_secretstream_xchacha20poly1305_ABYTES
+              );
 
-        const m = s.crypto_secretstream_xchacha20poly1305_pull(state, value);
-        console.log(m);
-        if (typeof m === 'boolean' && !(m as boolean)) {
+        const m = s.crypto_secretstream_xchacha20poly1305_pull(state, data);
+
+        if (checkDecryptionError(m)) {
           const msg = 'Fatal error while decoding message';
-
           console.error(msg);
-          throw new Error(msg);
+          return Promise.reject(msg);
         }
 
         const { message, tag } = m;
 
-        if (tag === s.crypto_secretstream_xchacha20poly1305_TAG_FINAL) break;
-        controller.enqueue(message);
-      }
+        if (tag === s.crypto_secretstream_xchacha20poly1305_TAG_FINAL) {
+          const msg = 'Unexpected end of stream';
+          console.error(msg);
+          return Promise.reject(msg);
+        }
 
-      controller.enqueue(
-        s.crypto_secretstream_xchacha20poly1305_push(
-          state,
-          new Uint8Array(0),
-          null,
-          s.crypto_secretstream_xchacha20poly1305_TAG_FINAL
-        )
-      );
+        controller.enqueue(message);
+
+        if (r.value.length !== chunkSize) {
+          const last = r.value.subarray(
+            -s.crypto_secretstream_xchacha20poly1305_ABYTES
+          );
+
+          const closing = s.crypto_secretstream_xchacha20poly1305_pull(
+            state,
+            last
+          );
+
+          if (checkDecryptionError(closing)) {
+            const msg = 'Fatal error while decoding closing message';
+            console.error(msg);
+            return Promise.reject(msg);
+          }
+
+          if (
+            closing.tag !== s.crypto_secretstream_xchacha20poly1305_TAG_FINAL
+          ) {
+            const msg = `Expected end of stream, found ${s.to_base64(
+              closing.message
+            )}`;
+            console.error(msg);
+            return Promise.reject(msg);
+          }
+        }
+      }
 
       controller.close();
       inputReader.releaseLock();

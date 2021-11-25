@@ -15,9 +15,13 @@ export function newEncryptionStream(
 
   return new ReadableStream<Uint8Array>({
     async start(controller) {
+      let last: Uint8Array;
       while (true) {
         const { done, value } = await inputReader.read();
-        if (done) break;
+        if (done) {
+          console.log(s.to_base64(last));
+          break;
+        }
 
         const enc = s.crypto_secretstream_xchacha20poly1305_push(
           state,
@@ -25,8 +29,8 @@ export function newEncryptionStream(
           null,
           s.crypto_secretstream_xchacha20poly1305_TAG_PUSH
         );
+        last = enc;
 
-        console.log({ original: value.length, encrypted: enc.length });
         controller.enqueue(enc);
       }
 

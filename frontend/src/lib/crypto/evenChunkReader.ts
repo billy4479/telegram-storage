@@ -6,37 +6,33 @@ export default function newEvenChunkReader(
   let buffer: Uint8Array;
   return new ReadableStream({
     start() {
-      buffer = new Uint8Array(chunkSize * 2);
+      buffer = new Uint8Array(0);
     },
     async pull(controller) {
       const { done, value } = await reader.read();
 
       if (done) {
-        console.log(`[EVEN]: Done!`);
         controller.enqueue(buffer);
 
         controller.close();
         reader.releaseLock();
+        return;
       }
-
-      console.log(
-        `[EVEN]: Reading new chunk from origin of size ${value.length}`
-      );
 
       try {
         buffer = Uint8Array.from([...buffer, ...value]);
       } catch (error) {
-        console.error(error);
+        console.error({ error, value });
       }
 
-      console.log(`[EVEN]: Buffer size is now ${buffer.length} bytes`);
+      // console.log(`[EVEN]: Buffer size is now ${buffer.length} bytes`);
 
       while (buffer.length >= chunkSize) {
         const chunk = buffer.subarray(0, chunkSize);
-        console.log(`[EVEN]: Enqueueing new chunk of size ${chunk.length}`);
+        // console.log(`[EVEN]: Enqueueing new chunk of size ${chunk.length}`);
         controller.enqueue(chunk);
         buffer = buffer.subarray(chunkSize, buffer.length);
-        console.log(`[EVEN]: Still ${buffer.length} bytes buffered`);
+        // console.log(`[EVEN]: Still ${buffer.length} bytes buffered`);
       }
     },
     cancel() {

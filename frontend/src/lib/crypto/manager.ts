@@ -39,7 +39,8 @@ export function getCryptoManager() {
   return cryptoManager;
 }
 
-const CHUNK_SIZE = 4 * 1024 * 1024;
+const CHUNK_SIZE = 8 * 1024;
+// const CHUNK_SIZE = 4 * 1024 * 1024;
 
 export class CryptoManager {
   private _initPromise: Promise<void>;

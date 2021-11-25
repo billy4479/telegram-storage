@@ -33,9 +33,10 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 	{
 		{
 			config := middleware.DefaultLoggerConfig
-			config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
+			config.Format = "${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
+			// config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
 			config.Output = os.Stdout
-			config.CustomTimeFormat = "2006/01/02 15:04:05"
+			// config.CustomTimeFormat = "2006/01/02 15:04:05"
 			e.Use(middleware.LoggerWithConfig(config))
 		}
 		// e.Use(middleware.Logger())
