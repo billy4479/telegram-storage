@@ -1,10 +1,11 @@
 <script lang="ts">
   import Login from './Components/Login.svelte';
-  import { checkAuth, isAuthenticatedStore } from './lib/api/authentication';
+  import { isLoggedIn, isAuthenticatedStore } from './lib/api/login';
   import Main from './Components/Main.svelte';
   import Overlay from './Components/Overlays/Overlay.svelte';
   import Error from './Components/Overlays/Error.svelte';
   import { errorStore } from './lib/displayError';
+  import Register from './Components/Register.svelte';
 
   let showErrorOverlay: () => void;
   let closeErrorOverlay: () => void;
@@ -18,10 +19,11 @@
   });
 </script>
 
-{#await checkAuth()}
+{#await isLoggedIn()}
   Loading...
 {:then}
   {#if !$isAuthenticatedStore}
+    <Register />
     <Login />
   {:else}
     <Main />

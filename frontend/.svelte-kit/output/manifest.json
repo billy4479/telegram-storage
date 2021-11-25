@@ -1,0 +1,240 @@
+{
+  ".svelte-kit/build/runtime/internal/start.js": {
+    "file": "start-03818aa0.js",
+    "src": ".svelte-kit/build/runtime/internal/start.js",
+    "isEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_preload-helper-ec9aa979.js",
+      "_singletons-12a22614.js"
+    ],
+    "dynamicImports": [
+      "src/routes/__layout.svelte",
+      ".svelte-kit/build/components/error.svelte",
+      "src/routes/index.svelte",
+      "src/routes/register.svelte",
+      "src/routes/login.svelte",
+      "src/routes/a/index.svelte",
+      "src/routes/a/folder/__layout.svelte",
+      "src/routes/a/folder/index.svelte",
+      "src/routes/a/folder/[id].svelte"
+    ],
+    "css": [
+      "assets/start-808c0b29.css"
+    ]
+  },
+  "src/routes/__layout.svelte": {
+    "file": "pages/__layout.svelte-5faff032.js",
+    "src": "src/routes/__layout.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_Overlay-785da3aa.js",
+      "_displayError-0ab9c496.js"
+    ],
+    "css": [
+      "assets/pages/__layout.svelte-9131a394.css"
+    ]
+  },
+  ".svelte-kit/build/components/error.svelte": {
+    "file": "error.svelte-68c863ce.js",
+    "src": ".svelte-kit/build/components/error.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js"
+    ]
+  },
+  "src/routes/index.svelte": {
+    "file": "pages/index.svelte-dff7653f.js",
+    "src": "src/routes/index.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_login-96f3aec9.js",
+      "_navigation-51f4a605.js",
+      "_displayError-0ab9c496.js",
+      "_preload-helper-ec9aa979.js",
+      "_singletons-12a22614.js"
+    ],
+    "css": [
+      "assets/pages/index.svelte-c325a712.css"
+    ]
+  },
+  "src/routes/register.svelte": {
+    "file": "pages/register.svelte-bd9f03df.js",
+    "src": "src/routes/register.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_navigation-51f4a605.js",
+      "_preload-helper-ec9aa979.js",
+      "_login-96f3aec9.js",
+      "_displayError-0ab9c496.js",
+      "_singletons-12a22614.js"
+    ],
+    "dynamicImports": [
+      "_main-13e0cc77.js"
+    ],
+    "css": [
+      "assets/pages/register.svelte-631d418f.css"
+    ]
+  },
+  "src/routes/login.svelte": {
+    "file": "pages/login.svelte-3914057a.js",
+    "src": "src/routes/login.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_navigation-51f4a605.js",
+      "_login-96f3aec9.js",
+      "_singletons-12a22614.js",
+      "_displayError-0ab9c496.js",
+      "_preload-helper-ec9aa979.js"
+    ],
+    "css": [
+      "assets/pages/login.svelte-2c996820.css"
+    ]
+  },
+  "src/routes/a/index.svelte": {
+    "file": "pages/a/index.svelte-5fa70b70.js",
+    "src": "src/routes/a/index.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_navigation-51f4a605.js",
+      "_singletons-12a22614.js"
+    ]
+  },
+  "src/routes/a/folder/__layout.svelte": {
+    "file": "pages/a/folder/__layout.svelte-90bcfdfd.js",
+    "src": "src/routes/a/folder/__layout.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_navigation-51f4a605.js",
+      "_Overlay-785da3aa.js",
+      "_CreateFolder-2d93ffa5.js",
+      "_login-96f3aec9.js",
+      "_singletons-12a22614.js",
+      "_displayError-0ab9c496.js",
+      "_get-81beb197.js",
+      "_preload-helper-ec9aa979.js"
+    ],
+    "css": [
+      "assets/pages/a/folder/__layout.svelte-686c48c2.css"
+    ]
+  },
+  "src/routes/a/folder/index.svelte": {
+    "file": "pages/a/folder/index.svelte-7027d6c6.js",
+    "src": "src/routes/a/folder/index.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_navigation-51f4a605.js",
+      "_get-81beb197.js",
+      "_singletons-12a22614.js",
+      "_login-96f3aec9.js",
+      "_displayError-0ab9c496.js",
+      "_preload-helper-ec9aa979.js"
+    ]
+  },
+  "src/routes/a/folder/[id].svelte": {
+    "file": "pages/a/folder/_id_.svelte-4e3321fc.js",
+    "src": "src/routes/a/folder/[id].svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_get-81beb197.js",
+      "_CreateFolder-2d93ffa5.js",
+      "_displayError-0ab9c496.js",
+      "_login-96f3aec9.js",
+      "_navigation-51f4a605.js",
+      "_Overlay-785da3aa.js",
+      "_preload-helper-ec9aa979.js",
+      "_singletons-12a22614.js"
+    ],
+    "css": [
+      "assets/pages/a/folder/_id_.svelte-3f87056b.css"
+    ]
+  },
+  "_vendor-f40b56c0.js": {
+    "file": "chunks/vendor-f40b56c0.js",
+    "css": [
+      "assets/vendor-9cea4ab5.css"
+    ]
+  },
+  "_singletons-12a22614.js": {
+    "file": "chunks/singletons-12a22614.js"
+  },
+  "_preload-helper-ec9aa979.js": {
+    "file": "chunks/preload-helper-ec9aa979.js"
+  },
+  "_Overlay-785da3aa.js": {
+    "file": "chunks/Overlay-785da3aa.js",
+    "imports": [
+      "_vendor-f40b56c0.js"
+    ],
+    "css": [
+      "assets/Overlay-f7dd6ab7.css"
+    ]
+  },
+  "_displayError-0ab9c496.js": {
+    "file": "chunks/displayError-0ab9c496.js",
+    "imports": [
+      "_vendor-f40b56c0.js"
+    ]
+  },
+  "_login-96f3aec9.js": {
+    "file": "chunks/login-96f3aec9.js",
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_displayError-0ab9c496.js",
+      "_preload-helper-ec9aa979.js"
+    ],
+    "dynamicImports": [
+      "_libsodium-wrappers-3300ce5f.js"
+    ]
+  },
+  "_navigation-51f4a605.js": {
+    "file": "chunks/navigation-51f4a605.js",
+    "imports": [
+      "_singletons-12a22614.js"
+    ]
+  },
+  "_CreateFolder-2d93ffa5.js": {
+    "file": "chunks/CreateFolder-2d93ffa5.js",
+    "imports": [
+      "_vendor-f40b56c0.js",
+      "_login-96f3aec9.js",
+      "_displayError-0ab9c496.js",
+      "_get-81beb197.js"
+    ],
+    "css": [
+      "assets/CreateFolder-05bf98b6.css"
+    ]
+  },
+  "_get-81beb197.js": {
+    "file": "chunks/get-81beb197.js",
+    "imports": [
+      "_login-96f3aec9.js",
+      "_displayError-0ab9c496.js"
+    ]
+  },
+  "_libsodium-wrappers-3300ce5f.js": {
+    "file": "chunks/libsodium-wrappers-3300ce5f.js",
+    "isDynamicEntry": true
+  },
+  "_main-13e0cc77.js": {
+    "file": "chunks/main-13e0cc77.js",
+    "isDynamicEntry": true
+  }
+}

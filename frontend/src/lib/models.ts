@@ -4,6 +4,10 @@ export interface File {
   path: string;
   owner: number;
   parentID: number;
+
+  header: string;
+  key: string;
+  nonce: string;
 }
 
 export interface Folder {

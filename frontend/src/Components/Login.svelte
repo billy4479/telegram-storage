@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { authenticate } from '../lib/api/authentication';
+  import { login } from '../lib/api/login';
 
-  let userSecret = '';
+  let username = '';
+  let password = '';
 
   async function onSubmit() {
-    await authenticate(userSecret);
+    await login(username, password);
   }
 </script>
 
@@ -15,13 +16,18 @@
     class="border border-gray-300 inline-block rounded shadow-md bg-gray-50 px-20 py-10"
   >
     <h3 class="text-3xl mb-7">Login</h3>
-    <label for="userSecret" class="mr-3">User Secret:</label>
+    <label for="username" class="mr-3">Username:</label>
+    <input
+      name="username"
+      class="p-1 rounded shadow-md border border-gray-300"
+      bind:value={username}
+    />
+    <label for="password" class="mr-3">Password:</label>
     <input
       type="password"
-      name="userSecret"
-      id="userSecret"
+      name="password"
       class="p-1 rounded shadow-md border border-gray-300"
-      bind:value={userSecret}
+      bind:value={password}
     />
     <br />
     <input type="submit" value="Login" class="btn-good-light cursor-pointer" />

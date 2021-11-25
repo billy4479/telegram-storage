@@ -1,5 +1,16 @@
 {
     "cSpell.words": [
-        "tgbotapi"
+        "ABYTES",
+        "libsodium",
+        "MEMLIMIT",
+        "NONCEBYTES",
+        "OPSLIMIT",
+        "pwhash",
+        "randombytes",
+        "SALTBYTES",
+        "secretbox",
+        "secretstream",
+        "tgbotapi",
+        "xchacha"
     ]
 }

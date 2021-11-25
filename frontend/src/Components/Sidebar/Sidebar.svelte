@@ -11,7 +11,7 @@
   import Delete from '../Overlays/Delete.svelte';
 
   import NavButton from './NavButton.svelte';
-  import { logout } from '../../lib/api/authentication';
+  import { logout } from '../../lib/api/login';
   import { getSelected } from '../../lib/selection';
   import CreateFolder from '../Overlays/CreateFolder.svelte';
 

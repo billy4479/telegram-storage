@@ -1,10 +1,19 @@
 import { displayError } from '../displayError';
-import { authorizationHeader } from './authentication';
-import { checkFetchError } from './endpoints';
+import { authorizationHeader } from './login';
+import { checkFetchError, downloadEndpoint, genQuery } from './endpoints';
+import { getCryptoManager } from '../crypto/manager';
 
-export default async function authenticatedDownload(url: string, name: string) {
+const q = genQuery(downloadEndpoint);
+
+export default async function authenticatedDownload(
+  id: number,
+  name: string,
+  header: string,
+  key: string,
+  nonce: string
+) {
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
-  const p = fetch(url, {
+  const p = fetch(q({ id: id.toString() }), {
     headers: authorizationHeader(),
   });
 
@@ -13,7 +22,16 @@ export default async function authenticatedDownload(url: string, name: string) {
     displayError(message);
     return Promise.reject(message);
   }
-  const blob = await res.blob();
+
+  const blob = await getCryptoManager()
+    .decryptFile(res.body, header, key, nonce)
+    .catch((err: Error) => {
+      displayError(err.message);
+    });
+
+  if (!blob) {
+    return;
+  }
 
   const blobURL = URL.createObjectURL(blob);
   const a = document.createElement('a');
