@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
+
   import { login } from '../lib/api/login';
 
   let username = '';
@@ -6,6 +8,7 @@
 
   async function onSubmit() {
     await login(username, password);
+    await goto('/');
   }
 </script>
 

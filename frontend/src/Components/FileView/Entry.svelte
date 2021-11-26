@@ -42,7 +42,7 @@
   </span>
 </button>
 
-<style>
+<style scoped>
   span {
     overflow: hidden;
     white-space: nowrap;

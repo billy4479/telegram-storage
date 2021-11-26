@@ -30,7 +30,7 @@ export function isAuthenticated(): boolean {
   return authenticated;
 }
 
-export function logout() {
+export function logout(): void {
   sessionStorage.removeItem('jwt');
   sessionStorage.removeItem('masterKey');
   isAuthenticatedStore.set(false);
@@ -45,7 +45,15 @@ export async function isLoggedIn(): Promise<boolean> {
     headers: authorizationHeader(),
   });
 
-  const { ok, message } = await checkFetchError(p);
+  const r = await checkFetchError(p).catch(() => {
+    logout();
+  });
+
+  if (!r) {
+    return false;
+  }
+
+  const { ok, message } = r;
 
   if (!ok) {
     console.warn(message);
@@ -74,7 +82,7 @@ interface LoginResponse {
   user: User;
 }
 
-export async function login(username: string, password: string) {
+export async function login(username: string, password: string): Promise<void> {
   const user = await (async (): Promise<User> => {
     const pSalt = fetch(q({ username }));
     const { ok, message, res } = await checkFetchError(pSalt);
