@@ -49,7 +49,8 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 		e.Use(middleware.RemoveTrailingSlash())
 	}
 
-	e.Static("/", "./public")
+	// e.Static("/", "./public")
+	e.GET("/*", Static("/", "./public", "index.html"))
 
 	{
 		api := e.Group("/api")
