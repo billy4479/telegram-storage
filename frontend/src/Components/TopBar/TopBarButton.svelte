@@ -6,7 +6,7 @@
   <slot />
 </button>
 
-<style>
+<style scoped>
   button {
     aspect-ratio: 1;
   }

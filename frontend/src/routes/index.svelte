@@ -1,35 +1,34 @@
 <script lang="ts">
-  import Login from '../Components/Login.svelte';
   import { isLoggedIn, isAuthenticatedStore } from '../lib/api/login';
-  import Main from '../Components/Main.svelte';
-  import Overlay from '../Components/Overlays/Overlay.svelte';
-  import Error from '../Components/Overlays/Error.svelte';
-  import { errorStore } from '../lib/displayError';
-  import Register from '../Components/Register.svelte';
+  import { goto } from '$app/navigation';
 
-  let showErrorOverlay: () => void;
-  let closeErrorOverlay: () => void;
-  let isShown = false;
-
-  errorStore.subscribe((v) => {
-    if (!isShown && v !== '') {
-      showErrorOverlay();
+  const p = isLoggedIn().then(async (loggedIn) => {
+    if (loggedIn) {
+      await goto('/a');
     }
-    isShown = v !== '';
   });
 </script>
 
-{#await isLoggedIn()}
+{#await p}
   Loading...
 {:then}
   {#if !$isAuthenticatedStore}
-    <Register />
-    <Login />
-  {:else}
-    <Main />
+    <h1 class="text-center text-6xl mt-10">Landing page</h1>
+
+    <div class="flex justify-center place-items-center flex-col">
+      <p class="mt-10 w-2/3 text-center">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nam
+        quod repudiandae consequuntur natus quo minus vitae voluptas temporibus
+        itaque voluptate assumenda ratione, quibusdam quam cumque dolorem nobis
+        aliquid omnis adipisci tempore veniam at? Officiis ad, delectus,
+        accusantium nam corporis voluptates iusto saepe molestiae velit ipsum
+        modi? Corporis, amet asperiores?
+      </p>
+
+      <div class="mt-10">
+        <a href="/login" class="btn-good-light">Login</a>
+        <a href="/register" class="btn-good">Register</a>
+      </div>
+    </div>
   {/if}
 {/await}
-
-<Overlay bind:open={showErrorOverlay} bind:close={closeErrorOverlay}>
-  <Error close={closeErrorOverlay} />
-</Overlay>
