@@ -15,8 +15,9 @@ backend-dev:
 		-directory=../backend
 
 frontend:
-	mkdir -p build
-	yarn --cwd frontend build --emptyOutDir
+	mkdir -p build/public
+	yarn --cwd frontend build
+	cp -r frontend/build/* build/public
 
 frontend-dev:
 	yarn  --cwd frontend dev --host
