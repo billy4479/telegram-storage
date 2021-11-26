@@ -29,7 +29,10 @@ docker-dev:
 	docker-compose up
 
 docker-clean:
+	docker-compose -f docker-compose.prod.yml rm
+
+docker-dev-clean:
 	docker-compose rm
 	sudo rm -r ./db-data
 
-.PHONY: all backend backend-dev frontend frontend-dev docker docker-dev docker-clean
+.PHONY: all backend backend-dev frontend frontend-dev docker docker-dev docker-clean docker-dev-clean

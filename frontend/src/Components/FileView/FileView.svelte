@@ -24,7 +24,7 @@
   </div>
 {/await}
 
-<style>
+<style scoped>
   #file-view {
     grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
   }
