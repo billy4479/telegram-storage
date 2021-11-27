@@ -1,9 +1,11 @@
 import { CryptoManager } from '../crypto/manager';
 import { displayError } from '../displayError';
+import type { User } from '../models';
 import { checkFetchError, registerEndpoint } from './endpoints';
+import { authenticateWithKey } from './login';
 
-export async function register(token: string, password: string) {
-  const { keys } = await CryptoManager.createUser(password);
+export async function register(token: string, password: string): Promise<void> {
+  const { manager, keys } = await CryptoManager.createUser(password);
 
   const p = fetch(registerEndpoint, {
     method: 'POST',
@@ -22,5 +24,13 @@ export async function register(token: string, password: string) {
     return Promise.reject(message);
   }
 
-  console.log(await res.json());
+  const user = (await res.json()) as User;
+
+  // manager.setShareKey(
+  //   userData.shareKeyPrivate,
+  //   userData.shareKeyPrivate,
+  //   userData.shareKeyNonce
+  // );
+
+  await authenticateWithKey(user.username, manager);
 }

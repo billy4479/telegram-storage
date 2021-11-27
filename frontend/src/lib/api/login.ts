@@ -7,6 +7,7 @@ import {
 import { writable } from 'svelte/store';
 import { displayError } from '../displayError';
 import { CryptoManager } from '../crypto/manager';
+import type { User } from '../models';
 
 function getJWT(): string | null {
   return sessionStorage.getItem('jwt');
@@ -67,40 +68,16 @@ export async function isLoggedIn(): Promise<boolean> {
 }
 
 const q = genQuery(userEndpoint);
-interface User {
-  userID: number;
-  username: string;
-  masterKeySalt: string;
-
-  shareKeyPublic: string;
-  shareKeyPrivate: string;
-  shareKeyNonce: string;
-}
 
 interface LoginResponse {
   token: string;
   user: User;
 }
 
-export async function login(username: string, password: string): Promise<void> {
-  const user = await (async (): Promise<User> => {
-    const pSalt = fetch(q({ username }));
-    const { ok, message, res } = await checkFetchError(pSalt);
-    if (!ok) {
-      displayError(message);
-      return Promise.reject(message);
-    }
-
-    return (await res.json()) as User;
-  })();
-
-  const manager = await CryptoManager.fromPasswordAndSalt(
-    password,
-    user.masterKeySalt
-  );
-
-  const authKey = manager.getAuthKey();
-
+export async function authenticateWithKey(
+  username: string,
+  manager: CryptoManager
+): Promise<void> {
   const p = fetch(loginEndpoint, {
     method: 'POST',
     headers: {
@@ -108,7 +85,7 @@ export async function login(username: string, password: string): Promise<void> {
     },
     body: JSON.stringify({
       username,
-      authKey: authKey,
+      authKey: manager.getAuthKey(),
     }),
   });
 
@@ -128,4 +105,22 @@ export async function login(username: string, password: string): Promise<void> {
   sessionStorage.setItem('jwt', responseData.token);
   sessionStorage.setItem('masterKey', manager.getMasterKey());
   isAuthenticatedStore.set(true);
+}
+
+export async function login(username: string, password: string): Promise<void> {
+  const p = fetch(q({ username }));
+  const { ok, message, res } = await checkFetchError(p);
+  if (!ok) {
+    displayError(message);
+    return Promise.reject(message);
+  }
+
+  const user = (await res.json()) as User;
+
+  const manager = await CryptoManager.fromPasswordAndSalt(
+    password,
+    user.masterKeySalt
+  );
+
+  await authenticateWithKey(username, manager);
 }
