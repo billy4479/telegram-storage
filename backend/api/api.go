@@ -57,7 +57,7 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 
 		// User
 		api.GET("/user", GetUser)
-		api.POST("/user/login", Login)
+		api.POST("/user/login", Login(botInterface))
 		api.GET("/user/login", CheckLogin, authorized)
 		api.POST("/user/register", Register(botInterface))
 
