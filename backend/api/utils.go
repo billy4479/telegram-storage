@@ -38,6 +38,12 @@ func handleDBErr(c echo.Context, err error) error {
 		}
 		return err
 	}
+	if err == db.ErrUserAlreadyExists {
+		if errJ := returnErrorJSON(c, http.StatusConflict, err); errJ != nil {
+			return errJ
+		}
+		return err
+	}
 	if err == db.ErrNonEmptyFolder {
 		if errJ := returnErrorJSON(c, http.StatusBadRequest, err); errJ != nil {
 			return errJ

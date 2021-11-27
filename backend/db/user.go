@@ -1,9 +1,14 @@
 package db
 
 import (
+	"errors"
 	"log"
 
 	"gorm.io/gorm"
+)
+
+var (
+	ErrUserAlreadyExists = errors.New("The user already exists")
 )
 
 type User struct {
@@ -29,10 +34,9 @@ func GetUserByName(username string) (*User, error) {
 	return user, getDB().Take(&user, "username = ?", username).Error
 }
 
-// func GetUserByAuth(userSecret []byte) (*User, error) {
-// 	var user *User
-// 	return user, getDB().Take(&user, "authentication_key = ?", userSecret).Error
-// }
+func UpdateUser(user *User) error {
+	return getDB().Save(user).Error
+}
 
 func CreateUser(user *User) error {
 	if _, err := GetUserByID(user.TelegramID); err != nil {
@@ -45,10 +49,7 @@ func CreateUser(user *User) error {
 			return err
 		}
 	} else {
-		err := getDB().Save(user).Error
-		if err != nil {
-			return err
-		}
+		return ErrUserAlreadyExists
 	}
 
 	_, err := GetRootOf(user.TelegramID)
