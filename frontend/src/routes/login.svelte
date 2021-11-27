@@ -8,31 +8,47 @@
 
   async function onSubmit() {
     await login(username, password);
-    await goto('/');
+    await goto('/a');
   }
 </script>
 
-<div class="flex justify-center items-center mt-10">
+<div class="flex justify-center items-center h-screen">
   <form
     action="/api/login"
     on:submit|preventDefault={onSubmit}
     class="border border-gray-300 inline-block rounded shadow-md bg-gray-50 px-20 py-10"
   >
-    <h3 class="text-3xl mb-7">Login</h3>
-    <label for="username" class="mr-3">Username:</label>
-    <input
-      name="username"
-      class="p-1 rounded shadow-md border border-gray-300"
-      bind:value={username}
-    />
-    <label for="password" class="mr-3">Password:</label>
-    <input
-      type="password"
-      name="password"
-      class="p-1 rounded shadow-md border border-gray-300"
-      bind:value={password}
-    />
-    <br />
-    <input type="submit" value="Login" class="btn-good-light cursor-pointer" />
+    <h3 class="text-3xl mb-10">Login</h3>
+    <div class="flex flex-col">
+      <div>
+        <label for="username">Username:</label>
+        <input
+          type="text"
+          name="username"
+          placeholder="Telegram username"
+          bind:value={username}
+        />
+      </div>
+      <div class="mt-3">
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          name="password"
+          bind:value={password}
+          placeholder="Password"
+        />
+      </div>
+      <input
+        type="submit"
+        value="Login"
+        class="mt-3 btn-good-light cursor-pointer"
+      />
+    </div>
   </form>
 </div>
+
+<style>
+  label {
+    @apply mr-3 w-30 inline-block;
+  }
+</style>

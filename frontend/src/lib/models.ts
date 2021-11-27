@@ -22,3 +22,13 @@ export interface FolderContent {
   files: File[];
   folders: Folder[];
 }
+
+export interface User {
+  userID: number;
+  username: string;
+  masterKeySalt: string;
+
+  shareKeyPublic: string;
+  shareKeyPrivate: string;
+  shareKeyNonce: string;
+}

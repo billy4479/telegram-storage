@@ -2,42 +2,73 @@
   import { goto } from '$app/navigation';
 
   import { register } from '../lib/api/register';
+  import { displayError } from '../lib/displayError';
 
   let token = '';
   let password = '';
+  let passwordConfirm = '';
+
+  let form: HTMLFormElement;
 
   async function onSubmit() {
+    if (password !== passwordConfirm) {
+      form.reset();
+      displayError('The password does not match');
+      return;
+    }
     await register(token, password);
-    await goto('/login');
+    await goto('/a');
   }
 </script>
 
-<div class="flex justify-center items-center mt-10">
+<div class="flex justify-center items-center h-screen">
   <form
     action="/api/login"
     on:submit|preventDefault={onSubmit}
     autocomplete="off"
     class="border border-gray-300 inline-block rounded shadow-md bg-gray-50 px-20 py-10"
+    bind:this={form}
   >
-    <h3 class="text-3xl mb-7">Register</h3>
-    <label for="token" class="mr-3">Token:</label>
-    <input
-      name="token"
-      class="p-1 rounded shadow-md border border-gray-300"
-      bind:value={token}
-    />
-    <label for="password" class="mr-3">Password:</label>
-    <input
-      type="password"
-      name="password"
-      class="p-1 rounded shadow-md border border-gray-300"
-      bind:value={password}
-    />
-    <br />
-    <input
-      type="submit"
-      value="Register"
-      class="btn-good-light cursor-pointer"
-    />
+    <h3 class="text-3xl mb-10">Register</h3>
+    <div class="flex flex-col">
+      <div class="mt-3">
+        <label for="token">Token:</label>
+        <input
+          type="text"
+          name="token"
+          bind:value={token}
+          placeholder="Token"
+        />
+      </div>
+      <div class="mt-3">
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          name="password"
+          bind:value={password}
+          placeholder="Password"
+        />
+      </div>
+      <div class="mt-3">
+        <label for="password-confirm">Confirm Password:</label>
+        <input
+          type="password"
+          name="password-confirm"
+          bind:value={passwordConfirm}
+          placeholder="Confirm Password"
+        />
+      </div>
+      <input
+        type="submit"
+        value="Register"
+        class="btn-good-light cursor-pointer mt-3"
+      />
+    </div>
   </form>
 </div>
+
+<style>
+  label {
+    @apply mr-3 w-45 inline-block;
+  }
+</style>

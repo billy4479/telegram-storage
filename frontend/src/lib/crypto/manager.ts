@@ -35,7 +35,7 @@ export interface EncryptFileResult {
 
 let cryptoManager: CryptoManager | null = null;
 
-export function getCryptoManager() {
+export function getCryptoManager(): CryptoManager {
   return cryptoManager;
 }
 
@@ -70,10 +70,12 @@ export class CryptoManager {
     });
   }
 
-  static async fromMasterKey(masterKey: string) {
+  static async fromMasterKey(masterKey: string): Promise<CryptoManager> {
     cryptoManager = await new CryptoManager().initialized;
     cryptoManager._keyStore.masterKey =
       cryptoManager._libSodium.from_base64(masterKey);
+
+    return cryptoManager;
   }
 
   static async fromPasswordAndSalt(
@@ -172,7 +174,7 @@ export class CryptoManager {
     return this._libSodium.crypto_hash(this._keyStore.masterKey);
   }
 
-  setShareKey(pub: string, privateEnc: string, nonce: string) {
+  setShareKey(pub: string, privateEnc: string, nonce: string): void {
     this._keyStore.sharePrivateKeyNonce = this._libSodium.from_base64(nonce);
 
     this._keyStore.shareKeyPair = {
