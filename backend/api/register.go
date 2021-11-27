@@ -57,7 +57,7 @@ func Register(botInterface *bot.BotInterface) func(c echo.Context) error {
 
 		token, err := parseJWT(data.JWT)
 		if err != nil {
-			return returnErrorJSON(c, http.StatusBadRequest, err)
+			return returnErrorJSON(c, http.StatusUnauthorized, err)
 		}
 
 		authKey, err := base64.RawURLEncoding.DecodeString(data.Keys.AuthKey)
