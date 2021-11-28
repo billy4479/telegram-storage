@@ -42,10 +42,16 @@
           placeholder="Password"
         />
       </div>
+
+      <p class="py-4">
+        Don't have an account yet?
+        <a class="text-blue-600 underline" href="/register">Register here</a>.
+      </p>
+
       <input
         type="submit"
         value="Login"
-        class="mt-3 btn-good-light cursor-pointer"
+        class="btn-good-light cursor-pointer"
       />
     </div>
   </form>
