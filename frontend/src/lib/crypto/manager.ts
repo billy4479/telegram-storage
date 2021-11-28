@@ -1,8 +1,11 @@
 import { newDecryptionStream } from './decryptionStream';
 import { newEncryptionStream } from './encryptionStream';
 
-type LibSodium =
-  typeof import('/home/billy/code/telegram-storage/frontend/node_modules/@types/libsodium-wrappers/index');
+type LibSodium = typeof import('libsodium-wrappers/index');
+
+export async function prefetchSodium(): Promise<void> {
+  await import('libsodium-wrappers');
+}
 
 export class KeyStore {
   masterKey: Uint8Array;

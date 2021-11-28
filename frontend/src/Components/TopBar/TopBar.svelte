@@ -2,10 +2,11 @@
   import HomeIcon from 'svelte-icons/md/MdHome.svelte';
   import ArrowForwardIcon from 'svelte-icons/md/MdArrowForward.svelte';
   import ArrowBackIcon from 'svelte-icons/md/MdArrowBack.svelte';
+  import RefreshIcon from 'svelte-icons/md/MdRefresh.svelte';
 
   import Path from './Path.svelte';
   import TopBarButton from './TopBarButton.svelte';
-  import { navigate } from '../../lib/navigation';
+  import { navigate, refreshCurrentView } from '../../lib/navigation';
   import { dirStackBack, dirStackForward } from '../../lib/directoryStack';
 </script>
 
@@ -26,6 +27,10 @@
     }}
   >
     <ArrowForwardIcon />
+  </TopBarButton>
+
+  <TopBarButton onClick={refreshCurrentView}>
+    <RefreshIcon />
   </TopBarButton>
 
   <!-- Home -->
