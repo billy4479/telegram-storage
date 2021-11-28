@@ -41,22 +41,18 @@ export async function getContentOf(path: string): Promise<FolderContent> {
   return result;
 }
 
-export async function navigateInternal(to: string) {
-  console.log('Navigating to ' + to + '...');
-
+export async function navigateInternal(to: string): Promise<void> {
   clearSelection();
   currentViewStore.set(await getContentOf(to));
   currentPathStore.set(to);
 }
 
-export async function navigate(to: string) {
+export async function navigate(to: string): Promise<void> {
   await navigateInternal(to);
   pushDirHist(to);
 }
 
-export async function refreshCurrentView() {
-  console.log('Refreshing view');
-
+export async function refreshCurrentView(): Promise<void> {
   clearSelection();
   currentViewStore.set(await getContentOf(currentPath));
 }

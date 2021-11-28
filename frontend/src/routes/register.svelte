@@ -1,7 +1,9 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
 
   import { register } from '../lib/api/register';
+  import { prefetchSodium } from '../lib/crypto/manager';
   import { displayError } from '../lib/displayError';
 
   let token = '';
@@ -19,6 +21,8 @@
     await register(token, password);
     await goto('/a');
   }
+
+  onMount(prefetchSodium);
 </script>
 
 <div class="flex justify-center items-center h-screen">
