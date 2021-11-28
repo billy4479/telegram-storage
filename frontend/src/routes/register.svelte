@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import PasswordStrength from '../Components/PasswordStrength.svelte';
 
   import { register } from '../lib/api/register';
   import { prefetchSodium } from '../lib/crypto/manager';
@@ -53,7 +54,7 @@
           placeholder="Password"
         />
       </div>
-      <div class="mt-3">
+      <div class="my-3">
         <label for="password-confirm">Confirm Password:</label>
         <input
           type="password"
@@ -62,10 +63,23 @@
           placeholder="Confirm Password"
         />
       </div>
+
+      <PasswordStrength bind:password bind:passwordConfirm />
+
+      <p class="mt-3 overflow-hidden break-words w-100">
+        <strong>IMPORTANT:</strong> If you forget your password your files will be
+        LOST FOREVER. Use a password manager!
+      </p>
+
+      <p class="py-4">
+        Already have an account?
+        <a class="text-blue-600 underline" href="/login">Login here</a>.
+      </p>
+
       <input
         type="submit"
         value="Register"
-        class="btn-good-light cursor-pointer mt-3"
+        class="btn-good-light cursor-pointer"
       />
     </div>
   </form>

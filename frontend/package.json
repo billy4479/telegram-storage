@@ -16,6 +16,7 @@
     "@sveltejs/adapter-static": "^1.0.0-next.21",
     "@sveltejs/kit": "next",
     "@types/libsodium-wrappers": "^0.7.9",
+    "@types/zxcvbn": "^4.4.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "eslint": "^7.32.0",
@@ -43,6 +44,7 @@
   "type": "module",
   "dependencies": {
     "libsodium-wrappers": "^0.7.9",
-    "svelte-icons": "^2.1.0"
+    "svelte-icons": "^2.1.0",
+    "zxcvbn": "^4.4.2"
   }
 }
