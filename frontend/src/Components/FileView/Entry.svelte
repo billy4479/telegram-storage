@@ -9,8 +9,6 @@
   let buttonStyle = '';
 
   $: ((selected) => {
-    console.log(selected);
-
     bgStyle = selected ? 'bg-selected' : 'bg-unselected';
     buttonStyle = selected ? 'btn-selected' : 'btn-unselected';
   })(selected);
@@ -23,7 +21,7 @@
            flex flex-col items-stretch
            {buttonStyle}"
   title={name}
-  on:click={onClick}
+  on:click|stopPropagation={onClick}
   on:dblclick={onDoubleClick}
 >
   <div class="flex-grow flex justify-center items-center {bgStyle}">

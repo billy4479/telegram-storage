@@ -8,6 +8,7 @@
   } from '../../lib/navigation';
   import type { FolderContent } from '../../lib/models';
   import { pushDirHist } from '../../lib/directoryStack';
+  import { clearSelection } from '../../lib/selection';
 
   export let path = '/';
   let content: FolderContent | undefined;
@@ -31,8 +32,9 @@
 {:else}
   <!-- min-w is (min column size)*4 + gap -->
   <div
-    class="grid gap-4 place-items-start justify-items-start min-w-84"
+    class="grid gap-4 place-items-start justify-items-start min-w-84 h-full"
     id="file-view"
+    on:click={clearSelection}
   >
     {#each content.folders as folder}
       <FolderEntry data={folder} />
