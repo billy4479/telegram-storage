@@ -1,28 +1,48 @@
 <script lang="ts">
   import FileEntry from './FileEntry.svelte';
   import FolderEntry from './FolderEntry.svelte';
-  import { navigate, currentViewStore } from '../../lib/navigation';
+  import {
+    currentPathStore,
+    getContentOf,
+    setRefreshFn,
+  } from '../../lib/navigation';
+  import type { FolderContent } from '../../lib/models';
+  import { pushDirHist } from '../../lib/directoryStack';
 
-  const n = navigate('/');
+  export let path = '/';
+  let content: FolderContent | undefined;
+  $: {
+    content = undefined;
+    function refresh() {
+      content = undefined;
+      getContentOf(path).then((c) => (content = c));
+    }
+
+    pushDirHist(path);
+    currentPathStore.set(path);
+
+    setRefreshFn(refresh);
+    refresh();
+  }
 </script>
 
-{#await n}
+{#if content === undefined}
   <div>Loading...</div>
-{:then}
+{:else}
   <!-- min-w is (min column size)*4 + gap -->
   <div
     class="grid gap-4 place-items-start justify-items-start min-w-84"
     id="file-view"
   >
-    {#each $currentViewStore.folders as folder}
+    {#each content.folders as folder}
       <FolderEntry data={folder} />
     {/each}
 
-    {#each $currentViewStore.files as file}
+    {#each content.files as file}
       <FileEntry data={file} />
     {/each}
   </div>
-{/await}
+{/if}
 
 <style scoped>
   #file-view {

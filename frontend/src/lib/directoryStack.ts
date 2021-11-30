@@ -1,11 +1,9 @@
-import { navigateInternal } from './navigation';
-
 const dirStack: {
   stack: string[];
   index: number;
 } = { stack: [], index: 0 };
 
-export function pushDirHist(path: string) {
+export function pushDirHist(path: string): string {
   dirStack.stack = dirStack.stack.slice(0, dirStack.index + 1);
 
   let i = dirStack.index;
@@ -17,19 +15,21 @@ export function pushDirHist(path: string) {
   dirStack.stack.push(path);
   dirStack.index = dirStack.stack.length - 1;
 
-  console.log(dirStack);
+  return path;
 }
 
-export async function dirStackBack() {
+export function dirStackBack(): string {
   dirStack.index--;
-  await navigateInternal(dirStack.stack[dirStack.index]);
-  console.log(dirStack);
+
+  if (dirStack.index <= 0) dirStack.index = 0;
+
+  return dirStack.stack[dirStack.index];
 }
 
-export async function dirStackForward() {
-  if (dirStack.index === dirStack.stack.length - 1) return;
+export function dirStackForward(): string {
+  if (dirStack.index !== dirStack.stack.length - 1) {
+    dirStack.index++;
+  }
 
-  dirStack.index++;
-  await navigateInternal(dirStack.stack[dirStack.index]);
-  console.log(dirStack);
+  return dirStack.stack[dirStack.index];
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import FileView from '../../Components/FileView/FileView.svelte';
-  import TopBar from '../../Components/TopBar/TopBar.svelte';
-</script>
+  import { goto } from '$app/navigation';
 
-<TopBar />
-<FileView />
+  import { onMount } from 'svelte';
+
+  onMount(() => goto('/a/folder'));
+</script>

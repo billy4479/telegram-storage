@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
+
   import { currentPathStore, navigate } from '../../lib/navigation';
 
   let path = '/';
@@ -15,7 +17,7 @@
       .join('/')
       .slice(1, undefined);
     if (path === '') path = '/';
-    navigate(path);
+    navigate(path).then((r) => goto(r));
   }
 </script>
 

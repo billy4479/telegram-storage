@@ -2,10 +2,12 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
-  import Sidebar from '../../Components/Sidebar/Sidebar.svelte';
-  import { isAuthenticatedStore } from '../../lib/api/login';
+  import Sidebar from '../../../Components/Sidebar/Sidebar.svelte';
+  import TopBar from '../../../Components/TopBar/TopBar.svelte';
+  import { isAuthenticatedStore, isLoggedIn } from '../../../lib/api/login';
 
-  onMount(() => {
+  onMount(async () => {
+    await isLoggedIn();
     isAuthenticatedStore.subscribe((v) => {
       if (!v) goto('/login');
     });
@@ -16,6 +18,7 @@
   <Sidebar />
 
   <main class="ml-25 mr-5 mt-5">
+    <TopBar />
     <slot />
   </main>
 {/if}
