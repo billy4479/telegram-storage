@@ -1,5 +1,5 @@
 import { genQuery, listEndpoint } from './api/endpoints';
-import type { FolderContent } from './models';
+import type { Folder, FolderContent } from './models';
 import { authorizationHeader } from './api/login';
 import { clearSelection } from './selection';
 import { getFolder } from './api/get';
@@ -41,18 +41,26 @@ export async function getContentOf(path: string): Promise<FolderContent> {
   return result;
 }
 
-export async function navigateInternal(to: string): Promise<void> {
+export async function navigate(to: string): Promise<string> {
   clearSelection();
-  currentViewStore.set(await getContentOf(to));
   currentPathStore.set(to);
+  pushDirHist(to);
+  return `/a/folder/${(await getFolder(to)).folderID}`;
 }
 
-export async function navigate(to: string): Promise<void> {
-  await navigateInternal(to);
-  pushDirHist(to);
+export function navigateToFolder(to: Folder): string {
+  clearSelection();
+  currentPathStore.set(to.path);
+  pushDirHist(to.path);
+  return `/a/folder/${to.folderID}`;
+}
+
+let currentRefreshFn: () => void;
+export function setRefreshFn(refreshFn: () => void): void {
+  currentRefreshFn = refreshFn;
 }
 
 export async function refreshCurrentView(): Promise<void> {
   clearSelection();
-  currentViewStore.set(await getContentOf(currentPath));
+  currentRefreshFn();
 }

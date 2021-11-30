@@ -8,13 +8,14 @@
   import TopBarButton from './TopBarButton.svelte';
   import { navigate, refreshCurrentView } from '../../lib/navigation';
   import { dirStackBack, dirStackForward } from '../../lib/directoryStack';
+  import { goto } from '$app/navigation';
 </script>
 
 <nav class="flex bg-gray-100 rounded shadow py-1 px-2 mb-5 h-14 gap-2">
   <!-- Back -->
   <TopBarButton
     onClick={() => {
-      dirStackBack();
+      navigate(dirStackBack()).then((r) => goto(r));
     }}
   >
     <ArrowBackIcon />
@@ -23,7 +24,7 @@
   <!-- Forward -->
   <TopBarButton
     onClick={() => {
-      dirStackForward();
+      navigate(dirStackForward()).then((r) => goto(r));
     }}
   >
     <ArrowForwardIcon />
@@ -36,7 +37,7 @@
   <!-- Home -->
   <TopBarButton
     onClick={() => {
-      navigate('/');
+      navigate('/').then((r) => goto(r));
     }}
   >
     <HomeIcon />
