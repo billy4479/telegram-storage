@@ -1,5 +1,6 @@
 <script lang="ts">
-  import zxcvbn, { ZXCVBNFeedback } from 'zxcvbn';
+  import type { ZXCVBNFeedback } from 'zxcvbn';
+  import { zxcvbnAsync } from '../lib/zxcvbnAsync';
 
   export let password: string;
   export let passwordConfirm: string;
@@ -12,57 +13,59 @@
   let suggestion: ZXCVBNFeedback | undefined;
 
   $: {
-    if (password && password !== '') {
-      const r = zxcvbn(password);
+    (async () => {
+      if (password && password !== '') {
+        const r = await zxcvbnAsync(password);
 
-      suggestion = r.feedback;
-      switch (r.score) {
-        case 0:
-          first = 'week';
-          second = '';
-          third = '';
-          forth = '';
-          fifth = '';
-          break;
-        case 1:
-          first = 'bad';
-          second = 'bad';
-          third = '';
-          forth = '';
-          fifth = '';
-          break;
-        case 2:
-          first = 'decent';
-          second = 'decent';
-          third = 'decent';
-          forth = '';
-          fifth = '';
-          break;
+        suggestion = r.feedback;
+        switch (r.score) {
+          case 0:
+            first = 'week';
+            second = '';
+            third = '';
+            forth = '';
+            fifth = '';
+            break;
+          case 1:
+            first = 'bad';
+            second = 'bad';
+            third = '';
+            forth = '';
+            fifth = '';
+            break;
+          case 2:
+            first = 'decent';
+            second = 'decent';
+            third = 'decent';
+            forth = '';
+            fifth = '';
+            break;
 
-        case 3:
-          first = 'good';
-          second = 'good';
-          third = 'good';
-          forth = 'good';
-          fifth = '';
-          break;
+          case 3:
+            first = 'good';
+            second = 'good';
+            third = 'good';
+            forth = 'good';
+            fifth = '';
+            break;
 
-        case 4:
-          first = 'strong';
-          second = 'strong';
-          third = 'strong';
-          forth = 'strong';
-          fifth = 'strong';
-          break;
+          case 4:
+            first = 'strong';
+            second = 'strong';
+            third = 'strong';
+            forth = 'strong';
+            fifth = 'strong';
+            break;
+        }
+      } else {
+        first = '';
+        second = '';
+        third = '';
+        forth = '';
+        fifth = '';
+        suggestion = undefined;
       }
-    } else {
-      first = '';
-      second = '';
-      third = '';
-      forth = '';
-      fifth = '';
-      suggestion = undefined;
-    }
+    })();
   }
 </script>
 
