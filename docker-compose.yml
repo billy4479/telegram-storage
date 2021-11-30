@@ -1,6 +1,6 @@
 version: "3"
 services:
-  db:
+  database:
     image: postgres:alpine
     restart: always
     environment:
@@ -47,7 +47,7 @@ services:
       DB_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
       DB_USER: "${DB_USER:?missing DB_USER}"
       DB_DATABASE: "${DB_DATABASE:?missing DB_DATABASE}"
-      DB_HOST: "db"
+      DB_HOST: "database"
       SECRET: "${SECRET:?missing SECRET}"
       PORT: "${PORT:-4479}"
       TELEGRAM_TOKEN: "${TELEGRAM_TOKEN:?missing TELEGRAM_TOKEN}"
