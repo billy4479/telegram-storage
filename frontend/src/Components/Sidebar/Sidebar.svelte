@@ -42,7 +42,13 @@
     <TrashIcon />
   </NavButton>
   <div class="mt-auto">
-    <NavButton overlayHint="Logout" callback={logout}>
+    <NavButton
+      overlayHint="Logout"
+      callback={async () => {
+        await goto('/login');
+        logout();
+      }}
+    >
       <LogoutIcon />
     </NavButton>
   </div>

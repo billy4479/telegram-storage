@@ -7,7 +7,8 @@
   import { isAuthenticatedStore, isLoggedIn } from '../../../lib/api/login';
 
   onMount(async () => {
-    if (!(await isLoggedIn())) goto('/login');
+    const p = isLoggedIn().catch(() => {});
+    if (!(await p)) goto('/login');
   });
 </script>
 
