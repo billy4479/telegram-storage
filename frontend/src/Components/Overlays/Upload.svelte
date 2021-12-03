@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { currentPathStore, refreshCurrentView } from '../../lib/navigation';
-  import { checkFetchError, fileEndpoint } from '../../lib/api/endpoints';
-  import { authorizationHeader } from '../../lib/api/login';
-  import { getCryptoManager } from '../../lib/crypto/manager';
-  import { displayError } from '../../lib/displayError';
+  import { currentPathStore, refreshCurrentView } from '$lib/navigation';
+  import { checkFetchError, fileEndpoint } from '$lib/api/endpoints';
+  import { authorizationHeader } from '$lib/api/login';
+  import { getCryptoManager } from '$lib/crypto/manager';
+  import { displayError } from '$lib/displayError';
 
   export let close: () => void;
 

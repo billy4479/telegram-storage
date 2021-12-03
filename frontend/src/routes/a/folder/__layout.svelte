@@ -2,9 +2,9 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
-  import Sidebar from '../../../Components/Sidebar/Sidebar.svelte';
-  import TopBar from '../../../Components/TopBar/TopBar.svelte';
-  import { isAuthenticatedStore, isLoggedIn } from '../../../lib/api/login';
+  import Sidebar from '$comp/Sidebar/Sidebar.svelte';
+  import TopBar from '$comp/TopBar/TopBar.svelte';
+  import { isAuthenticatedStore, isLoggedIn } from '$lib/api/login';
 
   onMount(async () => {
     const p = isLoggedIn().catch(() => {});

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Overlay from '../Components/Overlays/Overlay.svelte';
-  import Error from '../Components/Overlays/Error.svelte';
-  import { errorStore } from '../lib/displayError';
+  import Overlay from '$comp/Overlays/Overlay.svelte';
+  import Error from '$comp/Overlays/Error.svelte';
+  import { errorStore } from '$lib/displayError';
 
   import '../styles.css';
 

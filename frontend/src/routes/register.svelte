@@ -1,11 +1,11 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
-  import PasswordStrength from '../Components/PasswordStrength.svelte';
+  import PasswordStrength from '$comp/PasswordStrength.svelte';
 
-  import { register } from '../lib/api/register';
-  import { prefetchSodium } from '../lib/crypto/manager';
-  import { displayError } from '../lib/displayError';
+  import { register } from '$lib/api/register';
+  import { prefetchSodium } from '$lib/crypto/manager';
+  import { displayError } from '$lib/displayError';
 
   let token = '';
   let password = '';

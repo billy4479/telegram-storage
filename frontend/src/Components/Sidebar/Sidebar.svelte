@@ -12,8 +12,9 @@
   import CreateFolder from '../Overlays/CreateFolder.svelte';
 
   import NavButton from './NavButton.svelte';
-  import { logout } from '../../lib/api/login';
-  import { getSelected } from '../../lib/selection';
+
+  import { logout } from '$lib/api/login';
+  import { getSelected } from '$lib/selection';
   import { goto } from '$app/navigation';
 
   let showUploadOverlay: () => void;

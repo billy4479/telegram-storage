@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
 
-  import { currentPathStore, navigate } from '../../lib/navigation';
+  import { currentPathStore, navigate } from '$lib/navigation';
 
   let path = '/';
   let dirs = ['/', ...path.split('/').filter((v) => v != '')];

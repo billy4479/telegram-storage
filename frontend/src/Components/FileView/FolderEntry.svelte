@@ -1,11 +1,11 @@
 <script lang="ts">
   import Entry from './Entry.svelte';
   import FolderIcon from 'svelte-icons/md/MdFolder.svelte';
-  import type { Folder } from '../../lib/models';
-  import { isSelected, selectedStore, toggle } from '../../lib/selection';
+  import type { Folder } from '$lib/models';
+  import { isSelected, selectedStore, toggle } from '$lib/selection';
   import { goto } from '$app/navigation';
-  import { pushDirHist } from '../../lib/directoryStack';
-  import { navigate } from '../../lib/navigation';
+  import { pushDirHist } from '$lib/directoryStack';
+  import { navigate } from '$lib/navigation';
 
   export let data: Folder;
   let selected = isSelected(data);

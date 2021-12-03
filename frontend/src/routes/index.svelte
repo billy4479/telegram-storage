@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isLoggedIn, isAuthenticatedStore } from '../lib/api/login';
+  import { isLoggedIn, isAuthenticatedStore } from '$lib/api/login';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 

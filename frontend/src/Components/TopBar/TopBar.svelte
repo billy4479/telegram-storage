@@ -6,8 +6,8 @@
 
   import Path from './Path.svelte';
   import TopBarButton from './TopBarButton.svelte';
-  import { navigate, refreshCurrentView } from '../../lib/navigation';
-  import { dirStackBack, dirStackForward } from '../../lib/directoryStack';
+  import { navigate, refreshCurrentView } from '$lib/navigation';
+  import { dirStackBack, dirStackForward } from '$lib/directoryStack';
   import { goto } from '$app/navigation';
 </script>
 

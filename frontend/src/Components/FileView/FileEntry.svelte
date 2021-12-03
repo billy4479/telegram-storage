@@ -1,9 +1,9 @@
 <script lang="ts">
-  import authenticatedDownload from '../../lib/api/download';
-  import type { File } from '../../lib/models';
+  import authenticatedDownload from '$lib/api/download';
+  import type { File } from '$lib/models';
   import Entry from './Entry.svelte';
   import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
-  import { isSelected, selectedStore, toggle } from '../../lib/selection';
+  import { isSelected, selectedStore, toggle } from '$lib/selection';
 
   export let data: File;
   let selected = isSelected(data);

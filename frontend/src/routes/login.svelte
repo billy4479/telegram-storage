@@ -2,8 +2,8 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
-  import { login } from '../lib/api/login';
-  import { prefetchSodium } from '../lib/crypto/manager';
+  import { login } from '$lib/api/login';
+  import { prefetchSodium } from '$lib/crypto/manager';
 
   let username = '';
   let password = '';
