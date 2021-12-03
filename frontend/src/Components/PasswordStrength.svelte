@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ZXCVBNFeedback } from 'zxcvbn';
-  import { zxcvbnAsync } from '../lib/zxcvbnAsync';
+  import { zxcvbnAsync } from '$lib/zxcvbnAsync';
 
   export let password: string;
   export let passwordConfirm: string;

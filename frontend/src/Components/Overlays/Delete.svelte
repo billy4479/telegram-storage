@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { deleteSelected, selectedStore } from '../../lib/selection';
+  import { deleteSelected, selectedStore } from '$lib/selection';
 
   export let close: () => void;
   let recursive = false;

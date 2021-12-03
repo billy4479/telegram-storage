@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
 
   import { onMount } from 'svelte';
-  import { getFolder } from '../../../lib/api/get';
+  import { getFolder } from '$lib/api/get';
 
   onMount(async () =>
     getFolder('/').then((root) => {

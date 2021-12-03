@@ -2,6 +2,8 @@ import adapter from '@sveltejs/adapter-static';
 import preprocess from 'svelte-preprocess';
 const { typescript } = preprocess;
 
+import path from 'path';
+
 import windiVite from 'vite-plugin-windicss';
 import windi from 'svelte-windicss-preprocess';
 
@@ -18,6 +20,12 @@ const config = {
 
     vite: {
       plugins: [windiVite()],
+      resolve: {
+        alias: {
+          $comp: path.resolve('./src/Components'),
+          $lib: path.resolve('./src/lib'),
+        },
+      },
     },
   },
 };

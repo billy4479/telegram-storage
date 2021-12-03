@@ -1,16 +1,20 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import FileView from '../../../Components/FileView/FileView.svelte';
-  import CustomMenu from '../../../Components/RightClickMenu/CustomMenu.svelte';
-  import MenuItem from '../../../Components/RightClickMenu/MenuItem.svelte';
-  import MenuSeparator from '../../../Components/RightClickMenu/MenuSeparator.svelte';
-  import { getFolderByID } from '../../../lib/api/get';
+
   import NewFolderIcon from 'svelte-icons/md/MdCreateNewFolder.svelte';
+  import TrashIcon from 'svelte-icons/io/IoMdTrash.svelte';
   import UploadIcon from 'svelte-icons/md/MdCloudUpload.svelte';
-  import Overlay from '../../../Components/Overlays/Overlay.svelte';
-  import Upload from '../../../Components/Overlays/Upload.svelte';
-  import Delete from '../../../Components/Overlays/Delete.svelte';
-  import CreateFolder from '../../../Components/Overlays/CreateFolder.svelte';
+
+  import { getFolderByID } from '$lib/api/get';
+  import { selectedStore } from '$lib/selection';
+
+  import FileView from '$comp/FileView/FileView.svelte';
+  import CustomMenu from '$comp/RightClickMenu/CustomMenu.svelte';
+  import MenuItem from '$comp/RightClickMenu/MenuItem.svelte';
+  import Overlay from '$comp/Overlays/Overlay.svelte';
+  import Upload from '$comp/Overlays/Upload.svelte';
+  import Delete from '$comp/Overlays/Delete.svelte';
+  import CreateFolder from '$comp/Overlays/CreateFolder.svelte';
 
   let path = '/';
   page.subscribe(async (p) => {
@@ -28,13 +32,20 @@
 </script>
 
 <FileView bind:path />
+
 <CustomMenu>
-  <MenuItem text="New folder" on:click={showNewFolderOverlay}>
-    <NewFolderIcon slot="icon" />
-  </MenuItem>
-  <MenuItem text="Upload file" on:click={showUploadOverlay}>
-    <UploadIcon slot="icon" />
-  </MenuItem>
+  {#if $selectedStore.length === 0}
+    <MenuItem text="New folder" on:click={showNewFolderOverlay}>
+      <NewFolderIcon slot="icon" />
+    </MenuItem>
+    <MenuItem text="Upload file" on:click={showUploadOverlay}>
+      <UploadIcon slot="icon" />
+    </MenuItem>
+  {:else}
+    <MenuItem text="Delete" on:click={showDeleteOverlay}>
+      <TrashIcon slot="icon" />
+    </MenuItem>
+  {/if}
 </CustomMenu>
 
 <Overlay bind:close={closeUploadOverlay} bind:open={showUploadOverlay}>

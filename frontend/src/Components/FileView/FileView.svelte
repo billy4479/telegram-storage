@@ -5,10 +5,10 @@
     currentPathStore,
     getContentOf,
     setRefreshFn,
-  } from '../../lib/navigation';
-  import type { FolderContent } from '../../lib/models';
-  import { pushDirHist } from '../../lib/directoryStack';
-  import { clearSelection } from '../../lib/selection';
+  } from '$lib/navigation';
+  import type { FolderContent } from '$lib/models';
+  import { pushDirHist } from '$lib/directoryStack';
+  import { clearSelection } from '$lib/selection';
 
   export let path = '/';
   let content: FolderContent | undefined;

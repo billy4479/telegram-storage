@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { errorStore } from '../../lib/displayError';
+  import { errorStore } from '$lib/displayError';
   export let close: () => void;
 </script>
 
