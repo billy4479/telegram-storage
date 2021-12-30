@@ -43,8 +43,7 @@ func (i *BotInterface) UploadFile(user *db.User, path string, r io.Reader) (*db.
 			return nil, errors.New(string(b))
 		}
 	}
-
-	return &db.File{
+return &db.File{
 		Path:   path,
 		Owner:  user.TelegramID,
 		FileID: msg.Document.FileID,
