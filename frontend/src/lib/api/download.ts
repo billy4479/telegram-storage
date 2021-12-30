@@ -11,7 +11,7 @@ export default async function authenticatedDownload(
   header: string,
   key: string,
   nonce: string
-) {
+): Promise<void> {
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
   const p = fetch(q({ id: id.toString() }), {
     headers: authorizationHeader(),

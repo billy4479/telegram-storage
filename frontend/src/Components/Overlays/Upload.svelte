@@ -35,17 +35,20 @@
             streamWrong as unknown as ReadableStream<Uint8Array>;
           // console.log(streamRight);
 
+          console.log(`Starting to encrypt ${inputFiles.files[i].name}`);
           const encrypted = await getCryptoManager()
             .encryptFile(streamRight)
             .catch((error) => {
               console.error(error);
             });
 
-          console.log(encrypted);
-
           if (!encrypted) {
             return;
           }
+
+          console.log(
+            `${inputFiles.files[i].name} encrypted successfully, start uploading`
+          );
 
           data.append('file', encrypted.data);
           data.append('path', path);
@@ -64,6 +67,8 @@
             displayError(message);
             return Promise.reject(message);
           }
+
+          console.log(`${inputFiles.files[i].name} uploaded successfully`);
         })()
       );
     }

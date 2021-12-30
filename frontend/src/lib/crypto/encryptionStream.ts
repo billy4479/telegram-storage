@@ -19,7 +19,7 @@ export function newEncryptionStream(
       while (true) {
         const { done, value } = await inputReader.read();
         if (done) {
-          console.log(s.to_base64(last));
+          // console.log(s.to_base64(last));
           break;
         }
 
