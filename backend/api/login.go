@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/billy4479/telegram-storage/backend/bot"
 	"github.com/billy4479/telegram-storage/backend/db"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -15,71 +16,75 @@ import (
 )
 
 type userClaims struct {
-	TelegramID int64
-	ChatID     int64
 	jwt.StandardClaims
+	ID int64
 }
 
-type userSecret struct {
-	UserSecret string `json:"userSecret" form:"userSecret" `
+type loginRequest struct {
+	Username          string `json:"username"`
+	AuthenticationKey string `json:"authKey"`
 }
 
-var nullSecret = []byte{
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-}
-
-func Login(c echo.Context) error {
-	var s userSecret
-	err := c.Bind(&s)
-	if err != nil {
-		return returnErrorJSON(c, http.StatusBadRequest, err)
-	}
-
-	h, err := base64.URLEncoding.DecodeString(s.UserSecret)
-	if err != nil {
-		return returnErrorJSON(c, http.StatusBadRequest, err)
-	}
-	if len(h) != 63 {
-		return returnErrorJSON(c, http.StatusBadRequest, fmt.Errorf("Invalid secret"))
-	}
-	secret := sha3.Sum512(h)
-
-	if bytes.Equal(secret[:], nullSecret) {
-		return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("User not found"))
-	}
-
-	user, err := db.GetUserBySecret(secret[:])
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("User not found"))
+func Login(botInterface *bot.BotInterface) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		var data loginRequest
+		err := c.Bind(&data)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}
-		return returnErrorJSON(c, http.StatusInternalServerError, err)
-	}
 
-	claims := &userClaims{
-		TelegramID: user.TelegramID,
-		ChatID:     user.ChatID,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 10).Unix(),
-		},
-	}
+		authKey, err := base64.RawURLEncoding.DecodeString(data.AuthenticationKey)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusBadRequest, err)
+		}
+		authKeyHash := sha3.Sum512(authKey)
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	t, err := token.SignedString(signingSecret)
-	if err != nil {
-		return returnErrorJSON(c, http.StatusUnauthorized, err)
-	}
+		user, err := db.GetUserByName(data.Username)
+		if err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("Unauthorized"))
+			}
+			if err = handleDBErr(c, err); err != nil {
+				return err
+			}
+		}
 
-	return c.JSON(http.StatusOK, echo.Map{
-		"token": t,
-	})
+		if !bytes.Equal(user.AuthenticationKey, authKeyHash[:]) {
+			return returnErrorJSON(c, http.StatusUnauthorized, fmt.Errorf("Unauthorized"))
+		}
+
+		name, err := botInterface.GetUsernameFromID(user.TelegramID)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusInternalServerError, err)
+		}
+
+		// Check if the username has changed since last login
+		if name != user.Username {
+			user.Username = name
+			err = db.UpdateUser(user)
+			if err != nil {
+				return returnErrorJSON(c, http.StatusInternalServerError, err)
+			}
+		}
+
+		claims := &userClaims{
+			ID: user.TelegramID,
+			StandardClaims: jwt.StandardClaims{
+				ExpiresAt: time.Now().Add(time.Hour * 10).Unix(),
+			},
+		}
+
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		t, err := token.SignedString(signingSecret)
+		if err != nil {
+			return returnErrorJSON(c, http.StatusUnauthorized, err)
+		}
+
+		return c.JSON(http.StatusOK, echo.Map{
+			"token": t,
+			"user":  user,
+		})
+	}
 }
 
 func CheckLogin(c echo.Context) error { return c.NoContent(http.StatusOK) }

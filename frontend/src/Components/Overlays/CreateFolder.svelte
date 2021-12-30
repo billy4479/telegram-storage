@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { createFolder } from '../../lib/api/create';
-  import { getCurrentPath, refreshCurrentView } from '../../lib/navigation';
+  import { createFolder } from '$lib/api/create';
+  import { getCurrentPath, refreshCurrentView } from '$lib/navigation';
   let name = '';
   export let close: () => void;
 

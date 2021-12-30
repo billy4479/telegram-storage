@@ -9,11 +9,13 @@
   import Overlay from '../Overlays/Overlay.svelte';
   import Upload from '../Overlays/Upload.svelte';
   import Delete from '../Overlays/Delete.svelte';
+  import CreateFolder from '../Overlays/CreateFolder.svelte';
 
   import NavButton from './NavButton.svelte';
-  import { logout } from '../../lib/api/authentication';
-  import { getSelected } from '../../lib/selection';
-  import CreateFolder from '../Overlays/CreateFolder.svelte';
+
+  import { logout } from '$lib/api/login';
+  import { getSelected } from '$lib/selection';
+  import { goto } from '$app/navigation';
 
   let showUploadOverlay: () => void;
   let closeUploadOverlay: () => void;
@@ -41,7 +43,13 @@
     <TrashIcon />
   </NavButton>
   <div class="mt-auto">
-    <NavButton overlayHint="Logout" callback={logout}>
+    <NavButton
+      overlayHint="Logout"
+      callback={async () => {
+        await goto('/login');
+        logout();
+      }}
+    >
       <LogoutIcon />
     </NavButton>
   </div>
@@ -58,6 +66,3 @@
 <Overlay bind:close={closeNewFolderOverlay} bind:open={showNewFolderOverlay}>
   <CreateFolder close={closeNewFolderOverlay} />
 </Overlay>
-
-<style>
-</style>

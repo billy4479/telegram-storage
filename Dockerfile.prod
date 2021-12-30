@@ -13,12 +13,12 @@ WORKDIR /app
 COPY frontend .
 RUN yarn
 
-RUN yarn build --outDir build/public
+RUN yarn build
 
 FROM alpine AS production
 WORKDIR /app
 
 COPY --from=backend-builder /app/telegram-storage .
-COPY --from=frontend-builder /app/build .
+COPY --from=frontend-builder /app/build ./public
 
 ENTRYPOINT [ "./telegram-storage" ]

@@ -21,3 +21,8 @@
 .btn-neutral-light {
   @apply border border-blue-400 shadow rounded py-2 px-3 text-blue-400 bg-light-50;
 }
+
+input[type='text'],
+input[type='password'] {
+  @apply px-3 py-2 rounded shadow-md border border-gray-300;
+}

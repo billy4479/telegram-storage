@@ -5,19 +5,13 @@
   export let onClick = () => {};
   export let onDoubleClick = () => {};
 
-  function getButtonStyles(s: boolean): string {
-    if (s) {
-      return 'bg-blue-200 text-blue-500 font-bold';
-    }
-    return 'bg-gray-50 hover:bg-gray-100 focus:bg-gray-100';
-  }
+  let bgStyle = '';
+  let buttonStyle = '';
 
-  function getBGStyles(s: boolean): string {
-    if (s) {
-      return 'bg-blue-50';
-    }
-    return 'bg-gray-100';
-  }
+  $: ((selected) => {
+    bgStyle = selected ? 'bg-selected' : 'bg-unselected';
+    buttonStyle = selected ? 'btn-selected' : 'btn-unselected';
+  })(selected);
 </script>
 
 <button
@@ -25,14 +19,12 @@
            inline-block rounded shadow-md
            w-full overflow-hidden 
            flex flex-col items-stretch
-           {getButtonStyles(selected)}"
+           {buttonStyle}"
   title={name}
-  on:click={onClick}
+  on:click|stopPropagation={onClick}
   on:dblclick={onDoubleClick}
 >
-  <div
-    class="flex-grow flex justify-center items-center {getBGStyles(selected)}"
-  >
+  <div class="flex-grow flex justify-center items-center {bgStyle}">
     <div class="w-1/3">
       <slot />
     </div>
@@ -42,7 +34,7 @@
   </span>
 </button>
 
-<style>
+<style scoped>
   span {
     overflow: hidden;
     white-space: nowrap;
@@ -50,5 +42,17 @@
   }
   button {
     aspect-ratio: 1;
+  }
+  .bg-selected {
+    @apply bg-blue-50;
+  }
+  .bg-unselected {
+    @apply bg-gray-100;
+  }
+  .btn-selected {
+    @apply bg-blue-200 text-blue-500 font-bold;
+  }
+  .btn-unselected {
+    @apply bg-gray-50 hover:bg-gray-100 focus:bg-gray-100;
   }
 </style>

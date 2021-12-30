@@ -23,6 +23,8 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 		signingSecret = []byte(s)
 	}
 
+	botInterface.GetTempJWT = GetTempJWTFactory()
+
 	e := echo.New()
 	e.HideBanner = true
 	e.Debug = true
@@ -31,28 +33,33 @@ func ApiMain(addr string, botInterface *bot.BotInterface) func(*sync.WaitGroup) 
 	{
 		{
 			config := middleware.DefaultLoggerConfig
-			config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
+			config.Format = "${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
+			// config.Format = "${time_custom} ${remote_ip} made a ${method} to ${uri} in ${latency_human}: got ${status} ${error}\n"
 			config.Output = os.Stdout
-			config.CustomTimeFormat = "2006/01/02 15:04:05"
+			// config.CustomTimeFormat = "2006/01/02 15:04:05"
 			e.Use(middleware.LoggerWithConfig(config))
 		}
 		// e.Use(middleware.Logger())
 		if !e.Debug {
 			e.Use(middleware.Recover())
 		}
-		e.Use(middleware.RemoveTrailingSlash())
-		e.Use(middleware.Secure())
 		e.Use(middleware.CORS())
+		e.Use(middleware.Gzip())
+		e.Use(middleware.Secure())
+		e.Use(middleware.RemoveTrailingSlash())
 	}
 
-	e.Static("/", "./public")
+	// e.Static("/", "./public")
+	e.GET("/*", Static("/", "./public", "index.html"))
 
 	{
 		api := e.Group("/api")
 
-		// Login
-		api.POST("/login", Login)
-		api.GET("/login", CheckLogin, authorized)
+		// User
+		api.GET("/user", GetUser)
+		api.POST("/user/login", Login(botInterface))
+		api.GET("/user/login", CheckLogin, authorized)
+		api.POST("/user/register", Register(botInterface))
 
 		// File
 		api.GET("/file", GetFile, authorized)

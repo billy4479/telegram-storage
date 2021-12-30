@@ -1,6 +1,6 @@
 import { genQuery, listEndpoint } from './api/endpoints';
-import type { FolderContent } from './models';
-import { authorizationHeader } from './api/authentication';
+import type { Folder, FolderContent } from './models';
+import { authorizationHeader } from './api/login';
 import { clearSelection } from './selection';
 import { getFolder } from './api/get';
 import { writable } from 'svelte/store';
@@ -41,22 +41,26 @@ export async function getContentOf(path: string): Promise<FolderContent> {
   return result;
 }
 
-export async function navigateInternal(to: string) {
-  console.log('Navigating to ' + to + '...');
-
+export async function navigate(to: string): Promise<string> {
   clearSelection();
-  currentViewStore.set(await getContentOf(to));
   currentPathStore.set(to);
-}
-
-export async function navigate(to: string) {
-  await navigateInternal(to);
   pushDirHist(to);
+  return `/a/folder/${(await getFolder(to)).folderID}`;
 }
 
-export async function refreshCurrentView() {
-  console.log('Refreshing view');
-
+export function navigateToFolder(to: Folder): string {
   clearSelection();
-  currentViewStore.set(await getContentOf(currentPath));
+  currentPathStore.set(to.path);
+  pushDirHist(to.path);
+  return `/a/folder/${to.folderID}`;
+}
+
+let currentRefreshFn: () => void;
+export function setRefreshFn(refreshFn: () => void): void {
+  currentRefreshFn = refreshFn;
+}
+
+export async function refreshCurrentView(): Promise<void> {
+  clearSelection();
+  currentRefreshFn();
 }

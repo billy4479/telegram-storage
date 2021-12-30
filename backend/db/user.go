@@ -1,15 +1,27 @@
 package db
 
 import (
+	"errors"
 	"log"
 
 	"gorm.io/gorm"
 )
 
+var (
+	ErrUserAlreadyExists = errors.New("The user already exists")
+)
+
 type User struct {
 	TelegramID int64  `gorm:"primaryKey" json:"userID"`
-	ChatID     int64  `gorm:"non null" json:"chatID"`
-	Secret     []byte `gorm:"non null" json:"-"`
+	ChatID     int64  `gorm:"non null" json:"-"`
+	Username   string `gorm:"username" json:"username"`
+
+	MasterKeySalt     string `gorm:"non null" json:"masterKeySalt"`
+	AuthenticationKey []byte `gorm:"non null" json:"-"`
+
+	ShareKeyPublic     string `gorm:"non null" json:"shareKeyPublic"`
+	ShareKeyPrivateEnc string `gorm:"non null" json:"shareKeyPrivate"`
+	ShareKeyNonce      string `gorm:"non null" json:"shareKeyNonce"`
 }
 
 func GetUserByID(userID int64) (*User, error) {
@@ -17,25 +29,27 @@ func GetUserByID(userID int64) (*User, error) {
 	return &user, getDB().Where("telegram_id = ?", userID).Take(&user).Error
 }
 
-func GetUserBySecret(userSecret []byte) (*User, error) {
+func GetUserByName(username string) (*User, error) {
 	var user *User
-	return user, getDB().Take(&user, "secret = ?", userSecret).Error
+	return user, getDB().Take(&user, "username = ?", username).Error
 }
 
-func LinkUser(user *User) error {
+func UpdateUser(user *User) error {
+	return getDB().Save(user).Error
+}
+
+func CreateUser(user *User) error {
 	if _, err := GetUserByID(user.TelegramID); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			err = getDB().Create(user).Error
 			if err != nil {
 				return err
 			}
-		}
-		return err
-	} else {
-		err := getDB().Save(user).Error
-		if err != nil {
+		} else {
 			return err
 		}
+	} else {
+		return ErrUserAlreadyExists
 	}
 
 	_, err := GetRootOf(user.TelegramID)

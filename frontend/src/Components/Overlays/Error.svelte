@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { errorStore } from '../../lib/displayError';
+  import { errorStore } from '$lib/displayError';
   export let close: () => void;
 </script>
 
@@ -8,4 +8,10 @@
     {$errorStore}
 </pre>
 
-<button on:click={close} class="btn-neutral mt-5">Ok</button>
+<button
+  on:click={() => {
+    errorStore.set('');
+    close();
+  }}
+  class="btn-neutral mt-5">Ok</button
+>

@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { downloadEndpoint } from '../../lib/api/endpoints';
-  import authenticatedDownload from '../../lib/api/download';
-  import type { File } from '../../lib/models';
+  import authenticatedDownload from '$lib/api/download';
+  import type { File } from '$lib/models';
   import Entry from './Entry.svelte';
   import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
-  import { isSelected, selectedStore, toggle } from '../../lib/selection';
+  import { isSelected, selectedStore, toggle } from '$lib/selection';
 
   export let data: File;
   let selected = isSelected(data);
@@ -15,8 +14,11 @@
 
   async function downloadFile() {
     await authenticatedDownload(
-      `${downloadEndpoint}/${data.fileID}`,
-      data.name
+      data.fileID,
+      data.name,
+      data.header,
+      data.key,
+      data.nonce
     );
   }
 

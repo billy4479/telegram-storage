@@ -5,7 +5,7 @@ import {
   folderEndpoint,
   genQuery,
 } from './endpoints';
-import { authorizationHeader } from './authentication';
+import { authorizationHeader } from './login';
 import { displayError } from '../displayError';
 
 const qFile = genQuery(fileEndpoint);
