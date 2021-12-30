@@ -8,6 +8,13 @@ services:
       POSTGRES_USER: "${DB_USER:?missing DB_USER}"
       POSTGRES_DB: "${DB_DATABASE:?missing DB_DATABASE}"
 
+  bot-api:
+    build: https://github.com/billy4479/telegram-bot-api.git
+    environment:
+      TELEGRAM_API_ID: "${TELEGRAM_API_ID:?missing TELEGRAM_API_ID}"
+      TELEGRAM_API_HASH: "${TELEGRAM_API_HASH:?missing TELEGRAM_API_HASH}"
+      TELEGRAM_LOCAL: "yes"
+
   web:
     build:
       context: .
@@ -15,6 +22,7 @@ services:
     restart: always
     depends_on:
       - db
+      - bot-api
     environment:
       DB_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
       DB_USER: "${DB_USER:?missing DB_USER}"

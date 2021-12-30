@@ -18,6 +18,14 @@ services:
     ports:
       - 8080:8080
 
+  bot-api:
+    build: https://github.com/billy4479/telegram-bot-api.git
+    environment:
+      TELEGRAM_API_ID: "${TELEGRAM_API_ID:?missing TELEGRAM_API_ID}"
+      TELEGRAM_API_HASH: "${TELEGRAM_API_HASH:?missing TELEGRAM_API_HASH}"
+      TELEGRAM_LOCAL: "yes"
+      TELEGRAM_VERBOSITY: "1"
+
   frontend:
     build:
       context: .
@@ -42,6 +50,7 @@ services:
       - ${PORT:-4479}:${PORT:-4479}
     depends_on:
       - db
+      - bot-api
     restart: always
     environment:
       DB_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"

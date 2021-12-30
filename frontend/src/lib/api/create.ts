@@ -7,7 +7,7 @@ export async function createFolder(path: string): Promise<Folder> {
   const headers = authorizationHeader();
   headers.append('Content-Type', 'application/json');
 
-  console.log(headers);
+  // console.log(headers);
 
   const p = fetch(folderEndpoint, {
     method: 'POST',

@@ -7,6 +7,7 @@ This project consists of four parts:
 - [UI](../frontend) (written in Svelte)
 - [API](../backend/api) (written in Go)
 - [Telegram Bot](../backend/bot) (written in Go)
+  - Which connects to a self hosted version of the [Telegram Bot API](https://github.com/billy4479/telegram-bot-api)
 - Database (PostgreSQL)
 
 ## Get Started
@@ -24,3 +25,4 @@ A [Makefile](Makefile) is provided for convenience and was the default method be
 ## Individual components documentation
 
 - [Encryption](Encryption.md)
+- [Managing `Telegram Bot API`'s local files](BotAPIFileManager.md)
