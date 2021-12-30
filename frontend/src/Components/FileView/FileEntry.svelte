@@ -12,8 +12,10 @@
     selected = isSelected(data);
   });
 
-  async function downloadFile() {
-    await authenticatedDownload(
+  function downloadFile() {
+    console.log(`Starting download of ${data.name}`);
+
+    authenticatedDownload(
       data.fileID,
       data.name,
       data.header,

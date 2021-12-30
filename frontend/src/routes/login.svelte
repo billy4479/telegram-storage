@@ -8,9 +8,8 @@
   let username = '';
   let password = '';
 
-  async function onSubmit() {
-    await login(username, password);
-    await goto('/a');
+  function onSubmit() {
+    login(username, password).then(() => goto('/a'));
   }
 
   onMount(prefetchSodium);

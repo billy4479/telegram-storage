@@ -13,14 +13,13 @@
 
   let form: HTMLFormElement;
 
-  async function onSubmit() {
+  function onSubmit() {
     if (password !== passwordConfirm) {
       form.reset();
       displayError('The password does not match');
       return;
     }
-    await register(token, password);
-    await goto('/a');
+    register(token, password).then(() => goto('/a'));
   }
 
   onMount(prefetchSodium);

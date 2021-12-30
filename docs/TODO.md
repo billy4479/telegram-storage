@@ -10,6 +10,7 @@
 - [X] Move frontend code to SvelteKit for routing
 - [ ] Progress while uploading files
 - [ ] Avoid stopping the main javascript "thread" while making calls to libsodium and show some kind of loading
+  - [ ] Make the crypto part more efficient (for example [here](../frontend/src/lib/crypto/evenChunkReader.ts))
 - [ ] Make the UI better and consistent (maybe with [this](https://sveltematerialui.com/)?)
 - [ ] Trash can
 - [ ] Implement renaming and moving files in the frontend

@@ -20,6 +20,7 @@ export default function newEvenChunkReader(
       }
 
       try {
+        // FIXME: This is incredibly slow. We have to find a way to make this faster
         buffer = Uint8Array.from([...buffer, ...value]);
       } catch (error) {
         console.error({ error, value });
