@@ -42,8 +42,10 @@ export function getCryptoManager(): CryptoManager {
   return cryptoManager;
 }
 
-const CHUNK_SIZE = 8 * 1024;
-// const CHUNK_SIZE = 4 * 1024 * 1024;
+// Using chunks of 2MB for encryption and decryption.
+// Bigger chunks cause the WASM call to last more than 50ms,
+// which is not recommended according to web.dev
+const CHUNK_SIZE = 2 * 1024 * 1024;
 
 export class CryptoManager {
   private _initPromise: Promise<void>;
@@ -190,20 +192,13 @@ export class CryptoManager {
     };
   }
 
-  async encryptFile(
-    inputStream: ReadableStream<Uint8Array>
-  ): Promise<EncryptFileResult> {
+  async encryptFile(input: Blob): Promise<EncryptFileResult> {
     const s = this._libSodium;
     const key = s.crypto_secretstream_xchacha20poly1305_keygen();
     const { state, header } =
       s.crypto_secretstream_xchacha20poly1305_init_push(key);
 
-    const encryptionStream = newEncryptionStream(
-      inputStream,
-      CHUNK_SIZE,
-      s,
-      state
-    );
+    const encryptionStream = newEncryptionStream(input, CHUNK_SIZE, s, state);
 
     const nonce = s.randombytes_buf(s.crypto_secretbox_NONCEBYTES);
     const keyEnc = s.crypto_secretbox_easy(
@@ -223,7 +218,7 @@ export class CryptoManager {
   }
 
   async decryptFile(
-    inputStream: ReadableStream<Uint8Array>,
+    input: Blob,
     header: string,
     keyEnc: string,
     nonce: string
@@ -241,12 +236,7 @@ export class CryptoManager {
       key
     );
 
-    const decryptionStream = newDecryptionStream(
-      inputStream,
-      CHUNK_SIZE,
-      s,
-      state
-    );
+    const decryptionStream = newDecryptionStream(input, CHUNK_SIZE, s, state);
 
     return new Response(decryptionStream).blob();
   }

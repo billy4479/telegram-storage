@@ -24,7 +24,7 @@ export default async function authenticatedDownload(
   }
 
   const blob = await getCryptoManager()
-    .decryptFile(res.body, header, key, nonce)
+    .decryptFile(await res.blob(), header, key, nonce)
     .catch((err: Error) => {
       displayError(err.message);
     });

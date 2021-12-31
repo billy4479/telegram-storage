@@ -13,13 +13,10 @@ export async function upload(files: FileList): Promise<void> {
         const file = files.item(i);
         const path = getCurrentPath() + '/' + file.name;
 
-        // This is probably a bug in Typescript library...
-        const stream = file.stream() as unknown as ReadableStream<Uint8Array>;
-
         console.log(`Starting to encrypt ${file.name}`);
 
         const encrypted = await getCryptoManager()
-          .encryptFile(stream)
+          .encryptFile(file)
           .catch((error) => {
             console.error(error);
           });
