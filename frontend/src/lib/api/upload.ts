@@ -3,6 +3,24 @@ import { checkFetchError, fileEndpoint } from './endpoints';
 import { authorizationHeader } from './login';
 import { getCryptoManager } from '../crypto/manager';
 import { displayError } from '../displayError';
+import { writable } from 'svelte/store';
+
+export const enum UploadStatus {
+  Encrypting,
+  Uploading,
+  Done,
+}
+
+export interface UploadItem {
+  name: string;
+  status: UploadStatus;
+}
+
+export interface UploadStoreType {
+  [key: symbol]: UploadItem;
+}
+
+export const uploadStore = writable<UploadStoreType>({});
 
 export async function upload(files: FileList): Promise<void> {
   const promises: Promise<void>[] = [];
@@ -12,20 +30,30 @@ export async function upload(files: FileList): Promise<void> {
         const data = new FormData();
         const file = files.item(i);
         const path = getCurrentPath() + '/' + file.name;
+        const key = Symbol();
 
-        console.log(`Starting to encrypt ${file.name}`);
+        uploadStore.update((v) => {
+          v[key] = {
+            name: file.name,
+            status: UploadStatus.Encrypting,
+          };
+          return v;
+        });
 
         const encrypted = await getCryptoManager()
           .encryptFile(file)
           .catch((error) => {
-            console.error(error);
+            displayError(error);
           });
 
         if (!encrypted) {
-          return;
+          return Promise.reject();
         }
 
-        console.log(`${file.name} encrypted successfully, starting to upload`);
+        uploadStore.update((v) => {
+          v[key].status = UploadStatus.Uploading;
+          return v;
+        });
 
         data.append('file', encrypted.data);
         data.append('path', path);
@@ -45,7 +73,10 @@ export async function upload(files: FileList): Promise<void> {
           return Promise.reject(message);
         }
 
-        console.log(`${file.name} uploaded successfully`);
+        uploadStore.update((v) => {
+          v[key].status = UploadStatus.Done;
+          return v;
+        });
       })()
     );
   }

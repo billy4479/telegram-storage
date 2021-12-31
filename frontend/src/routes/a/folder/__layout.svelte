@@ -5,6 +5,7 @@
   import Sidebar from '$comp/Sidebar/Sidebar.svelte';
   import TopBar from '$comp/TopBar/TopBar.svelte';
   import { isAuthenticatedStore, isLoggedIn } from '$lib/api/login';
+  import UploadProgressDashboard from '../../../Components/UploadProgress/UploadProgressDashboard.svelte';
 
   onMount(async () => {
     const p = isLoggedIn().catch(() => {});
@@ -19,4 +20,6 @@
     <TopBar />
     <slot />
   </main>
+
+  <UploadProgressDashboard />
 {/if}
