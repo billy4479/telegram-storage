@@ -10,9 +10,11 @@
 - [X] Move frontend code to SvelteKit for routing
 - [ ] Progress while uploading files
 - [ ] Avoid stopping the main javascript "thread" while making calls to libsodium and show some kind of loading
-- [ ] Make the UI better and consistent (maybe with [this](https://sveltematerialui.com/)?)
+- [ ] Make the UI and UX better and consistent (maybe with [this](https://sveltematerialui.com/)?)
 - [ ] Trash can
 - [ ] Implement renaming and moving files in the frontend
 - [ ] Write some CI to at least see if it build
 - [ ] Implement some way to change the password
   - [ ] Would it be possible to even reset it?
+- [ ] Move to the browser Crypto API + [argon2](https://www.npmjs.com/package/argon2-wasm-esm) instead of LibSodium
+- [ ] HTTPS
