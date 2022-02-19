@@ -4,6 +4,11 @@
   import { errorStore } from '$lib/displayError';
 
   import '../styles.css';
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    if (!window.isSecureContext) throw 'No secure context!';
+  });
 
   let showErrorOverlay: () => void;
   let closeErrorOverlay: () => void;

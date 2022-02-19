@@ -8,6 +8,8 @@
   import UploadProgressDashboard from '../../../Components/UploadProgress/UploadProgressDashboard.svelte';
 
   onMount(async () => {
+    if (!window.isSecureContext) throw 'No secure context!';
+
     const p = isLoggedIn().catch(() => {});
     if (!(await p)) goto('/login');
   });
