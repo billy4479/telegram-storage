@@ -18,3 +18,4 @@
   - [ ] Would it be possible to even reset it?
 - [ ] Move to the browser Crypto API + [argon2](https://www.npmjs.com/package/argon2-wasm-esm) instead of LibSodium
 - [ ] HTTPS
+- [ ] S3 compatible API (?)
