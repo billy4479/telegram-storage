@@ -14,45 +14,23 @@
   })(selected);
 </script>
 
+<!-- class="border border-gray-300 
+         rounded shadow-md
+         w-full overflow-hidden 
+         flex flex-col items-stretch
+         {buttonStyle}" -->
 <button
-  class="border border-gray-300 
-           inline-block rounded shadow-md
-           w-full overflow-hidden 
-           flex flex-col items-stretch
-           {buttonStyle}"
   title={name}
   on:click|stopPropagation={onClick}
   on:dblclick={onDoubleClick}
+  class={`btn ${
+    selected ? 'btn-info' : 'btn-outline'
+  } normal-case h-auto aspect-square flex-col`}
 >
-  <div class="flex-grow flex justify-center items-center {bgStyle}">
-    <div class="w-1/3">
-      <slot />
-    </div>
+  <div class="w-2/3">
+    <slot />
   </div>
-  <span class="text-center py-3 px-2">
+  <div class="text-center py-3 px-2">
     {name}
-  </span>
+  </div>
 </button>
-
-<style scoped>
-  span {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  button {
-    aspect-ratio: 1;
-  }
-  .bg-selected {
-    @apply bg-blue-50;
-  }
-  .bg-unselected {
-    @apply bg-gray-100;
-  }
-  .btn-selected {
-    @apply bg-blue-200 text-blue-500 font-bold;
-  }
-  .btn-unselected {
-    @apply bg-gray-50 hover:bg-gray-100 focus:bg-gray-100;
-  }
-</style>

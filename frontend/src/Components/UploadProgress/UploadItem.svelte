@@ -49,10 +49,10 @@
 </div>
 
 <style>
-  .done {
+  /* .done {
     @apply cursor-pointer;
   }
   .item {
     @apply min-w-80 px-3 py-2 place-items-center gap-4 w-full flex;
-  }
+  } */
 </style>

@@ -27,7 +27,7 @@
   let closeNewFolderOverlay: () => void;
 </script>
 
-<nav class="flex flex-col bg-blue-400 fixed top-0 left-0 h-screen w-20">
+<nav class="navbar flex-col bg-neutral fixed top-0 left-0 h-screen w-16">
   <NavButton overlayHint="New Folder" callback={showNewFolderOverlay}>
     <NewFolderIcon />
   </NavButton>
@@ -46,8 +46,8 @@
     <NavButton
       overlayHint="Logout"
       callback={async () => {
-        await goto('/login');
         logout();
+        await goto('/login');
       }}
     >
       <LogoutIcon />

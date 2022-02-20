@@ -28,11 +28,11 @@
 </script>
 
 {#if content === undefined}
-  <div>Loading...</div>
+  <div class="text-center m-5">Loading...</div>
 {:else}
   <!-- min-w is (min column size)*4 + gap -->
   <div
-    class="grid gap-4 place-items-start justify-items-start min-w-84 h-full"
+    class="grid gap-4 place-items-start justify-items-start ml-3 h-full"
     id="file-view"
     on:click={clearSelection}
   >
@@ -48,6 +48,6 @@
 
 <style scoped>
   #file-view {
-    grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
   }
 </style>

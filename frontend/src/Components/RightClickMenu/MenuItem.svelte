@@ -37,7 +37,7 @@
 </div>
 
 <style>
-  div.disabled {
+  /* div.disabled {
     @apply text-gray-500 hover:bg-light-50 focus:bg-light-50 cursor-default;
-  }
+  } */
 </style>

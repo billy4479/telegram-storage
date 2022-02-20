@@ -11,37 +11,42 @@
   import { goto } from '$app/navigation';
 </script>
 
-<nav class="flex bg-gray-100 rounded shadow py-1 px-2 mb-5 h-14 gap-2">
-  <!-- Back -->
-  <TopBarButton
-    onClick={() => {
-      navigate(dirStackBack()).then((r) => goto(r));
-    }}
-  >
-    <ArrowBackIcon />
-  </TopBarButton>
+<nav
+  class="navbar bg-base-200 rounded-lg w-auto shadow-md py-1 px-2 mx-3 mt-3 mb-5 gap-2"
+>
+  <!-- Actions -->
+  <div class="navbar-start">
+    <!-- Back -->
+    <TopBarButton
+      onClick={() => {
+        navigate(dirStackBack()).then((r) => goto(r));
+      }}
+    >
+      <ArrowBackIcon />
+    </TopBarButton>
 
-  <!-- Forward -->
-  <TopBarButton
-    onClick={() => {
-      navigate(dirStackForward()).then((r) => goto(r));
-    }}
-  >
-    <ArrowForwardIcon />
-  </TopBarButton>
+    <!-- Forward -->
+    <TopBarButton
+      onClick={() => {
+        navigate(dirStackForward()).then((r) => goto(r));
+      }}
+    >
+      <ArrowForwardIcon />
+    </TopBarButton>
 
-  <TopBarButton onClick={refreshCurrentView}>
-    <RefreshIcon />
-  </TopBarButton>
+    <TopBarButton onClick={refreshCurrentView}>
+      <RefreshIcon />
+    </TopBarButton>
 
-  <!-- Home -->
-  <TopBarButton
-    onClick={() => {
-      navigate('/').then((r) => goto(r));
-    }}
-  >
-    <HomeIcon />
-  </TopBarButton>
+    <!-- Home -->
+    <TopBarButton
+      onClick={() => {
+        navigate('/').then((r) => goto(r));
+      }}
+    >
+      <HomeIcon />
+    </TopBarButton>
+  </div>
 
   <!-- Path -->
   <Path />

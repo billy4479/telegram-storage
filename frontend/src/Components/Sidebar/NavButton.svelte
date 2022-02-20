@@ -3,11 +3,6 @@
   export let overlayHint = '';
 </script>
 
-<button
-  on:click={callback}
-  title={overlayHint}
-  class="m-2 bg-blue-500 rounded-2xl p-3 text-light-50 shadow
-focus:bg-blue-400 hover:bg-blue-400"
->
+<button on:click={callback} title={overlayHint} class="btn btn-accent p-2 my-2">
   <slot />
 </button>

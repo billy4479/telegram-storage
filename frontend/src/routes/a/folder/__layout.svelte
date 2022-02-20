@@ -5,7 +5,7 @@
   import Sidebar from '$comp/Sidebar/Sidebar.svelte';
   import TopBar from '$comp/TopBar/TopBar.svelte';
   import { isAuthenticatedStore, isLoggedIn } from '$lib/api/login';
-  import UploadProgressDashboard from '../../../Components/UploadProgress/UploadProgressDashboard.svelte';
+  import UploadProgressDashboard from '$comp/UploadProgress/UploadProgressDashboard.svelte';
 
   onMount(async () => {
     if (!window.isSecureContext) throw 'No secure context!';
@@ -18,7 +18,7 @@
 {#if $isAuthenticatedStore}
   <Sidebar />
 
-  <main class="ml-25 mr-5 mt-5 h-screen">
+  <main class="ml-16">
     <TopBar />
     <slot />
   </main>

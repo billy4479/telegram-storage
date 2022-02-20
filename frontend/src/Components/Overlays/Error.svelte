@@ -13,5 +13,5 @@
     errorStore.set('');
     close();
   }}
-  class="btn-neutral mt-5">Ok</button
+  class="btn modal-action">Ok</button
 >
