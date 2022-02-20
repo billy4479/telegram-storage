@@ -26,8 +26,8 @@
     </p>
 
     <div class="mt-10">
-      <a href="/login" class="btn-good-light">Login</a>
-      <a href="/register" class="btn-good">Register</a>
+      <a href="/login" class="btn">Login</a>
+      <a href="/register" class="btn btn-primary">Register</a>
     </div>
   </div>
 {/if}
