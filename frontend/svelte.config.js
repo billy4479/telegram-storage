@@ -4,14 +4,11 @@ const { typescript } = preprocess;
 
 import path from 'path';
 
-import windiVite from 'vite-plugin-windicss';
-import windi from 'svelte-windicss-preprocess';
-
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
   // for more information about preprocessors
-  preprocess: [windi({}), typescript({})],
+  preprocess: [typescript({})],
   kit: {
     adapter: adapter(),
 
@@ -19,7 +16,7 @@ const config = {
     target: '#svelte',
 
     vite: {
-      plugins: [windiVite()],
+      plugins: [],
       resolve: {
         alias: {
           $comp: path.resolve('./src/Components'),
