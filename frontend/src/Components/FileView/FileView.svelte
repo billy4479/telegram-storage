@@ -32,7 +32,7 @@
 {:else}
   <!-- min-w is (min column size)*4 + gap -->
   <div
-    class="grid gap-4 place-items-start justify-items-start ml-3 h-full"
+    class="grid gap-4 place-items-start justify-items-start mx-3 h-full"
     id="file-view"
     on:click={clearSelection}
   >

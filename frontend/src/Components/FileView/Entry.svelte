@@ -1,24 +1,22 @@
+<script lang="ts" context="module">
+  export const enum EntryType {
+    Folder,
+    File,
+  }
+</script>
+
 <script lang="ts">
+  import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
+  import FolderIcon from 'svelte-icons/md/MdFolder.svelte';
+
   export let name: string;
   export let selected = false;
+  export let type: EntryType;
 
   export let onClick = () => {};
   export let onDoubleClick = () => {};
-
-  let bgStyle = '';
-  let buttonStyle = '';
-
-  $: ((selected) => {
-    bgStyle = selected ? 'bg-selected' : 'bg-unselected';
-    buttonStyle = selected ? 'btn-selected' : 'btn-unselected';
-  })(selected);
 </script>
 
-<!-- class="border border-gray-300 
-         rounded shadow-md
-         w-full overflow-hidden 
-         flex flex-col items-stretch
-         {buttonStyle}" -->
 <button
   title={name}
   on:click|stopPropagation={onClick}
@@ -28,9 +26,21 @@
   } normal-case h-auto aspect-square flex-col`}
 >
   <div class="w-2/3">
-    <slot />
+    {#if type === EntryType.File}
+      <FileIcon />
+    {:else if type === EntryType.Folder}
+      <FolderIcon />
+    {/if}
   </div>
-  <div class="text-center py-3 px-2">
+  <span
+    class="whitespace-nowrap break-all text-ellipsis text-center py-3 overflow-hidden"
+  >
     {name}
-  </div>
+  </span>
 </button>
+
+<style>
+  span {
+    max-width: 5rem;
+  }
+</style>
