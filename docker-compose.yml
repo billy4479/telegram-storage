@@ -2,7 +2,7 @@ version: "3"
 services:
   database:
     image: postgres:alpine
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
       POSTGRES_USER: "${DB_USER:?missing DB_USER}"
@@ -14,12 +14,13 @@ services:
 
   adminer:
     image: adminer
-    restart: always
+    restart: unless-stopped
     ports:
       - 8080:8080
 
   bot-api:
     build: https://github.com/billy4479/telegram-bot-api.git
+    restart: unless-stopped
     environment:
       TELEGRAM_API_ID: "${TELEGRAM_API_ID:?missing TELEGRAM_API_ID}"
       TELEGRAM_API_HASH: "${TELEGRAM_API_HASH:?missing TELEGRAM_API_HASH}"
@@ -32,7 +33,7 @@ services:
       dockerfile: Dockerfile.frontend.dev
       args:
         port: "${FRONTEND_PORT:-3000}"
-    restart: always
+    restart: unless-stopped
     ports:
       - ${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}
     environment:
@@ -51,7 +52,7 @@ services:
     depends_on:
       - db
       - bot-api
-    restart: always
+    restart: unless-stopped
     environment:
       DB_PASSWORD: "${DB_PASSWORD:?missing DB_PASSWORD}"
       DB_USER: "${DB_USER:?missing DB_USER}"
