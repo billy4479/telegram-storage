@@ -12,6 +12,10 @@
   );
 </script>
 
+<svelte:head>
+  <title>TelegramStorage</title>
+</svelte:head>
+
 {#if !$isAuthenticatedStore}
   <h1 class="text-center text-6xl mt-10">Landing page</h1>
 

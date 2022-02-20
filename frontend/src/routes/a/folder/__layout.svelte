@@ -6,6 +6,7 @@
   import TopBar from '$comp/TopBar/TopBar.svelte';
   import { isAuthenticatedStore, isLoggedIn } from '$lib/api/login';
   import UploadProgressDashboard from '$comp/UploadProgress/UploadProgressDashboard.svelte';
+  import { currentPathStore } from '$lib/navigation';
 
   onMount(async () => {
     if (!window.isSecureContext) throw 'No secure context!';
@@ -14,6 +15,13 @@
     if (!(await p)) goto('/login');
   });
 </script>
+
+<svelte:head>
+  <title
+    >{$currentPathStore === '/' ? 'Home' : $currentPathStore.split('/').at(-1)} -
+    TelegramStorage
+  </title>
+</svelte:head>
 
 {#if $isAuthenticatedStore}
   <Sidebar />

@@ -25,6 +25,10 @@
   onMount(prefetchSodium);
 </script>
 
+<svelte:head>
+  <title>Registration - TelegramStorage</title>
+</svelte:head>
+
 <div class="flex justify-center items-center md:h-screen h-auto">
   <form
     action="/api/login"
