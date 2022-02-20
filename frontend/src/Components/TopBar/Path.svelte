@@ -21,21 +21,24 @@
   }
 </script>
 
-<ol class="flex bg-light-50 px-2 rounded border text-2xl place-items-center">
-  {#each dirs as dir, i}
-    <li>
-      <button
-        class="hover:underline"
-        on:click={() => {
-          navigateToIndex(i);
-        }}
-      >
-        {#if i != 0 && i != dirs.length - 1}
-          {dir}/
-        {:else}
-          {dir}
-        {/if}
-      </button>
-    </li>
-  {/each}
-</ol>
+<div class="navbar-center breadcrumbs">
+  <ul>
+    {#each dirs as dir, i}
+      <li>
+        <button
+          class="link"
+          on:click={() => {
+            navigateToIndex(i);
+          }}
+        >
+          {#if i != 0 && i != dirs.length - 1}
+            <!-- TODO: Maybe a home icon instead of the / here? -->
+            {dir}/
+          {:else}
+            {dir}
+          {/if}
+        </button>
+      </li>
+    {/each}
+  </ul>
+</div>

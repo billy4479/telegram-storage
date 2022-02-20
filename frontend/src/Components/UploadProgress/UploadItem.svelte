@@ -9,7 +9,9 @@
 </script>
 
 <div
-  class={`item ${$uploadStore[key].status === UploadStatus.Done ? 'done' : ''}`}
+  class={`min-w-[20rem] px-3 py-2 place-items-center gap-4 w-full flex ${
+    $uploadStore[key].status === UploadStatus.Done ? 'done' : ''
+  }`}
   on:click={() => {
     if ($uploadStore[key].status === UploadStatus.Done) {
       uploadStore.update((v) => {
@@ -37,7 +39,7 @@
 
   <span>{$uploadStore[key].name}</span>
 
-  <span class="text-right text-dark-50 ml-auto">
+  <span class="text-right text-accent font-bold ml-auto">
     {#if $uploadStore[key].status === UploadStatus.Done}
       Done
     {:else if $uploadStore[key].status === UploadStatus.Encrypting}
@@ -51,8 +53,5 @@
 <style>
   .done {
     @apply cursor-pointer;
-  }
-  .item {
-    @apply min-w-80 px-3 py-2 place-items-center gap-4 w-full flex;
   }
 </style>

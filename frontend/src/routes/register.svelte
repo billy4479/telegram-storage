@@ -25,67 +25,62 @@
   onMount(prefetchSodium);
 </script>
 
-<div class="flex justify-center items-center h-screen">
+<svelte:head>
+  <title>Registration - TelegramStorage</title>
+</svelte:head>
+
+<div class="flex justify-center items-center md:h-screen h-auto">
   <form
     action="/api/login"
     on:submit|preventDefault={onSubmit}
     autocomplete="off"
-    class="border border-gray-300 inline-block rounded shadow-md bg-gray-50 px-20 py-10"
+    class="form-control md:shadow-lg p-10 md:rounded md:border w-full 
+    md:max-w-lg h-full md:h-auto shadow-none border-0"
     bind:this={form}
   >
     <h3 class="text-3xl mb-10">Register</h3>
-    <div class="flex flex-col">
-      <div class="mt-3">
-        <label for="token">Token:</label>
-        <input
-          type="text"
-          name="token"
-          bind:value={token}
-          placeholder="Token"
-        />
-      </div>
-      <div class="mt-3">
-        <label for="password">Password:</label>
-        <input
-          type="password"
-          name="password"
-          bind:value={password}
-          placeholder="Password"
-        />
-      </div>
-      <div class="my-3">
-        <label for="password-confirm">Confirm Password:</label>
-        <input
-          type="password"
-          name="password-confirm"
-          bind:value={passwordConfirm}
-          placeholder="Confirm Password"
-        />
-      </div>
 
-      <PasswordStrength bind:password bind:passwordConfirm />
+    <label for="token" class="label">Token:</label>
+    <input
+      class="input input-bordered"
+      type="text"
+      name="token"
+      bind:value={token}
+      placeholder="Token"
+    />
 
-      <p class="mt-3 overflow-hidden break-words w-100">
-        <strong>IMPORTANT:</strong> If you forget your password your files will be
-        LOST FOREVER. Use a password manager!
-      </p>
+    <label for="password" class="label">Password:</label>
+    <input
+      type="password"
+      name="password"
+      bind:value={password}
+      placeholder="Password"
+      class="input input-bordered"
+    />
 
-      <p class="py-4">
-        Already have an account?
-        <a class="text-blue-600 underline" href="/login">Login here</a>.
-      </p>
+    <label for="password-confirm">Confirm Password:</label>
+    <input
+      type="password"
+      name="password-confirm"
+      bind:value={passwordConfirm}
+      placeholder="Confirm Password"
+      class="input input-bordered"
+    />
 
-      <input
-        type="submit"
-        value="Register"
-        class="btn-good-light cursor-pointer"
-      />
-    </div>
+    <div class="h-3" />
+
+    <PasswordStrength bind:password bind:passwordConfirm />
+
+    <p class="mt-3 overflow-hidden break-words w-100">
+      <strong>IMPORTANT:</strong> If you forget your password your files will be
+      LOST FOREVER. Use a password manager!
+    </p>
+
+    <p class="py-4">
+      Already have an account?
+      <a class="link link-primary" href="/login">Login here</a>.
+    </p>
+
+    <input type="submit" value="Register" class="btn btn-primary" />
   </form>
 </div>
-
-<style>
-  label {
-    @apply mr-3 w-45 inline-block;
-  }
-</style>

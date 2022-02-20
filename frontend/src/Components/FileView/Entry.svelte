@@ -1,58 +1,46 @@
+<script lang="ts" context="module">
+  export const enum EntryType {
+    Folder,
+    File,
+  }
+</script>
+
 <script lang="ts">
+  import FileIcon from 'svelte-icons/md/MdInsertDriveFile.svelte';
+  import FolderIcon from 'svelte-icons/md/MdFolder.svelte';
+
   export let name: string;
   export let selected = false;
+  export let type: EntryType;
 
   export let onClick = () => {};
   export let onDoubleClick = () => {};
-
-  let bgStyle = '';
-  let buttonStyle = '';
-
-  $: ((selected) => {
-    bgStyle = selected ? 'bg-selected' : 'bg-unselected';
-    buttonStyle = selected ? 'btn-selected' : 'btn-unselected';
-  })(selected);
 </script>
 
 <button
-  class="border border-gray-300 
-           inline-block rounded shadow-md
-           w-full overflow-hidden 
-           flex flex-col items-stretch
-           {buttonStyle}"
   title={name}
   on:click|stopPropagation={onClick}
   on:dblclick={onDoubleClick}
+  class={`btn ${
+    selected ? 'btn-info' : 'btn-outline'
+  } normal-case h-auto aspect-square flex-col`}
 >
-  <div class="flex-grow flex justify-center items-center {bgStyle}">
-    <div class="w-1/3">
-      <slot />
-    </div>
+  <div class="w-2/3">
+    {#if type === EntryType.File}
+      <FileIcon />
+    {:else if type === EntryType.Folder}
+      <FolderIcon />
+    {/if}
   </div>
-  <span class="text-center py-3 px-2">
+  <span
+    class="whitespace-nowrap break-all text-ellipsis text-center py-3 overflow-hidden"
+  >
     {name}
   </span>
 </button>
 
-<style scoped>
+<style>
   span {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  button {
-    aspect-ratio: 1;
-  }
-  .bg-selected {
-    @apply bg-blue-50;
-  }
-  .bg-unselected {
-    @apply bg-gray-100;
-  }
-  .btn-selected {
-    @apply bg-blue-200 text-blue-500 font-bold;
-  }
-  .btn-unselected {
-    @apply bg-gray-50 hover:bg-gray-100 focus:bg-gray-100;
+    max-width: 5rem;
   }
 </style>

@@ -2,7 +2,7 @@
   export let onClick: () => void;
 </script>
 
-<button on:click={onClick} class="bg-light-50 py-1 px-2 rounded border w-12">
+<button on:click={onClick} class="btn btn-ghost p-2">
   <slot />
 </button>
 

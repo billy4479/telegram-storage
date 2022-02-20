@@ -11,22 +11,21 @@
   }
 </script>
 
-<h1 class="text-2xl">Create a new folder</h1>
-<form on:submit|preventDefault={submit}>
-  <div class="my-5">
-    <label for="name">Name</label>
-    <input
-      type="text"
-      name="name"
-      bind:value={name}
-      autocomplete="off"
-      class="ml-3 py-1 px-2 border shadow"
-    />
-  </div>
+<h1 class="text-2xl mb-3">Create a new folder</h1>
+<form on:submit|preventDefault={submit} class="form-control">
+  <label class="label" for="name">Name</label>
+  <input
+    type="text"
+    name="name"
+    bind:value={name}
+    autocomplete="off"
+    class="input shadow border"
+    placeholder="Folder name"
+  />
 
-  <div class="flex place-items-center justify-evenly mt-5">
-    <input type="submit" value="Create" class="btn-good" />
-    <button class="btn-bad-light" on:click|preventDefault={close}>Cancel</button
+  <div class="modal-action">
+    <input type="submit" value="Create" class="btn btn-primary" />
+    <button class="btn btn-error" on:click|preventDefault={close}>Cancel</button
     >
   </div>
 </form>

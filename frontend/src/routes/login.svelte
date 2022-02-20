@@ -15,49 +15,42 @@
   onMount(prefetchSodium);
 </script>
 
-<div class="flex justify-center items-center h-screen">
+<svelte:head>
+  <title>Login - TelegramStorage</title>
+</svelte:head>
+
+<div class="flex justify-center items-center md:h-screen h-auto">
   <form
     action="/api/login"
     on:submit|preventDefault={onSubmit}
-    class="border border-gray-300 inline-block rounded shadow-md bg-gray-50 px-20 py-10"
+    class="form-control md:shadow-lg p-10 md:rounded md:border w-full 
+    md:max-w-lg h-full md:h-auto shadow-none border-0"
   >
-    <h3 class="text-3xl mb-10">Login</h3>
-    <div class="flex flex-col">
-      <div>
-        <label for="username">Username:</label>
-        <input
-          type="text"
-          name="username"
-          placeholder="Telegram username"
-          bind:value={username}
-        />
-      </div>
-      <div class="mt-3">
-        <label for="password">Password:</label>
-        <input
-          type="password"
-          name="password"
-          bind:value={password}
-          placeholder="Password"
-        />
-      </div>
+    <h3 class="text-3xl mb-5">Login</h3>
+    <label class="label" for="username">
+      <span class="label-text">Username</span>
+    </label>
+    <input
+      type="text"
+      placeholder="Telegram username"
+      class="input input-bordered"
+      bind:value={username}
+    />
+    <label class="label" for="password">
+      <span class="label-text">Password</span>
+    </label>
+    <input
+      type="password"
+      placeholder="Password"
+      class="input input-bordered"
+      bind:value={password}
+    />
 
-      <p class="py-4">
-        Don't have an account yet?
-        <a class="text-blue-600 underline" href="/register">Register here</a>.
-      </p>
+    <p class="py-4">
+      Don't have an account yet?
+      <a class="link link-primary" href="/register">Register here</a>
+    </p>
 
-      <input
-        type="submit"
-        value="Login"
-        class="btn-good-light cursor-pointer"
-      />
-    </div>
+    <input type="submit" value="Login" class="btn btn-primary" />
   </form>
 </div>
-
-<style>
-  label {
-    @apply mr-3 w-30 inline-block;
-  }
-</style>

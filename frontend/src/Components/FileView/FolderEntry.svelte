@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Entry from './Entry.svelte';
-  import FolderIcon from 'svelte-icons/md/MdFolder.svelte';
+  import Entry, { EntryType } from './Entry.svelte';
   import type { Folder } from '$lib/models';
   import { isSelected, selectedStore, toggle } from '$lib/selection';
   import { goto } from '$app/navigation';
@@ -20,11 +19,10 @@
 
 <Entry
   name={data.name}
+  type={EntryType.Folder}
   bind:selected
   onDoubleClick={() => {
     navigate(pushDirHist(data.path)).then((r) => goto(r));
   }}
   {onClick}
->
-  <FolderIcon />
-</Entry>
+/>
