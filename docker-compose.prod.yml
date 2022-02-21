@@ -1,6 +1,7 @@
 version: "3"
 services:
   db:
+    container_name: tgs-db
     image: postgres:alpine
     restart: always
     environment:
@@ -9,6 +10,7 @@ services:
       POSTGRES_DB: "${DB_DATABASE:?missing DB_DATABASE}"
 
   bot-api:
+    container_name: tgs-bot-api
     build: https://github.com/billy4479/telegram-bot-api.git
     environment:
       TELEGRAM_API_ID: "${TELEGRAM_API_ID:?missing TELEGRAM_API_ID}"
@@ -16,6 +18,7 @@ services:
       TELEGRAM_LOCAL: "yes"
 
   web:
+    container_name: tgs-web
     build:
       context: .
       dockerfile: Dockerfile.prod

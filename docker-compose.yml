@@ -1,6 +1,7 @@
 version: "3"
 services:
   database:
+    container_name: tgs-database-dev
     image: postgres:alpine
     restart: unless-stopped
     environment:
@@ -13,12 +14,14 @@ services:
       - ./db-data:/var/lib/postgresql/data
 
   adminer:
+    container_name: tgs-adminer-dev
     image: adminer
     restart: unless-stopped
     ports:
       - 8080:8080
 
   bot-api:
+    container_name: tgs-bot-api-dev
     build: https://github.com/billy4479/telegram-bot-api.git
     restart: unless-stopped
     environment:
@@ -28,6 +31,7 @@ services:
       TELEGRAM_VERBOSITY: "1"
 
   frontend:
+    container_name: tgs-frontend-dev
     build:
       context: .
       dockerfile: Dockerfile.frontend.dev
@@ -44,6 +48,7 @@ services:
       - ./frontend:/app
 
   backend:
+    container_name: tgs-backend-dev
     build:
       context: .
       dockerfile: Dockerfile.backend.dev
