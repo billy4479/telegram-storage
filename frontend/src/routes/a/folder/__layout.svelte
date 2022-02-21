@@ -26,7 +26,7 @@
 {#if $isAuthenticatedStore}
   <Sidebar />
 
-  <main class="ml-16 h-full">
+  <main class="ml-16">
     <TopBar />
     <slot />
   </main>
