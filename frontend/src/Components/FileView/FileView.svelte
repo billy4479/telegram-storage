@@ -27,7 +27,9 @@
 </script>
 
 {#if content === undefined}
-  <div class="text-center m-5">Loading...</div>
+  <center class="m-5">Loading...</center>
+{:else if content.files.length + content.folders.length == 0}
+  <center class="m-5">This folder is empty.</center>
 {:else}
   <!-- min-w is (min column size)*4 + gap -->
   <div
