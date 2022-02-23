@@ -19,15 +19,14 @@
 </script>
 
 <div
-  class="px-6 py-2 flex gap-4 cursor-pointer
-  hover:bg-gray-200 focus:bg-gray-200 h-10"
-  class:disabled
+  class="px-6 py-2 gap-4 btn btn-ghost flex h-10 justify-start"
+  class:btn-disabled={disabled}
   on:click={handleClick}
 >
   {#if $$slots.icon}
-    <span>
+    <div class="w-6">
       <slot name="icon" />
-    </span>
+    </div>
   {/if}
   <span>
     {#if text}
@@ -35,9 +34,3 @@
     {/if}
   </span>
 </div>
-
-<style>
-  /* div.disabled {
-    @apply text-gray-500 hover:bg-light-50 focus:bg-light-50 cursor-default;
-  } */
-</style>

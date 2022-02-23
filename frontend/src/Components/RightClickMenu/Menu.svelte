@@ -15,9 +15,13 @@
     y = pos.y;
 
     const rect = menuEl.getBoundingClientRect();
-    const parentRect = menuEl.parentElement.getBoundingClientRect();
-    x = Math.min(parentRect.right - rect.width, x);
 
+    // const parentRect = menuEl.parentElement.getBoundingClientRect();
+    // x = Math.min(parentRect.right - rect.width, x);
+
+    // Still not exactly as I wanted it, but I'm satisfied with this for now
+
+    if (x > window.innerWidth - rect.width) x -= rect.width;
     if (y > window.innerHeight - rect.height) y -= rect.height;
 
     x += window.scrollX;
@@ -41,7 +45,7 @@
 <svelte:body on:click={onPageClick} />
 
 <div
-  class="absolute grid shadow bg-white border rounded shadow-lg select-none py-2"
+  class="absolute flex flex-col bg-base-200 rounded shadow-lg select-none py-2 w-max"
   bind:this={menuEl}
   style="top: {y}px; left: {x}px;"
 >
