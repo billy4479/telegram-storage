@@ -6,7 +6,7 @@
   import UploadIcon from 'svelte-icons/md/MdCloudUpload.svelte';
 
   import { getFolderByID } from '$lib/api/get';
-  import { selectedStore } from '$lib/selection';
+  import { clearSelection, selectedStore } from '$lib/selection';
 
   import FileView from '$comp/FileView/FileView.svelte';
   import CustomMenu from '$comp/RightClickMenu/CustomMenu.svelte';
@@ -31,7 +31,9 @@
   let closeNewFolderOverlay: () => void;
 </script>
 
-<FileView bind:path />
+<div class="flex-1" on:click={clearSelection}>
+  <FileView bind:path />
+</div>
 
 <CustomMenu>
   {#if $selectedStore.length === 0}
