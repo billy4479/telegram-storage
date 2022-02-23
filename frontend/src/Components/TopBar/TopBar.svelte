@@ -1,5 +1,4 @@
 <script lang="ts">
-  import HomeIcon from 'svelte-icons/md/MdHome.svelte';
   import ArrowForwardIcon from 'svelte-icons/md/MdArrowForward.svelte';
   import ArrowBackIcon from 'svelte-icons/md/MdArrowBack.svelte';
   import RefreshIcon from 'svelte-icons/md/MdRefresh.svelte';
@@ -36,15 +35,6 @@
 
     <TopBarButton onClick={refreshCurrentView}>
       <RefreshIcon />
-    </TopBarButton>
-
-    <!-- Home -->
-    <TopBarButton
-      onClick={() => {
-        navigate('/').then((r) => goto(r));
-      }}
-    >
-      <HomeIcon />
     </TopBarButton>
   </div>
 
