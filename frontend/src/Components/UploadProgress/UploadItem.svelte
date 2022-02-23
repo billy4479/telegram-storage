@@ -44,8 +44,10 @@
       Done
     {:else if $uploadStore[key].status === UploadStatus.Encrypting}
       Encrypting
-    {:else}
+    {:else if $uploadStore[key].status === UploadStatus.Uploading}
       Uploading
+    {:else if $uploadStore[key].status === UploadStatus.Waiting}
+      Waiting
     {/if}
   </span>
 </div>

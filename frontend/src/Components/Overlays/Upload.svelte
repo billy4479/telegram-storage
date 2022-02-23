@@ -7,14 +7,13 @@
 
   let inputFiles: HTMLInputElement;
 
-  function resetAndClose() {
+  function reset() {
     (inputFiles.parentElement as HTMLFormElement).reset();
-    close();
   }
 
   function send() {
-    upload(inputFiles.files).finally(refreshCurrentView);
-    resetAndClose();
+    upload(inputFiles.files).finally(refreshCurrentView).finally(reset);
+    close();
   }
 </script>
 
