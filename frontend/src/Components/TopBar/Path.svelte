@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-
   import { currentPathStore, navigate } from '$lib/navigation';
+  import HomeIcon from 'svelte-icons/md/MdHome.svelte';
 
   let path = '/';
   let dirs = ['/', ...path.split('/').filter((v) => v != '')];
@@ -21,7 +21,7 @@
   }
 </script>
 
-<div class="navbar-center breadcrumbs">
+<div class="navbar-center breadcrumbs ">
   <ul>
     {#each dirs as dir, i}
       <li>
@@ -31,8 +31,11 @@
             navigateToIndex(i);
           }}
         >
-          {#if i != 0 && i != dirs.length - 1}
-            <!-- TODO: Maybe a home icon instead of the / here? -->
+          {#if i == 0}
+            <div class="cursor-pointer p-1 w-8">
+              <HomeIcon />
+            </div>
+          {:else if i != dirs.length - 1}
             {dir}/
           {:else}
             {dir}
