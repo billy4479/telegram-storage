@@ -63,6 +63,8 @@ func UploadFile(botInterface *bot.BotInterface) func(c echo.Context) error {
 		// Upload it to telegram
 		result, err := botInterface.UploadFile(user, path, r)
 		if err != nil {
+			// TODO: This can actually return a rate-limiting error
+			//		 that should be handled differently
 			return returnErrorJSON(c, http.StatusInternalServerError, err)
 		}
 
