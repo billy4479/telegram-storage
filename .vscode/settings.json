@@ -12,5 +12,6 @@
         "secretstream",
         "tgbotapi",
         "xchacha"
-    ]
+    ],
+    "eslint.packageManager": "yarn"
 }

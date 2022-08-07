@@ -55,7 +55,7 @@ services:
     ports:
       - ${PORT:-4479}:${PORT:-4479}
     depends_on:
-      - db
+      - database
       - bot-api
     restart: unless-stopped
     environment:
