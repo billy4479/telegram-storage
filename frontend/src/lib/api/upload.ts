@@ -1,9 +1,9 @@
 import { getCurrentPath } from '../navigation';
 import { checkFetchError, fileEndpoint } from './endpoints';
 import { authorizationHeader } from './login';
-import { getCryptoManager } from '../crypto/manager';
 import { displayError } from '../displayError';
 import { writable } from 'svelte/store';
+import { getCryptoManager } from '../cryptoManager';
 
 export const enum UploadStatus {
   Waiting,
@@ -39,7 +39,7 @@ async function singleUpload(
   });
 
   const encrypted = await getCryptoManager()
-    .encryptFile(file)
+    .encryptFile(await file.arrayBuffer())
     .catch((error) => {
       displayError(error);
     });
@@ -53,11 +53,10 @@ async function singleUpload(
     return v;
   });
 
-  data.append('file', encrypted.data);
+  data.append('file', await new Response(encrypted.file).blob());
   data.append('path', path);
-  data.append('header', encrypted.header);
-  data.append('keyEnc', encrypted.key.keyEnc);
-  data.append('nonce', encrypted.key.nonce);
+  data.append('iv', encrypted.iv);
+  data.append('keyEnc', encrypted.key);
 
   const p = fetch(fileEndpoint, {
     method: 'POST',

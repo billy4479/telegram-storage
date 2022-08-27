@@ -41,15 +41,11 @@ func UploadFile(botInterface *bot.BotInterface) func(c echo.Context) error {
 		if err != nil {
 			return err
 		}
-		header, err := getFormValueAndCheck(c, "header")
+		iv, err := getFormValueAndCheck(c, "iv")
 		if err != nil {
 			return err
 		}
 		keyEnc, err := getFormValueAndCheck(c, "keyEnc")
-		if err != nil {
-			return err
-		}
-		nonce, err := getFormValueAndCheck(c, "nonce")
 		if err != nil {
 			return err
 		}
@@ -68,9 +64,8 @@ func UploadFile(botInterface *bot.BotInterface) func(c echo.Context) error {
 			return returnErrorJSON(c, http.StatusInternalServerError, err)
 		}
 
-		result.Header = header
+		result.IV = iv
 		result.KeyEnc = keyEnc
-		result.Nonce = nonce
 
 		// Store it into the database
 		err = db.CreateFile(result)

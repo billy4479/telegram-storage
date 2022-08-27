@@ -37,9 +37,8 @@ type keys struct {
 	MasterKeySalt string `json:"masterKeySalt"`
 	AuthKey       string `json:"authKey"`
 
-	SharePublicKey       string `json:"sharePublicKey"`
-	SharePrivateKeyEnc   string `json:"sharePrivateKeyEnc"`
-	SharePrivateKeyNonce string `json:"sharePrivateKeyNonce"`
+	SharePublicKey     string `json:"sharePublicKey"`
+	SharePrivateKeyEnc string `json:"sharePrivateKeyEnc"`
 }
 
 type registerRequest struct {
@@ -60,22 +59,22 @@ func Register(botInterface *bot.BotInterface) func(c echo.Context) error {
 			return returnErrorJSON(c, http.StatusUnauthorized, err)
 		}
 
-		authKey, err := base64.RawURLEncoding.DecodeString(data.Keys.AuthKey)
+		authKey, err := base64.StdEncoding.DecodeString(data.Keys.AuthKey)
 		if err != nil {
 			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}
 		authKeyHash := sha3.Sum512(authKey)
 
 		claimsMap := token.Claims.(jwt.MapClaims)
-		userid := int64(claimsMap["userID"].(float64))
+		userID := int64(claimsMap["userID"].(float64))
 
-		username, err := botInterface.GetUsernameFromID(userid)
+		username, err := botInterface.GetUsernameFromID(userID)
 		if err != nil {
 			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}
 
 		user := db.User{
-			TelegramID: userid,
+			TelegramID: userID,
 			ChatID:     int64(claimsMap["chatID"].(float64)),
 			Username:   username,
 
@@ -84,7 +83,6 @@ func Register(botInterface *bot.BotInterface) func(c echo.Context) error {
 
 			ShareKeyPublic:     data.Keys.SharePublicKey,
 			ShareKeyPrivateEnc: data.Keys.SharePrivateKeyEnc,
-			ShareKeyNonce:      data.Keys.SharePrivateKeyNonce,
 		}
 
 		err = db.CreateUser(&user)

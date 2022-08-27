@@ -14,13 +14,7 @@
   function downloadFile() {
     console.log(`Starting download of ${data.name}`);
 
-    authenticatedDownload(
-      data.fileID,
-      data.name,
-      data.header,
-      data.key,
-      data.nonce
-    );
+    authenticatedDownload(data.fileID, data.name, data.iv, data.key);
   }
 
   function onClick() {

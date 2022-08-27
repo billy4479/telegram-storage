@@ -5,9 +5,8 @@ export interface File {
   owner: number;
   parentID: number;
 
-  header: string;
+  iv: string;
   key: string;
-  nonce: string;
 }
 
 export interface Folder {
@@ -30,5 +29,4 @@ export interface User {
 
   shareKeyPublic: string;
   shareKeyPrivate: string;
-  shareKeyNonce: string;
 }

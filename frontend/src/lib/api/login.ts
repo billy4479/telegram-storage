@@ -6,8 +6,8 @@ import {
 } from './endpoints';
 import { writable } from 'svelte/store';
 import { displayError } from '../displayError';
-import { CryptoManager } from '../crypto/manager';
 import type { User } from '../models';
+import { CryptoManager } from '../cryptoManager';
 
 function getJWT(): string | null {
   return sessionStorage.getItem('jwt');
@@ -85,7 +85,7 @@ export async function authenticateWithKey(
     },
     body: JSON.stringify({
       username,
-      authKey: manager.getAuthKey(),
+      authKey: await manager.getAuthKey(),
     }),
   });
 
@@ -96,14 +96,13 @@ export async function authenticateWithKey(
   }
 
   const responseData = (await res.json()) as LoginResponse;
-  manager.setShareKey(
+  manager.importShareKeys(
     responseData.user.shareKeyPublic,
-    responseData.user.shareKeyPrivate,
-    responseData.user.shareKeyNonce
+    responseData.user.shareKeyPrivate
   );
 
   sessionStorage.setItem('jwt', responseData.token);
-  sessionStorage.setItem('masterKey', manager.getMasterKey());
+  sessionStorage.setItem('masterKey', await manager.getMasterKey());
   isAuthenticatedStore.set(true);
 }
 

@@ -21,7 +21,6 @@ type User struct {
 
 	ShareKeyPublic     string `gorm:"non null" json:"shareKeyPublic"`
 	ShareKeyPrivateEnc string `gorm:"non null" json:"shareKeyPrivate"`
-	ShareKeyNonce      string `gorm:"non null" json:"shareKeyNonce"`
 }
 
 func GetUserByID(userID int64) (*User, error) {

@@ -1,11 +1,13 @@
-import { CryptoManager } from '../crypto/manager';
+import { CryptoManager } from '../cryptoManager';
 import { displayError } from '../displayError';
 import type { User } from '../models';
 import { checkFetchError, registerEndpoint } from './endpoints';
 import { authenticateWithKey } from './login';
 
 export async function register(token: string, password: string): Promise<void> {
-  const { manager, keys } = await CryptoManager.createUser(password);
+  const { cryptoManager, registrationData } = await CryptoManager.newUser(
+    password
+  );
 
   const p = fetch(registerEndpoint, {
     method: 'POST',
@@ -14,7 +16,7 @@ export async function register(token: string, password: string): Promise<void> {
     },
     body: JSON.stringify({
       jwt: token,
-      keys,
+      keys: await registrationData,
     }),
   });
 
@@ -32,5 +34,5 @@ export async function register(token: string, password: string): Promise<void> {
   //   userData.shareKeyNonce
   // );
 
-  await authenticateWithKey(user.username, manager);
+  await authenticateWithKey(user.username, cryptoManager);
 }

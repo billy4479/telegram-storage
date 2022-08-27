@@ -33,7 +33,7 @@ func Login(botInterface *bot.BotInterface) func(c echo.Context) error {
 			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}
 
-		authKey, err := base64.RawURLEncoding.DecodeString(data.AuthenticationKey)
+		authKey, err := base64.StdEncoding.DecodeString(data.AuthenticationKey)
 		if err != nil {
 			return returnErrorJSON(c, http.StatusBadRequest, err)
 		}

@@ -1,10 +1,8 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
   import PasswordStrength from '$comp/PasswordStrength.svelte';
 
   import { register } from '$lib/api/register';
-  import { prefetchSodium } from '$lib/crypto/manager';
   import { displayError } from '$lib/displayError';
 
   let token = '';
@@ -21,8 +19,6 @@
     }
     register(token, password).then(() => goto('/a'));
   }
-
-  onMount(prefetchSodium);
 </script>
 
 <svelte:head>

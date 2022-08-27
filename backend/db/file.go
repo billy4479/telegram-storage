@@ -13,9 +13,8 @@ type File struct {
 	ParentID uint64 `gorm:"non null" json:"parentID"`
 	Owner    int64  `gorm:"non null" json:"owner"`
 
-	Header string `gorm:"non null" json:"header"`
+	IV     string `gorm:"non null" json:"iv"`
 	KeyEnc string `gorm:"non null" json:"key"`
-	Nonce  string `gorm:"non null" json:"nonce"`
 
 	FileID string `gorm:"not null" json:"-"`
 }
@@ -68,9 +67,9 @@ func CreateFile(file *File) error {
 	return getDB().Create(file).Error
 }
 
-func EditFile(file *File, userid int64) error {
+func EditFile(file *File, userID int64) error {
 	// We cannot change ownership of a file
-	file.Owner = userid
+	file.Owner = userID
 
 	var err error
 	file.Path, err = calculatePath(file.ParentID, file.Name, file.Owner)
@@ -78,17 +77,17 @@ func EditFile(file *File, userid int64) error {
 		return err
 	}
 
-	return getDB().Where("owner = ?", userid).Save(file).Error
+	return getDB().Where("owner = ?", userID).Save(file).Error
 }
 
-func DeleteFile(id uint64, userid int64) error {
-	return getDB().Where("owner = ?", userid).Delete(&File{ID: id}).Error
+func DeleteFile(id uint64, userID int64) error {
+	return getDB().Where("owner = ?", userID).Delete(&File{ID: id}).Error
 }
 
-func GetFileByID(id uint64, userid int64) (*File, error) {
+func GetFileByID(id uint64, userID int64) (*File, error) {
 	file := File{}
 	return &file,
-		getDB().Where("owner = ?", userid).
+		getDB().Where("owner = ?", userID).
 			Take(&file, id).
 			Error
 }
